@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import { curriculum } from '../data/curriculum';
+import { curriculum } from '../../curriculum';
 
 const TopicPage = () => {
   const { moduleId, topicId } = useParams();
