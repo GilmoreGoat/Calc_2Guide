@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { curriculum } from './curriculum.js';
+import { curriculum } from './src/data/curriculum.js';
 
 describe('Curriculum Data Integrity', () => {
   test('curriculum should be an array', () => {
