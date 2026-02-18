@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { curriculum } from '../../curriculum';
+import PracticeSection from './PracticeSection';
 
 const TopicPage = () => {
   const { moduleId, topicId } = useParams();
@@ -22,6 +23,10 @@ const TopicPage = () => {
         remarkPlugins={[remarkMath]}
         rehypePlugins={[rehypeKatex]}
       />
+
+      {topic.practiceType && (
+        <PracticeSection type={topic.practiceType} />
+      )}
     </article>
   );
 };

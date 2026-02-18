@@ -6,6 +6,7 @@ export const curriculum = [
       {
         id: "antiderivatives",
         title: "Antiderivatives and Indefinite Integrals",
+        practiceType: 'indefinite-integral',
         content: `
 ## Definition
 
@@ -39,6 +40,15 @@ Here are some fundamental integration formulas:
 10. **Inverse Tangent**: $\\int \\frac{1}{1+x^2} \\, dx = \\arctan(x) + C$
 11. **Inverse Sine**: $\\int \\frac{1}{\\sqrt{1-x^2}} \\, dx = \\arcsin(x) + C$
 
+## Procedural Pathway: Solving Indefinite Integrals
+
+1.  **Identify the type of function:** Look for power functions $x^n$, exponentials, or trigonometric functions.
+2.  **Separate terms:** Use the Sum/Difference Rule to break the integral into simpler parts: $\\int [f(x) + g(x)] dx = \\int f(x) dx + \\int g(x) dx$.
+3.  **Pull out constants:** Use the Constant Multiple Rule: $\\int c f(x) dx = c \\int f(x) dx$.
+4.  **Apply rules:** Apply the appropriate integration rule (e.g., Power Rule) to each part.
+5.  **Add C:** Don't forget to add the constant of integration $+ C$ at the end.
+6.  **Simplify:** Combine constants and simplify coefficients if needed.
+
 ## Example
 
 Evaluate $\\int (3x^2 + 2x - 5) \\, dx$.
@@ -60,6 +70,7 @@ $$
       {
         id: "definite-integrals",
         title: "The Definite Integral",
+        practiceType: 'definite-integral',
         content: `
 ## Definition
 
@@ -81,6 +92,26 @@ where $\\Delta x = \\frac{b-a}{n}$ and $x_i^*$ is a sample point in the $i$-th s
 4.  $\\int_a^b [f(x) + g(x)] \\, dx = \\int_a^b f(x) \\, dx + \\int_a^b g(x) \\, dx$
 5.  $\\int_a^c f(x) \\, dx + \\int_c^b f(x) \\, dx = \\int_a^b f(x) \\, dx$
 6.  If $f(x) \\ge 0$ for $a \\le x \\le b$, then $\\int_a^b f(x) \\, dx \\ge 0$.
+
+## Procedural Pathway: Evaluating Definite Integrals
+
+1.  **Find the Antiderivative:** Determine the indefinite integral $F(x) = \\int f(x) dx$. You can omit the $+C$.
+2.  **Apply the Fundamental Theorem of Calculus (Part 2):** Evaluate $F(x)$ at the upper limit $b$ and the lower limit $a$.
+3.  **Calculate difference:** Compute $F(b) - F(a)$.
+4.  **Simplify:** Perform the arithmetic to get the final numerical answer.
+
+## Example
+
+Evaluate $\\int_1^2 (2x + 1) \\, dx$.
+
+**Solution:**
+1.  **Antiderivative:** $\\int (2x + 1) dx = x^2 + x$.
+2.  **Evaluate limits:**
+    *   Upper limit ($x=2$): $2^2 + 2 = 6$.
+    *   Lower limit ($x=1$): $1^2 + 1 = 2$.
+3.  **Difference:** $6 - 2 = 4$.
+
+So, $\\int_1^2 (2x + 1) \\, dx = 4$.
 
 `
       },
