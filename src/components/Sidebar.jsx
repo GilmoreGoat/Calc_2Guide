@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ChevronDown, ChevronRight, BookOpen } from 'lucide-react';
-import { curriculum } from '../data/curriculum';
+import { curriculum } from '../../curriculum';
 
 const Sidebar = () => {
   const [openModules, setOpenModules] = useState({});
