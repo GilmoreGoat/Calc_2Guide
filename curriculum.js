@@ -103,15 +103,70 @@ The Net Change Theorem states that the integral of a rate of change is the net c
 
 $$ \\int_a^b F'(x) \\, dx = F(b) - F(a) $$
 
+This principle applies to many physical situations where a quantity changes at a known rate.
+
 ## Applications
 
-*   **Displacement:** If $v(t)$ is velocity, then displacement is $\\int_{t_1}^{t_2} v(t) \\, dt$.
-*   **Distance:** The total distance traveled is $\\int_{t_1}^{t_2} |v(t)| \\, dt$.
+### 1. Particle Motion: Displacement vs. Distance
+
+If $v(t)$ is the velocity of a particle moving along a line, then:
+
+*   **Displacement:** The net change in position is $\\int_{t_1}^{t_2} v(t) \\, dt = s(t_2) - s(t_1)$.
+*   **Total Distance Traveled:** The total distance is the integral of the speed $|v(t)|$:
+    $$ \\int_{t_1}^{t_2} |v(t)| \\, dt $$
+
+**Walkthrough: Particle Motion**
+
+Consider a particle with velocity $v(t) = t^2 - 3t + 2$ m/s over the time interval $[0, 3]$.
+
+1.  **Displacement:**
+    $$ \\int_0^3 (t^2 - 3t + 2) \\, dt = \\left[ \\frac{t^3}{3} - \\frac{3t^2}{2} + 2t \\right]_0^3 $$
+    $$ = \\left(\\frac{27}{3} - \\frac{27}{2} + 6\\right) - 0 = 9 - 13.5 + 6 = 1.5 \\text{ m} $$
+
+2.  **Total Distance Traveled:**
+    We need to find where $v(t)$ changes sign. Factor $v(t) = (t-1)(t-2)$. Roots are at $t=1$ and $t=2$.
+    Since the interval $[0, 3]$ includes both roots, we split the integral:
+    $$ \\int_0^1 |v(t)| dt + \\int_1^2 |v(t)| dt + \\int_2^3 |v(t)| dt $$
+
+    *   On $[0, 1]$, $v(t) > 0$, so $\\int_0^1 (t^2 - 3t + 2) dt = [\\frac{t^3}{3} - \\frac{3t^2}{2} + 2t]_0^1 = \\frac{1}{3} - \\frac{3}{2} + 2 = \\frac{5}{6}$.
+    *   On $[1, 2]$, $v(t) < 0$, so $\\int_1^2 -(t^2 - 3t + 2) dt = -[\\frac{t^3}{3} - \\frac{3t^2}{2} + 2t]_1^2 = -(-\\frac{1}{6}) = \\frac{1}{6}$.
+    *   On $[2, 3]$, $v(t) > 0$, so $\\int_2^3 (t^2 - 3t + 2) dt = [\\frac{t^3}{3} - \\frac{3t^2}{2} + 2t]_2^3 - [\\dots]_2 = 1.5 - (-\\frac{2}{3} + 3) = \\frac{5}{6}$.
+
+    Total Distance = $\\frac{5}{6} + \\frac{1}{6} + \\frac{5}{6} = \\frac{11}{6} \\approx 1.83 \\text{ m}$.
+
+### 2. Fluid Flow
+
+If water flows into a tank at a rate of $r(t)$ gallons per minute, the total amount of water that entered the tank between $t=a$ and $t=b$ is $\\int_a^b r(t) \\, dt$.
+
+**Walkthrough:**
+Water leaks from a tank at a rate of $r(t) = 2t$ gallons/min. How much water leaks out between $t=1$ and $t=4$?
+$$ \\text{Total Volume} = \\int_1^4 2t \\, dt = [t^2]_1^4 = 16 - 1 = 15 \\text{ gallons}. $$
+
+### 3. Population Growth
+
+If a population grows at a rate of $P'(t)$ individuals per year, the net increase in population from year $a$ to year $b$ is $\\int_a^b P'(t) \\, dt$.
+
+**Walkthrough:**
+A bacteria culture grows at a rate of $P'(t) = 100e^{0.5t}$. The increase in population over the first 2 hours is:
+$$ \\int_0^2 100e^{0.5t} \\, dt = 100 \\left[ \\frac{e^{0.5t}}{0.5} \\right]_0^2 = 200 (e^1 - e^0) = 200(e - 1) \\approx 343.6 $$
 
 ## Basic Integration Formulas
 
-Recall the power rule: $\\int x^n \\, dx = \\frac{x^{n+1}}{n+1} + C$ ($n \\neq -1$).
-And trigonometric integrals like $\\int \\sin x \\, dx = -\\cos x + C$.
+Recall the following standard integrals ($C$ is the constant of integration):
+
+*   $\\int x^n \\, dx = \\frac{x^{n+1}}{n+1} + C$ ($n \\neq -1$)
+*   $\\int \\frac{1}{x} \\, dx = \\ln|x| + C$
+*   $\\int e^x \\, dx = e^x + C$
+*   $\\int \\sin x \\, dx = -\\cos x + C$
+*   $\\int \\cos x \\, dx = \\sin x + C$
+*   $\\int \\sec^2 x \\, dx = \\tan x + C$
+*   $\\int \\sec x \\tan x \\, dx = \\sec x + C$
+*   $\\int \\frac{1}{1+x^2} \\, dx = \\arctan x + C$
+*   $\\int \\frac{1}{\\sqrt{1-x^2}} \\, dx = \\arcsin x + C$
+
+**Examples:**
+*   $\\int (3x^2 + 4x) \\, dx = x^3 + 2x^2 + C$
+*   $\\int (e^x + \\cos x) \\, dx = e^x + \\sin x + C$
 `
       },
       {

@@ -8,7 +8,7 @@ function getRandomInt(min, max) {
 /**
  * Formats a polynomial term for LaTeX.
  */
-function formatTerm(coeff, exp, isFirstTerm) {
+function formatTerm(coeff, exp, isFirstTerm, variable = 'x') {
   if (coeff === 0) return '';
   let sign = '';
   if (coeff < 0) {
@@ -25,9 +25,9 @@ function formatTerm(coeff, exp, isFirstTerm) {
   if (exp === 0) {
     varStr = '';
   } else if (exp === 1) {
-    varStr = 'x';
+    varStr = variable;
   } else {
-    varStr = `x^{${exp}}`;
+    varStr = `${variable}^{${exp}}`;
   }
   if (exp === 0 && absCoeff === 1) {
     coeffStr = '1';
@@ -35,9 +35,9 @@ function formatTerm(coeff, exp, isFirstTerm) {
   return `${sign}${coeffStr}${varStr}`;
 }
 
-function formatPolynomial(terms) {
+function formatPolynomial(terms, variable = 'x') {
   if (terms.length === 0) return '0';
-  return terms.map((term, index) => formatTerm(term.coeff, term.exp, index === 0)).join('');
+  return terms.map((term, index) => formatTerm(term.coeff, term.exp, index === 0, variable)).join('');
 }
 
 /**
@@ -121,10 +121,9 @@ function generateDefiniteIntegral() {
   };
 }
 
-function generateNetChange() {
-  // Use simple polynomial velocity
+function generateParticleDisplacement() {
   const { terms, antiderivTerms } = generateSimplePolynomial(1);
-  const polyLatex = formatPolynomial(terms);
+  const polyLatex = formatPolynomial(terms, 't');
 
   const a = getRandomInt(0, 2);
   const b = getRandomInt(a + 1, a + 3);
@@ -140,6 +139,85 @@ function generateNetChange() {
     type: 'number',
     hint: `Displacement is $\\int_{${a}}^{${b}} v(t) \\, dt$.`
   };
+}
+
+function generateParticleDistance() {
+  // Linear velocity v(t) = m(t - c)
+  const m = (getRandomInt(0, 1) === 0 ? 1 : -1) * getRandomInt(1, 4);
+  const c = getRandomInt(1, 4); // Root
+
+  // Interval [a, b] containing c
+  const a = getRandomInt(0, c - 1);
+  const b = getRandomInt(c + 1, c + 3);
+
+  // v(t) = mt - mc
+  const terms = [
+    { coeff: m, exp: 1 },
+    { coeff: -m * c, exp: 0 }
+  ];
+  const polyLatex = formatPolynomial(terms, 't');
+
+  // Total distance = Area of two triangles
+  // Integral from a to c of |m(t-c)| = 0.5 * |m| * (c-a)^2
+  // Integral from c to b of |m(t-c)| = 0.5 * |m| * (b-c)^2
+  const area1 = 0.5 * Math.abs(m) * Math.pow(c - a, 2);
+  const area2 = 0.5 * Math.abs(m) * Math.pow(b - c, 2);
+  const totalDistance = area1 + area2;
+
+  return {
+    question: `A particle's velocity is given by $v(t) = ${polyLatex}$. Find the **total distance traveled** over the time interval $[${a}, ${b}]$.`,
+    answer: totalDistance.toString(),
+    type: 'number',
+    hint: `Find the root of $v(t)$ to see where the particle changes direction (at $t=${c}$). Split the integral: $\\int_{${a}}^{${c}} |v(t)| dt + \\int_{${c}}^{${b}} |v(t)| dt$.`
+  };
+}
+
+function generateRateProblem() {
+  const { terms, antiderivTerms } = generateSimplePolynomial(1);
+  const polyLatex = formatPolynomial(terms, 't');
+
+  const a = getRandomInt(0, 2);
+  const b = getRandomInt(a + 1, a + 3);
+
+  const evaluate = (t, x) => t.coeff * Math.pow(x, t.exp);
+  const valB = antiderivTerms.reduce((sum, t) => sum + evaluate(t, b), 0);
+  const valA = antiderivTerms.reduce((sum, t) => sum + evaluate(t, a), 0);
+  const result = valB - valA;
+
+  const scenarios = [
+    {
+      text: `Water flows into a tank at a rate of $r(t) = ${polyLatex}$ gallons per minute. Find the net change in the volume of water from $t=${a}$ to $t=${b}$ minutes.`,
+      hint: `The net change is the integral of the rate: $\\int_{${a}}^{${b}} r(t) \\, dt$.`
+    },
+    {
+      text: `A population of bacteria changes at a rate of $P'(t) = ${polyLatex}$ bacteria per hour. Find the net change in population from $t=${a}$ to $t=${b}$ hours.`,
+      hint: `The net change is $\\int_{${a}}^{${b}} P'(t) \\, dt$.`
+    },
+    {
+      text: `Snow accumulates on the ground at a rate of $r(t) = ${polyLatex}$ inches per hour. Find the net change in snow depth from $t=${a}$ to $t=${b}$ hours.`,
+      hint: `Integrate the rate function over the interval $[${a}, ${b}]$.`
+    }
+  ];
+
+  const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
+
+  return {
+    question: scenario.text,
+    answer: result.toString(),
+    type: 'number',
+    hint: scenario.hint
+  };
+}
+
+function generateNetChange() {
+  const rand = Math.random();
+  if (rand < 0.33) {
+    return generateParticleDisplacement();
+  } else if (rand < 0.66) {
+    return generateParticleDistance();
+  } else {
+    return generateRateProblem();
+  }
 }
 
 function generateSubstitution() {
