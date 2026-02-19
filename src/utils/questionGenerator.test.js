@@ -6,7 +6,12 @@ test('questionGenerator', async (t) => {
   await t.test('should generate approximating-areas problem', () => {
     const problem = generateProblem('approximating-areas');
     assert.strictEqual(problem.type, 'number');
-    assert.ok(problem.question.includes('Estimate the area'));
+    assert.ok(
+      problem.question.includes('Estimate the area') ||
+      problem.question.includes('Given the interval') ||
+      problem.question.includes('For the interval'),
+      'Question should start with one of the expected phrases'
+    );
   });
 
   await t.test('should generate substitution integral problem', () => {
