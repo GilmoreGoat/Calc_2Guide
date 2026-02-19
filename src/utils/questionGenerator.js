@@ -378,12 +378,23 @@ function generateNetChange() {
 
 function generateSubstitution() {
   const n = getRandomInt(2, 5);
-  return {
-    question: `Evaluate $\\int 2x(x^2+1)^{${n}} \\, dx$.`,
-    answer: `(1/${n+1})*(x^2+1)^(${n+1}) + C`,
-    type: 'text',
-    hint: `Let $u = x^2+1$. Then $du = 2x \\, dx$.`
-  };
+  const question = `Evaluate $\\int \\frac{(\\ln x)^{${n}}}{x} \\, dx$.`;
+  const answer = `(1/${n+1}) * ln(x)^${n+1} + C`;
+  const hint = `Let $u = \\ln(x)$. Recall $\\frac{d}{dx}\\ln(x) = \\frac{1}{x}$.`;
+  return { question, answer, type: 'text', hint };
+}
+
+function generateSubstitution() {
+  const type = Math.random();
+  if (type < 0.4) {
+    return generatePolynomialSubstitution();
+  } else if (type < 0.7) {
+    return generateTrigSubstitution();
+  } else if (type < 0.85) {
+    return generateExpSubstitution();
+  } else {
+    return generateLogSubstitution();
+  }
 }
 
 function generateExpLog() {

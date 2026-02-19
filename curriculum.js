@@ -413,24 +413,95 @@ Recall the following standard integrals ($C$ is the constant of integration):
         content: `
 ## The Substitution Rule
 
-Also known as u-substitution, this method reverses the Chain Rule.
+The Substitution Rule, often called **u-substitution**, is the integral calculus counterpart to the Chain Rule for differentiation. It allows us to integrate composite functions.
+
+### Theorem
 
 If $u = g(x)$ is a differentiable function whose range is an interval $I$ and $f$ is continuous on $I$, then:
 
 $$ \\int f(g(x))g'(x) \\, dx = \\int f(u) \\, du $$
 
-## Steps
+The core idea is to introduce a new variable $u$ to simplify the integrand.
 
-1.  Choose $u = g(x)$.
-2.  Find $du = g'(x) \\, dx$.
-3.  Substitute $u$ and $du$ into the integral.
-4.  Integrate with respect to $u$.
-5.  Replace $u$ with $g(x)$ (for indefinite integrals).
+## Strategy: How to Choose $u$
+
+The success of substitution depends on choosing the right $u$. Look for a function $g(x)$ inside another function, such that its derivative $g'(x)$ (or a constant multiple of it) is present as a factor in the integrand.
+
+**Common choices for $u$:**
+1.  **Powers:** Inside $( ... )^n$, let $u = \\dots$
+2.  **Roots:** Inside $\\sqrt{ \\dots }$, let $u = \\dots$
+3.  **Trigonometry:** The argument of a trig function, e.g., $\\cos(\\dots)$.
+4.  **Exponentials:** The exponent, e.g., $e^{\\dots}$.
+5.  **Denominators:** The entire denominator (if the numerator is its derivative).
+
+## Step-by-Step Walkthroughs
+
+### Example 1: Polynomial Power
+
+**Evaluate** $\\int x^2 (x^3 + 5)^9 \\, dx$.
+
+1.  **Choose $u$**: The inner function is $x^3 + 5$. Let $u = x^3 + 5$.
+2.  **Find $du$**: Differentiate $u$ with respect to $x$: $du = 3x^2 \\, dx$.
+3.  **Adjust for constants**: We have $x^2 \\, dx$ in the integral, but $du$ has $3x^2 \\, dx$.
+    $$ \\frac{1}{3} du = x^2 \\, dx $$
+4.  **Substitute**:
+    $$ \\int (x^3+5)^9 \\cdot (x^2 \\, dx) = \\int u^9 \\cdot \\frac{1}{3} du = \\frac{1}{3} \\int u^9 \\, du $$
+5.  **Integrate**:
+    $$ \\frac{1}{3} \\cdot \\frac{u^{10}}{10} + C = \\frac{u^{10}}{30} + C $$
+6.  **Back-substitute**: Replace $u$ with $x^3 + 5$.
+    $$ \\frac{(x^3+5)^{10}}{30} + C $$
+
+### Example 2: Trigonometric Function
+
+**Evaluate** $\\int \\sqrt{\\cos x} \\sin x \\, dx$.
+
+1.  **Choose $u$**: Inside the root is $\\cos x$. Let $u = \\cos x$.
+2.  **Find $du$**: $du = -\\sin x \\, dx$.
+3.  **Adjust**: $-du = \\sin x \\, dx$.
+4.  **Substitute**:
+    $$ \\int \\sqrt{u} \\cdot (-du) = -\\int u^{1/2} \\, du $$
+5.  **Integrate**:
+    $$ -\\frac{u^{3/2}}{3/2} + C = -\\frac{2}{3} u^{3/2} + C $$
+6.  **Back-substitute**:
+    $$ -\\frac{2}{3} (\\cos x)^{3/2} + C $$
+
+### Example 3: Exponential Function
+
+**Evaluate** $\\int \\frac{e^{\\sqrt{x}}}{\\sqrt{x}} \\, dx$.
+
+1.  **Choose $u$**: The exponent is $\\sqrt{x} = x^{1/2}$. Let $u = \\sqrt{x}$.
+2.  **Find $du$**: $du = \\frac{1}{2} x^{-1/2} \\, dx = \\frac{1}{2\\sqrt{x}} \\, dx$.
+3.  **Adjust**: $2 du = \\frac{1}{\\sqrt{x}} \\, dx$.
+4.  **Substitute**:
+    $$ \\int e^u \\cdot 2 du = 2 \\int e^u \\, du $$
+5.  **Integrate**: $2e^u + C$.
+6.  **Back-substitute**: $2e^{\\sqrt{x}} + C$.
 
 ## Definite Integrals
 
-For definite integrals, you must also change the limits of integration:
+For definite integrals $\\int_a^b f(g(x))g'(x) \\, dx$, you have two methods:
+
+**Method 1: Change Limits (Recommended)**
+Change the limits of integration from $x$-values to $u$-values using $u=g(x)$.
+*   Lower limit: $x=a \\Rightarrow u=g(a)$.
+*   Upper limit: $x=b \\Rightarrow u=g(b)$.
+
 $$ \\int_a^b f(g(x))g'(x) \\, dx = \\int_{g(a)}^{g(b)} f(u) \\, du $$
+
+**Example**: $\\int_0^1 2x (x^2+1)^3 \\, dx$.
+*   $u = x^2+1$, $du = 2x \\, dx$.
+*   Limits: If $x=0$, $u=1$. If $x=1$, $u=2$.
+    $$ \\int_1^2 u^3 \\, du = \\left[ \\frac{u^4}{4} \\right]_1^2 = \\frac{16}{4} - \\frac{1}{4} = \\frac{15}{4} = 3.75 $$
+
+**Method 2: Indefinite First**
+Find the indefinite integral in terms of $x$, then evaluate at original limits $a$ and $b$.
+
+## Common Pitfalls
+
+*   **Forgetting $dx$**: Always write $du = \\dots dx$. It helps you match terms in the integrand.
+*   **Constant Factors**: Don't forget to adjust for constants (like the factor of $1/3$ in Example 1).
+*   **Mixing Variables**: Never write an integral that contains both $x$ and $u$. Convert everything to $u$.
+*   **Definite Integrals**: If you change limits to $u$, do **not** back-substitute to $x$. Evaluate using the $u$ limits.
 `
       },
       {
