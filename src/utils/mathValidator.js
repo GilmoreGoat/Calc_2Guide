@@ -52,9 +52,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
   const exprExpected = cleanExpr(expectedAnswer);
 
   // Security check: Ensure only allowed characters are present
-  // Allowed: digits, x, +, -, *, /, ^, (, ), ., and whitespace, and letters for functions
-  // We need to allow letters for sin, cos, etc.
-  // Expanded allow list: a-z (lowercase)
+  // Allowed: digits, a-z, +, -, *, /, ^, (, ), ., and whitespace
   const allowedChars = /^[0-9a-z+\-*/^().\s]*$/;
   if (!allowedChars.test(exprUser)) {
     return { isCorrect: false, message: 'Invalid characters in your answer.' };
@@ -62,7 +60,16 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
   // Convert math syntax to JS syntax
   const toJS = (str) => {
-    let s = str;
+    // 1. Protect known functions/constants
+    const functions = [
+      'arcsin', 'arccos', 'arctan', 'arcsec', 'arccsc', 'arccot',
+      'asin', 'acos', 'atan',
+      'sin', 'cos', 'tan', 'sec', 'csc', 'cot',
+      'sqrt', 'exp', 'abs', 'log', 'ln',
+      'pi' // treat pi as a function/constant unit
+    ];
+    // Sort by length descending
+    functions.sort((a, b) => b.length - a.length);
 
     // Implicit multiplication
     // 1. Number followed by x, letter, or (
@@ -86,7 +93,10 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
       while (baseStart >= 0) {
         const char = s[baseStart];
         if (char === ')') depth++;
-        else if (char === '(') depth--;
+        else if (char === '(') {
+          depth--;
+          if (depth < 0) break;
+        }
 
         if (depth < 0) break;
         if (depth === 0 && /[+\-*/]/.test(char)) {
@@ -94,6 +104,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
         }
         baseStart--;
       }
+
       const start = baseStart + 1;
 
       // Find exponent (right of ^)
@@ -102,7 +113,10 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
       while (expEnd < s.length) {
         const char = s[expEnd];
         if (char === '(') depth++;
-        else if (char === ')') depth--;
+        else if (char === ')') {
+          depth--;
+          if (depth < 0) break;
+        }
 
         if (depth < 0) break;
         if (depth === 0 && /[+\-*/]/.test(char)) {
@@ -173,6 +187,8 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
     // If expected answer involves log/sqrt, we should test positive numbers.
     // We can try-catch individual evaluations.
     const testPoints = [-5, -2.5, -1, 0.5, 1, 3, 10];
+    // Add some fractions for inverse trig like 0.1, 0.9 (for arcsin domain [-1, 1])
+    testPoints.push(0.1, 0.9, -0.9);
 
     let allMatch = true;
     let validPoints = 0;
@@ -183,7 +199,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
         valUser = fUser(x);
         valExpected = fExpected(x);
       } catch (e) {
-        // Domain error or similar (e.g. log(-1))
+        // Domain error
         continue;
       }
 
@@ -193,7 +209,6 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
       validPoints++;
 
-      // Use a small epsilon for floating point comparison
       if (Math.abs(valUser - valExpected) > 0.0001) {
         allMatch = false;
         break;
@@ -201,9 +216,6 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
     }
 
     if (validPoints === 0) {
-        // Fallback: If no points were valid (e.g. log(x) with all negative inputs?), try positive only
-        // But our test points include positive numbers.
-        // If still 0, maybe syntax error or everything is NaN.
         return { isCorrect: false, message: 'Could not evaluate your answer. Please check syntax.' };
     }
 
@@ -215,7 +227,6 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
   } catch (error) {
     // console.error('Validation error:', error, 'JS:', jsUser);
-    // Syntax error in user input
     return { isCorrect: false, message: 'Check your syntax (e.g., use * for multiplication).' };
   }
 }

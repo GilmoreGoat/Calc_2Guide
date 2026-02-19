@@ -587,19 +587,102 @@ $$ \\int \\frac{-du}{u} = -\\ln|u| + C = -\\ln|\\cos x| + C = \\ln|\\sec x| + C 
         title: "1.7 Integrals Resulting in Inverse Trigonometric Functions",
         practiceType: 'inverse-trig-integrals',
         content: `
-## Formulas
+## Overview
 
-1.  $$ \\int \\frac{du}{\\sqrt{a^2 - u^2}} = \\arcsin\\left(\\frac{u}{a}\\right) + C $$
-2.  $$ \\int \\frac{du}{a^2 + u^2} = \\frac{1}{a} \\arctan\\left(\\frac{u}{a}\\right) + C $$
-3.  $$ \\int \\frac{du}{u\\sqrt{u^2 - a^2}} = \\frac{1}{a} \\text{arcsec}\\left(\\frac{|u|}{a}\\right) + C $$
+In this section, we study integrals whose antiderivatives involve inverse trigonometric functions. These integrals are crucial because they appear frequently when solving problems involving areas, volumes, and physical applications, often arising after algebraic manipulation or substitution.
 
-## Completing the Square
+## Key Formulas
 
-Sometimes you need to complete the square in the denominator to make the integral fit one of these forms.
+The three essential integration formulas you must memorize are:
 
-## Example
+1.  **Inverse Sine:**
+    $$ \\int \\frac{du}{\\sqrt{a^2 - u^2}} = \\arcsin\\left(\\frac{u}{a}\\right) + C $$
+    *(valid for $u^2 < a^2$)*
 
-Evaluate $\\int \\frac{1}{1+x^2} \\, dx = \\arctan x + C$.
+2.  **Inverse Tangent:**
+    $$ \\int \\frac{du}{a^2 + u^2} = \\frac{1}{a} \\arctan\\left(\\frac{u}{a}\\right) + C $$
+
+3.  **Inverse Secant:**
+    $$ \\int \\frac{du}{u\\sqrt{u^2 - a^2}} = \\frac{1}{a} \\text{arcsec}\\left(\\frac{|u|}{a}\\right) + C $$
+    *(valid for $|u| > a > 0$)*
+
+**Note:** The constants $a$ are assumed to be positive. If $a=1$, these simplify to the standard derivatives of $\\arcsin u$, $\\arctan u$, and $\\text{arcsec } u$.
+
+## Walkthrough: Using Substitution
+
+**Problem:** Evaluate $\\int \\frac{e^x}{1 + e^{2x}} \\, dx$.
+
+**Step 1: Identify the form.**
+Notice the denominator is a sum of squares: $1 + (e^x)^2$. This suggests the arctangent formula $\\int \\frac{du}{a^2 + u^2}$.
+
+**Step 2: Choose the substitution.**
+Let $u = e^x$. Then $du = e^x \\, dx$.
+Also $a = 1$.
+
+**Step 3: Substitute and integrate.**
+$$ \\int \\frac{e^x \\, dx}{1 + (e^x)^2} = \\int \\frac{du}{1 + u^2} $$
+Using the formula:
+$$ = \\arctan(u) + C $$
+
+**Step 4: Back-substitute.**
+Replace $u$ with $e^x$.
+$$ = \\arctan(e^x) + C $$
+
+## Walkthrough: Completing the Square
+
+Often, quadratic expressions in the denominator don't look exactly like $a^2 \\pm u^2$. We use **completing the square** to transform them.
+
+**Problem:** Evaluate $\\int \\frac{dx}{x^2 + 4x + 13}$.
+
+**Step 1: Analyze the denominator.**
+The denominator $x^2 + 4x + 13$ is an irreducible quadratic (discriminant $4^2 - 4(13) < 0$).
+
+**Step 2: Complete the square.**
+Recall that $x^2 + bx = (x + \\frac{b}{2})^2 - (\\frac{b}{2})^2$.
+Here $b=4$, so $\\frac{b}{2}=2$.
+$$ x^2 + 4x + 13 = (x^2 + 4x + 4) - 4 + 13 = (x+2)^2 + 9 $$
+
+**Step 3: Rewrite the integral.**
+$$ \\int \\frac{dx}{(x+2)^2 + 3^2} $$
+
+**Step 4: Integrate using the arctan formula.**
+Let $u = x+2$, so $du = dx$. Here $a = 3$.
+$$ \\int \\frac{du}{u^2 + 3^2} = \\frac{1}{3} \\arctan\\left(\\frac{u}{3}\\right) + C $$
+$$ = \\frac{1}{3} \\arctan\\left(\\frac{x+2}{3}\\right) + C $$
+
+## Walkthrough: Inverse Sine Form
+
+**Problem:** Evaluate $\\int \\frac{dx}{\\sqrt{4 - 9x^2}}$.
+
+**Step 1: Identify the form.**
+The denominator involves $\\sqrt{a^2 - u^2}$.
+$a^2 = 4 \\implies a = 2$.
+$u^2 = 9x^2 \\implies u = 3x$.
+
+**Step 2: Substitution.**
+Let $u = 3x$. Then $du = 3 \\, dx$, which implies $dx = \\frac{du}{3}$.
+
+**Step 3: Integrate.**
+$$ \\int \\frac{1}{\\sqrt{4 - u^2}} \\cdot \\frac{du}{3} = \\frac{1}{3} \\int \\frac{du}{\\sqrt{2^2 - u^2}} $$
+$$ = \\frac{1}{3} \\arcsin\\left(\\frac{u}{2}\\right) + C $$
+
+**Step 4: Back-substitute.**
+$$ = \\frac{1}{3} \\arcsin\\left(\\frac{3x}{2}\\right) + C $$
+
+## Common Pitfalls
+
+1.  **Forgetting the $1/a$ factor:**
+    The formula for arctangent and arcsecant has a $1/a$ coefficient.
+    $\\int \\frac{dx}{x^2 + 9} = \\frac{1}{3}\\arctan(\\frac{x}{3}) + C$, NOT $\\arctan(\\frac{x}{3}) + C$.
+    *Exception:* Inverse sine does **not** have the $1/a$ factor in front.
+
+2.  **Confusing forms:**
+    $\\int \\frac{dx}{\\sqrt{1-x^2}} = \\arcsin x + C$ (No logarithm)
+    $\\int \\frac{dx}{1-x^2} = \\frac{1}{2} \\ln|\\frac{1+x}{1-x}| + C$ (Using partial fractions, not inverse trig)
+
+3.  **Variable coefficients:**
+    If you have $\\int \\frac{dx}{1 + 4x^2}$, remember $u = 2x$, so you divide by the derivative of $u$ (which is 2).
+    Result: $\\frac{1}{2} \\arctan(2x) + C$.
 `
       }
     ]

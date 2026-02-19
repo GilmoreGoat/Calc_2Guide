@@ -467,19 +467,84 @@ function generateExpLog() {
 }
 
 function generateInverseTrig() {
-  if (Math.random() > 0.5) {
-     return {
-      question: `Evaluate $\\int \\frac{1}{1+x^2} \\, dx$.`,
-      answer: `arctan(x) + C`,
+  // Select a subtype of problem
+  const subtype = getRandomInt(1, 4);
+
+  if (subtype === 1) {
+    // Basic forms: 1/sqrt(a^2 - x^2) or 1/(a^2 + x^2)
+    const a = getRandomInt(2, 5);
+    const a2 = a * a;
+    if (Math.random() > 0.5) {
+      // Arcsin form
+      return {
+        question: `Evaluate $\\int \\frac{1}{\\sqrt{${a2} - x^2}} \\, dx$.`,
+        answer: `arcsin(x/${a}) + C`,
+        type: 'text',
+        hint: `Use the formula $\\int \\frac{1}{\\sqrt{a^2-x^2}} dx = \\arcsin(\\frac{x}{a}) + C$. Here $a=${a}$.`
+      };
+    } else {
+      // Arctan form
+      return {
+        question: `Evaluate $\\int \\frac{1}{${a2} + x^2} \\, dx$.`,
+        answer: `(1/${a}) * arctan(x/${a}) + C`,
+        type: 'text',
+        hint: `Use the formula $\\int \\frac{1}{a^2+x^2} dx = \\frac{1}{a}\\arctan(\\frac{x}{a}) + C$. Here $a=${a}$.`
+      };
+    }
+  } else if (subtype === 2) {
+    // Substitution
+    if (Math.random() > 0.5) {
+      // x / sqrt(1 - x^4) -> u = x^2
+      return {
+        question: `Evaluate $\\int \\frac{2x}{\\sqrt{1 - x^4}} \\, dx$.`,
+        answer: `arcsin(x^2) + C`,
+        type: 'text',
+        hint: `Let $u = x^2$. Then $du = 2x \\, dx$.`
+      };
+    } else {
+      // e^x / (1 + e^2x) -> u = e^x
+      return {
+        question: `Evaluate $\\int \\frac{e^x}{1 + e^{2x}} \\, dx$.`,
+        answer: `arctan(e^x) + C`,
+        type: 'text',
+        hint: `Let $u = e^x$. Then $du = e^x \\, dx$.`
+      };
+    }
+  } else if (subtype === 3) {
+    // Completing the Square: 1/(x^2 + bx + c)
+    // x^2 + 2kx + (k^2 + a^2)
+    const k = getRandomInt(1, 4);
+    const a = getRandomInt(1, 4);
+    const c = k*k + a*a;
+    const b = 2*k;
+    const a2 = a*a;
+
+    // sign can be + or - for bx? Let's keep +bx for simplicity or make it random.
+    // If -bx: (x-k)^2
+    const sign = Math.random() > 0.5 ? 1 : -1;
+    const bTerm = sign * b;
+    const bStr = bTerm === 0 ? '' : (bTerm > 0 ? `+ ${bTerm}x` : `${bTerm}x`);
+
+    // Denom: x^2 + bStr + c
+    // Form: (x + sign*k)^2 + a^2
+    const uStr = sign === 1 ? `x+${k}` : `x-${k}`;
+    const uVal = sign === 1 ? `(x+${k})` : `(x-${k})`;
+
+    return {
+      question: `Evaluate $\\int \\frac{1}{x^2 ${bStr} + ${c}} \\, dx$.`,
+      answer: `(1/${a}) * arctan(${uVal}/${a}) + C`,
       type: 'text',
-      hint: `This is a standard inverse trigonometric integral.`
+      hint: `Complete the square in the denominator: $x^2 ${bStr} + ${c} = (x ${sign===1?'+':'-'} ${k})^2 + ${a2}$. Then use the arctan formula.`
     };
   } else {
+    // Arcsec form: 1/(x sqrt(x^2 - a^2))
+    const a = getRandomInt(2, 5);
+    const a2 = a * a;
     return {
-      question: `Evaluate $\\int \\frac{1}{\\sqrt{1-x^2}} \\, dx$.`,
-      answer: `arcsin(x) + C`,
+      question: `Evaluate $\\int \\frac{1}{x \\sqrt{x^2 - ${a2}}} \\, dx$.`,
+      answer: `(1/${a}) * arcsec(x/${a}) + C`,
       type: 'text',
-      hint: `This is the derivative of $\\arcsin(x)$.`
+      hint: `Use the formula $\\int \\frac{1}{x\\sqrt{x^2-a^2}} dx = \\frac{1}{a}\\text{arcsec}(\\frac{|x|}{a}) + C$. (Assume $x>0$)`
     };
   }
 }

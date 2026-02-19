@@ -31,4 +31,10 @@ test('questionGenerator', async (t) => {
     assert.strictEqual(problem.type, 'text');
     assert.ok(problem.question.includes('Practice problem for unknown-type'));
   });
+
+  await t.test('should generate inverse trig integral problem', () => {
+    const problem = generateProblem('inverse-trig-integrals');
+    assert.strictEqual(problem.type, 'text');
+    assert.ok(problem.question.includes('Evaluate'));
+  });
 });
