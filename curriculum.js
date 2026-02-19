@@ -7,7 +7,10 @@ export const curriculum = [
         id: "approximating-areas",
         title: "1.1 Approximating Areas",
         practiceType: 'approximating-areas',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## The Area Problem
 
 We begin with the problem of finding the area of the region $S$ that lies under the curve $y=f(x)$ from $a$ to $b$. This means that $S$, illustrated in the figure below, is bounded by the graph of a continuous function $f$ (where $f(x) \\ge 0$), the vertical lines $x=a$ and $x=b$, and the x-axis.
@@ -51,42 +54,38 @@ where $x_i^*$ is any sample point in the $i$-th subinterval $[x_{i-1}, x_i]$.
 
 3.  **Midpoint Approximation ($M_n$):** Choose $x_i^* = \\bar{x}_i = \\frac{x_{i-1} + x_i}{2}$.
     $$ M_n = \\sum_{i=1}^{n} f(\\bar{x}_i) \\Delta x $$
-
-## Walkthrough Example
-
-**Problem:** Estimate the area under $f(x) = x^2$ on the interval $[0, 2]$ using $n=4$ rectangles and the **Right-Endpoint Rule**.
-
-**Step 1: Calculate $\\Delta x$.**
-$$ \\Delta x = \\frac{b-a}{n} = \\frac{2-0}{4} = 0.5 $$
-
-**Step 2: Find the Grid Points ($x_i$).**
-Start at $a=0$ and add $\\Delta x$ repeatedly:
-*   $x_0 = 0$
-*   $x_1 = 0.5$
-*   $x_2 = 1.0$
-*   $x_3 = 1.5$
-*   $x_4 = 2.0$
-
-**Step 3: Choose Sample Points ($x_i^*$).**
-For Right endpoints, we use $x_1, x_2, x_3, x_4$:
-*   $x_1^* = 0.5$
-*   $x_2^* = 1.0$
-*   $x_3^* = 1.5$
-*   $x_4^* = 2.0$
-
-**Step 4: Evaluate the Function.**
-*   $f(0.5) = (0.5)^2 = 0.25$
-*   $f(1.0) = (1.0)^2 = 1.00$
-*   $f(1.5) = (1.5)^2 = 2.25$
-*   $f(2.0) = (2.0)^2 = 4.00$
-
-**Step 5: Sum and Multiply.**
-$$ R_4 = \\Delta x [ f(0.5) + f(1.0) + f(1.5) + f(2.0) ] $$
-$$ R_4 = 0.5 [ 0.25 + 1.00 + 2.25 + 4.00 ] $$
-$$ R_4 = 0.5 [ 7.5 ] = 3.75 $$
-
-So, the estimated area is **3.75**.
-
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Approximating Area with Right-Endpoint Rule',
+            problem: 'Estimate the area under $f(x) = x^2$ on the interval $[0, 2]$ using $n=4$ rectangles and the **Right-Endpoint Rule**.',
+            steps: [
+              {
+                text: 'Calculate $\\Delta x$.',
+                math: '$\\Delta x = \\frac{b-a}{n} = \\frac{2-0}{4} = 0.5$'
+              },
+              {
+                text: 'Find the Grid Points ($x_i$). Start at $a=0$ and add $\\Delta x$ repeatedly.',
+                math: '$x_0 = 0, x_1 = 0.5, x_2 = 1.0, x_3 = 1.5, x_4 = 2.0$'
+              },
+              {
+                text: 'Choose Sample Points ($x_i^*$). For Right endpoints, we use $x_1, x_2, x_3, x_4$.',
+                math: '$x_1^* = 0.5, x_2^* = 1.0, x_3^* = 1.5, x_4^* = 2.0$'
+              },
+              {
+                text: 'Evaluate the Function at sample points.',
+                math: '$f(0.5) = 0.25, f(1.0) = 1.00, f(1.5) = 2.25, f(2.0) = 4.00$'
+              },
+              {
+                text: 'Sum and Multiply to find $R_4$.',
+                math: '$R_4 = 0.5 [ 0.25 + 1.00 + 2.25 + 4.00 ] = 0.5 [ 7.5 ] = 3.75$'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
 ## The Distance Problem
 
 The area under a velocity-time curve $v(t)$ represents the distance traveled.
@@ -97,6 +96,8 @@ $$ \\text{Distance} \\approx \\sum_{i=1}^{n} v(t_i^*) \\Delta t $$
 
 As $n \\to \\infty$, this sum approaches the exact distance (the definite integral).
 `
+          }
+        ]
       },
       {
         id: "definite-integral",
@@ -243,7 +244,10 @@ Test your understanding with the generated problems below.
         id: "fundamental-theorem",
         title: "1.3 The Fundamental Theorem of Calculus",
         practiceType: 'fundamental-theorem',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 The Fundamental Theorem of Calculus (FTC) is the bridge between differential calculus (rates of change) and integral calculus (accumulation of quantities). It shows that differentiation and integration are inverse processes.
 
 ## Part 1: The Area Accumulation Function
@@ -264,24 +268,45 @@ $$ g(x+h) - g(x) \\approx f(x) \\cdot h $$
 Dividing by $h$ gives:
 $$ \\frac{g(x+h) - g(x)}{h} \\approx f(x) $$
 Taking the limit as $h \\to 0$ gives the definition of the derivative: $g'(x) = f(x)$.
-
-### Examples
-
-**Example 1:**
-Find $\\frac{d}{dx} \\int_1^x t^3 \\, dt$.
-By FTC1, this is simply $x^3$.
-
-**Example 2 (The Chain Rule):**
-What if the upper limit is a function of $x$? Let $y = \\int_a^{u(x)} f(t) \\, dt$.
-Let $U = u(x)$. Then $y = \\int_a^U f(t) \\, dt$.
-By the Chain Rule:
-$$ \\frac{dy}{dx} = \\frac{dy}{dU} \\cdot \\frac{dU}{dx} $$
-$$ \\frac{dy}{dx} = f(U) \\cdot u'(x) = f(u(x)) \\cdot u'(x) $$
-
-**Problem:** Find $\\frac{d}{dx} \\int_1^{x^4} \\sec t \\, dt$.
-Here $u(x) = x^4$, so $u'(x) = 4x^3$.
-$$ \\frac{d}{dx} = \\sec(x^4) \\cdot 4x^3 $$
-
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: FTC Part 1',
+            problem: 'Find $\\frac{d}{dx} \\int_1^x t^3 \\, dt$.',
+            steps: [
+              {
+                text: 'Identify $f(t)$ and apply FTC 1.',
+                math: 'Here $f(t) = t^3$. By FTC 1, $\\frac{d}{dx} \\int_a^x f(t) \\, dt = f(x)$.'
+              },
+              {
+                text: 'Substitute $x$ into the function.',
+                math: '\\frac{d}{dx} \\int_1^x t^3 \\, dt = x^3'
+              }
+            ]
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Chain Rule with FTC',
+            problem: 'Find $\\frac{d}{dx} \\int_1^{x^4} \\sec t \\, dt$.',
+            steps: [
+              {
+                text: 'Identify the upper limit as a function $u(x)$.',
+                math: 'Let $u(x) = x^4$. Then $u\'(x) = 4x^3$.'
+              },
+              {
+                text: 'Apply the Chain Rule: $\\frac{d}{dx} \\int_a^{u(x)} f(t) \\, dt = f(u(x)) \\cdot u\'(x)$.',
+                math: '$f(t) = \\sec t$.'
+              },
+              {
+                text: 'Substitute $u(x)$ and multiply by $u\'(x)$.',
+                math: '\\frac{d}{dx} = \\sec(x^4) \\cdot 4x^3'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
 ## Part 2: Evaluating Definite Integrals
 
 The second part of the theorem gives us a powerful method to evaluate definite integrals without using Riemann sums. It links the definite integral to antiderivatives.
@@ -294,46 +319,62 @@ where $F$ is any antiderivative of $f$, that is, a function such that $F'(x) = f
 
 **Notation:** We often use the bracket notation:
 $$ F(b) - F(a) = \\left[ F(x) \\right]_a^b $$
-
-### Proof Idea
-
-Let $g(x) = \\int_a^x f(t) \\, dt$. By FTC1, $g'(x) = f(x)$.
-Since $F$ is also an antiderivative of $f$, we know that $F(x)$ and $g(x)$ differ by a constant $C$:
-$$ F(x) = g(x) + C $$
-$$ F(x) = \\int_a^x f(t) \\, dt + C $$
-Let's find $C$. Set $x=a$:
-$$ F(a) = \\int_a^a f(t) \\, dt + C = 0 + C \\implies C = F(a) $$
-So $F(x) = \\int_a^x f(t) \\, dt + F(a)$.
-Now let $x=b$:
-$$ F(b) = \\int_a^b f(t) \\, dt + F(a) $$
-Rearranging gives FTC2:
-$$ \\int_a^b f(t) \\, dt = F(b) - F(a) $$
-
-### Examples
-
-**Example 1:**
-Evaluate $\\int_1^3 e^x \\, dx$.
-An antiderivative of $e^x$ is $e^x$.
-$$ \\left[ e^x \\right]_1^3 = e^3 - e^1 = e^3 - e $$
-
-**Example 2:**
-Evaluate $\\int_0^{\\pi} \\cos x \\, dx$.
-An antiderivative of $\\cos x$ is $\\sin x$.
-$$ \\left[ \\sin x \\right]_0^{\\pi} = \\sin \\pi - \\sin 0 = 0 - 0 = 0 $$
-Note: The net signed area is zero because the positive area from $0$ to $\\pi/2$ cancels the negative area from $\\pi/2$ to $\\pi$.
-
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Evaluating with FTC 2',
+            problem: 'Evaluate $\\int_1^3 e^x \\, dx$.',
+            steps: [
+              {
+                text: 'Find an antiderivative $F(x)$.',
+                math: 'An antiderivative of $e^x$ is $e^x$.'
+              },
+              {
+                text: 'Apply FTC 2: $F(3) - F(1)$.',
+                math: '\\left[ e^x \\right]_1^3 = e^3 - e^1 = e^3 - e'
+              }
+            ]
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Evaluating Trig Integral',
+            problem: 'Evaluate $\\int_0^{\\pi} \\cos x \\, dx$.',
+            steps: [
+              {
+                text: 'Find an antiderivative $F(x)$.',
+                math: 'An antiderivative of $\\cos x$ is $\\sin x$.'
+              },
+              {
+                text: 'Apply FTC 2: $F(\\pi) - F(0)$.',
+                math: '\\left[ \\sin x \\right]_0^{\\pi} = \\sin \\pi - \\sin 0'
+              },
+              {
+                text: 'Calculate values.',
+                math: '0 - 0 = 0'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
 ## Summary
 
 *   **Differentiation** and **Integration** are inverse operations.
 *   **FTC1** tells how to differentiate an integral: $\\frac{d}{dx} \\int_a^x f(t) dt = f(x)$.
 *   **FTC2** tells how to evaluate an integral using an antiderivative: $\\int_a^b f(x) dx = F(b) - F(a)$.
 `
+          }
+        ]
       },
       {
         id: "net-change",
         title: "1.4 Integration Formulas and the Net Change Theorem",
         practiceType: 'net-change',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Net Change Theorem
 
 The Net Change Theorem states that the integral of a rate of change is the net change:
@@ -351,42 +392,92 @@ If $v(t)$ is the velocity of a particle moving along a line, then:
 *   **Displacement:** The net change in position is $\\int_{t_1}^{t_2} v(t) \\, dt = s(t_2) - s(t_1)$.
 *   **Total Distance Traveled:** The total distance is the integral of the speed $|v(t)|$:
     $$ \\int_{t_1}^{t_2} |v(t)| \\, dt $$
-
-**Walkthrough: Particle Motion**
-
-Consider a particle with velocity $v(t) = t^2 - 3t + 2$ m/s over the time interval $[0, 3]$.
-
-1.  **Displacement:**
-    $$ \\int_0^3 (t^2 - 3t + 2) \\, dt = \\left[ \\frac{t^3}{3} - \\frac{3t^2}{2} + 2t \\right]_0^3 $$
-    $$ = \\left(\\frac{27}{3} - \\frac{27}{2} + 6\\right) - 0 = 9 - 13.5 + 6 = 1.5 \\text{ m} $$
-
-2.  **Total Distance Traveled:**
-    We need to find where $v(t)$ changes sign. Factor $v(t) = (t-1)(t-2)$. Roots are at $t=1$ and $t=2$.
-    Since the interval $[0, 3]$ includes both roots, we split the integral:
-    $$ \\int_0^1 |v(t)| dt + \\int_1^2 |v(t)| dt + \\int_2^3 |v(t)| dt $$
-
-    *   On $[0, 1]$, $v(t) > 0$, so $\\int_0^1 (t^2 - 3t + 2) dt = [\\frac{t^3}{3} - \\frac{3t^2}{2} + 2t]_0^1 = \\frac{1}{3} - \\frac{3}{2} + 2 = \\frac{5}{6}$.
-    *   On $[1, 2]$, $v(t) < 0$, so $\\int_1^2 -(t^2 - 3t + 2) dt = -[\\frac{t^3}{3} - \\frac{3t^2}{2} + 2t]_1^2 = -(-\\frac{1}{6}) = \\frac{1}{6}$.
-    *   On $[2, 3]$, $v(t) > 0$, so $\\int_2^3 (t^2 - 3t + 2) dt = [\\frac{t^3}{3} - \\frac{3t^2}{2} + 2t]_2^3 - [\\dots]_2 = 1.5 - (-\\frac{2}{3} + 3) = \\frac{5}{6}$.
-
-    Total Distance = $\\frac{5}{6} + \\frac{1}{6} + \\frac{5}{6} = \\frac{11}{6} \\approx 1.83 \\text{ m}$.
-
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Particle Motion (Displacement & Distance)',
+            problem: 'Consider a particle with velocity $v(t) = t^2 - 3t + 2$ m/s over the time interval $[0, 3]$. Find the displacement and total distance traveled.',
+            steps: [
+              {
+                text: 'Calculate Displacement using the integral of velocity.',
+                math: '$\\int_0^3 (t^2 - 3t + 2) \\, dt = \\left[ \\frac{t^3}{3} - \\frac{3t^2}{2} + 2t \\right]_0^3 = \\left(\\frac{27}{3} - \\frac{27}{2} + 6\\right) - 0 = 9 - 13.5 + 6 = 1.5 \\text{ m}$'
+              },
+              {
+                text: 'For Total Distance, find where $v(t)$ changes sign.',
+                math: 'Factor $v(t) = (t-1)(t-2)$. Roots are at $t=1$ and $t=2$. Both are in $[0, 3]$.'
+              },
+              {
+                text: 'Split the integral at the roots and integrate absolute value.',
+                math: 'Distance = $\\int_0^1 |v(t)| dt + \\int_1^2 |v(t)| dt + \\int_2^3 |v(t)| dt$'
+              },
+              {
+                text: 'Evaluate each part.',
+                math: 'On $[0, 1]$, $v>0$: $\\int_0^1 v(t) dt = 5/6$. \nOn $[1, 2]$, $v<0$: $\\int_1^2 -v(t) dt = 1/6$. \nOn $[2, 3]$, $v>0$: $\\int_2^3 v(t) dt = 5/6$.'
+              },
+              {
+                text: 'Sum the parts.',
+                math: 'Total Distance = $\\frac{5}{6} + \\frac{1}{6} + \\frac{5}{6} = \\frac{11}{6} \\approx 1.83 \\text{ m}$'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
 ### 2. Fluid Flow
 
 If water flows into a tank at a rate of $r(t)$ gallons per minute, the total amount of water that entered the tank between $t=a$ and $t=b$ is $\\int_a^b r(t) \\, dt$.
-
-**Walkthrough:**
-Water leaks from a tank at a rate of $r(t) = 2t$ gallons/min. How much water leaks out between $t=1$ and $t=4$?
-$$ \\text{Total Volume} = \\int_1^4 2t \\, dt = [t^2]_1^4 = 16 - 1 = 15 \\text{ gallons}. $$
-
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Fluid Flow',
+            problem: 'Water leaks from a tank at a rate of $r(t) = 2t$ gallons/min. How much water leaks out between $t=1$ and $t=4$?',
+            steps: [
+              {
+                text: 'Setup the integral for total volume.',
+                math: 'Total Volume = $\\int_1^4 2t \\, dt$'
+              },
+              {
+                text: 'Evaluate the integral.',
+                math: '$[t^2]_1^4 = 4^2 - 1^2 = 16 - 1 = 15$'
+              },
+              {
+                text: 'State the final answer.',
+                math: '15 \\text{ gallons}'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
 ### 3. Population Growth
 
 If a population grows at a rate of $P'(t)$ individuals per year, the net increase in population from year $a$ to year $b$ is $\\int_a^b P'(t) \\, dt$.
-
-**Walkthrough:**
-A bacteria culture grows at a rate of $P'(t) = 100e^{0.5t}$. The increase in population over the first 2 hours is:
-$$ \\int_0^2 100e^{0.5t} \\, dt = 100 \\left[ \\frac{e^{0.5t}}{0.5} \\right]_0^2 = 200 (e^1 - e^0) = 200(e - 1) \\approx 343.6 $$
-
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Population Growth',
+            problem: 'A bacteria culture grows at a rate of $P\'(t) = 100e^{0.5t}$. Find the increase in population over the first 2 hours.',
+            steps: [
+              {
+                text: 'Setup the integral.',
+                math: '$\\int_0^2 100e^{0.5t} \\, dt$'
+              },
+              {
+                text: 'Find the antiderivative.',
+                math: '$100 \\left[ \\frac{e^{0.5t}}{0.5} \\right]_0^2 = 200 [e^{0.5t}]_0^2$'
+              },
+              {
+                text: 'Evaluate.',
+                math: '$200 (e^1 - e^0) = 200(e - 1) \\approx 343.6$'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
 ## Basic Integration Formulas
 
 Recall the following standard integrals ($C$ is the constant of integration):
@@ -405,12 +496,17 @@ Recall the following standard integrals ($C$ is the constant of integration):
 *   $\\int (3x^2 + 4x) \\, dx = x^3 + 2x^2 + C$
 *   $\\int (e^x + \\cos x) \\, dx = e^x + \\sin x + C$
 `
+          }
+        ]
       },
       {
         id: "substitution",
         title: "1.5 Substitution",
         practiceType: 'substitution-integral',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## The Substitution Rule
 
 The Substitution Rule, often called **u-substitution**, is the integral calculus counterpart to the Chain Rule for differentiation. It allows us to integrate composite functions.
@@ -433,50 +529,84 @@ The success of substitution depends on choosing the right $u$. Look for a functi
 3.  **Trigonometry:** The argument of a trig function, e.g., $\\cos(\\dots)$.
 4.  **Exponentials:** The exponent, e.g., $e^{\\dots}$.
 5.  **Denominators:** The entire denominator (if the numerator is its derivative).
-
-## Step-by-Step Walkthroughs
-
-### Example 1: Polynomial Power
-
-**Evaluate** $\\int x^2 (x^3 + 5)^9 \\, dx$.
-
-1.  **Choose $u$**: The inner function is $x^3 + 5$. Let $u = x^3 + 5$.
-2.  **Find $du$**: Differentiate $u$ with respect to $x$: $du = 3x^2 \\, dx$.
-3.  **Adjust for constants**: We have $x^2 \\, dx$ in the integral, but $du$ has $3x^2 \\, dx$.
-    $$ \\frac{1}{3} du = x^2 \\, dx $$
-4.  **Substitute**:
-    $$ \\int (x^3+5)^9 \\cdot (x^2 \\, dx) = \\int u^9 \\cdot \\frac{1}{3} du = \\frac{1}{3} \\int u^9 \\, du $$
-5.  **Integrate**:
-    $$ \\frac{1}{3} \\cdot \\frac{u^{10}}{10} + C = \\frac{u^{10}}{30} + C $$
-6.  **Back-substitute**: Replace $u$ with $x^3 + 5$.
-    $$ \\frac{(x^3+5)^{10}}{30} + C $$
-
-### Example 2: Trigonometric Function
-
-**Evaluate** $\\int \\sqrt{\\cos x} \\sin x \\, dx$.
-
-1.  **Choose $u$**: Inside the root is $\\cos x$. Let $u = \\cos x$.
-2.  **Find $du$**: $du = -\\sin x \\, dx$.
-3.  **Adjust**: $-du = \\sin x \\, dx$.
-4.  **Substitute**:
-    $$ \\int \\sqrt{u} \\cdot (-du) = -\\int u^{1/2} \\, du $$
-5.  **Integrate**:
-    $$ -\\frac{u^{3/2}}{3/2} + C = -\\frac{2}{3} u^{3/2} + C $$
-6.  **Back-substitute**:
-    $$ -\\frac{2}{3} (\\cos x)^{3/2} + C $$
-
-### Example 3: Exponential Function
-
-**Evaluate** $\\int \\frac{e^{\\sqrt{x}}}{\\sqrt{x}} \\, dx$.
-
-1.  **Choose $u$**: The exponent is $\\sqrt{x} = x^{1/2}$. Let $u = \\sqrt{x}$.
-2.  **Find $du$**: $du = \\frac{1}{2} x^{-1/2} \\, dx = \\frac{1}{2\\sqrt{x}} \\, dx$.
-3.  **Adjust**: $2 du = \\frac{1}{\\sqrt{x}} \\, dx$.
-4.  **Substitute**:
-    $$ \\int e^u \\cdot 2 du = 2 \\int e^u \\, du $$
-5.  **Integrate**: $2e^u + C$.
-6.  **Back-substitute**: $2e^{\\sqrt{x}} + C$.
-
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Polynomial Substitution',
+            problem: 'Evaluate $\\int x^2 (x^3 + 5)^9 \\, dx$.',
+            steps: [
+              {
+                text: 'Choose $u$. The inner function is $x^3 + 5$.',
+                math: 'Let $u = x^3 + 5$.'
+              },
+              {
+                text: 'Find $du$ and adjust for constants.',
+                math: '$du = 3x^2 \\, dx$. We have $x^2 \\, dx$, so substitute $\\frac{1}{3} du = x^2 \\, dx$.'
+              },
+              {
+                text: 'Substitute into the integral.',
+                math: '$\\int (x^3+5)^9 \\cdot (x^2 \\, dx) = \\int u^9 \\cdot \\frac{1}{3} du = \\frac{1}{3} \\int u^9 \\, du$'
+              },
+              {
+                text: 'Integrate.',
+                math: '$\\frac{1}{3} \\cdot \\frac{u^{10}}{10} + C = \\frac{u^{10}}{30} + C$'
+              },
+              {
+                text: 'Back-substitute.',
+                math: '$\\frac{(x^3+5)^{10}}{30} + C$'
+              }
+            ]
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Trig Substitution',
+            problem: 'Evaluate $\\int \\sqrt{\\cos x} \\sin x \\, dx$.',
+            steps: [
+              {
+                text: 'Choose $u$. Inside the root is $\\cos x$.',
+                math: 'Let $u = \\cos x$.'
+              },
+              {
+                text: 'Find $du$ and adjust.',
+                math: '$du = -\\sin x \\, dx \\implies -du = \\sin x \\, dx$.'
+              },
+              {
+                text: 'Substitute.',
+                math: '$\\int \\sqrt{u} \\cdot (-du) = -\\int u^{1/2} \\, du$'
+              },
+              {
+                text: 'Integrate and back-substitute.',
+                math: '$-\\frac{u^{3/2}}{3/2} + C = -\\frac{2}{3} (\\cos x)^{3/2} + C$'
+              }
+            ]
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Exponential Substitution',
+            problem: 'Evaluate $\\int \\frac{e^{\\sqrt{x}}}{\\sqrt{x}} \\, dx$.',
+            steps: [
+              {
+                text: 'Choose $u$. The exponent is $\\sqrt{x}$.',
+                math: 'Let $u = \\sqrt{x}$.'
+              },
+              {
+                text: 'Find $du$.',
+                math: '$du = \\frac{1}{2} x^{-1/2} \\, dx = \\frac{1}{2\\sqrt{x}} \\, dx$.'
+              },
+              {
+                text: 'Adjust to match the integrand.',
+                math: '$2 du = \\frac{1}{\\sqrt{x}} \\, dx$.'
+              },
+              {
+                text: 'Substitute and integrate.',
+                math: '$\\int e^u \\cdot 2 du = 2e^u + C = 2e^{\\sqrt{x}} + C$'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
 ## Definite Integrals
 
 For definite integrals $\\int_a^b f(g(x))g'(x) \\, dx$, you have two methods:
@@ -503,12 +633,17 @@ Find the indefinite integral in terms of $x$, then evaluate at original limits $
 *   **Mixing Variables**: Never write an integral that contains both $x$ and $u$. Convert everything to $u$.
 *   **Definite Integrals**: If you change limits to $u$, do **not** back-substitute to $x$. Evaluate using the $u$ limits.
 `
+          }
+        ]
       },
       {
         id: "exp-log-integrals",
         title: "1.6 Integrals Involving Exponential and Logarithmic Functions",
         practiceType: 'exp-log-integrals',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Exponential Functions
 
 The exponential function $f(x) = e^x$ is unique because it is its own derivative.
@@ -545,48 +680,56 @@ Evaluate $\\int \\tan x \\, dx$.
 $$ \\int \\tan x \\, dx = \\int \\frac{\\sin x}{\\cos x} \\, dx $$
 Let $u = \\cos x$, then $du = -\\sin x \\, dx$.
 $$ \\int \\frac{-du}{u} = -\\ln|u| + C = -\\ln|\\cos x| + C = \\ln|\\sec x| + C $$
-
-## Walkthrough: Definite Integral with Exponentials
-
-**Problem:** Evaluate $\\int_0^1 \\frac{e^x}{1+e^x} \\, dx$.
-
-**Solution:**
-1.  **Identify Substitution:** The numerator $e^x$ is the derivative of the term $e^x$ in the denominator.
-    Let $u = 1 + e^x$.
-    Then $du = e^x \\, dx$.
-
-2.  **Change Limits:**
-    When $x=0$, $u = 1 + e^0 = 1 + 1 = 2$.
-    When $x=1$, $u = 1 + e^1 = 1 + e$.
-
-3.  **Substitute and Integrate:**
-    $$ \\int_0^1 \\frac{e^x}{1+e^x} \\, dx = \\int_2^{1+e} \\frac{1}{u} \\, du $$
-    $$ = [\\ln|u|]_2^{1+e} $$
-
-4.  **Evaluate:**
-    $$ = \\ln(1+e) - \\ln(2) = \\ln\\left(\\frac{1+e}{2}\\right) $$
-
-## Walkthrough: Integral of $a^x$
-
-**Problem:** Evaluate $\\int 2^{3x} \\, dx$.
-
-**Solution:**
-1.  **Method 1: Direct Formula**
-    Recall $\\int a^u \\, du = \\frac{a^u}{\\ln a} + C$.
-    Here, base is $2$, but exponent is $3x$.
-    Let $u = 3x$, $du = 3 \\, dx \\Rightarrow dx = \\frac{1}{3} du$.
-    $$ \\int 2^u \\cdot \\frac{1}{3} du = \\frac{1}{3} \\frac{2^u}{\\ln 2} + C = \\frac{2^{3x}}{3 \\ln 2} + C $$
-
-2.  **Method 2: Convert to Base $e$**
-    $2^{3x} = (e^{\\ln 2})^{3x} = e^{(3 \\ln 2)x}$.
-    $$ \\int e^{(3 \\ln 2)x} \\, dx = \\frac{1}{3 \\ln 2} e^{(3 \\ln 2)x} + C = \\frac{2^{3x}}{3 \\ln 2} + C $$
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Definite Integral with Exponentials',
+            problem: 'Evaluate $\\int_0^1 \\frac{e^x}{1+e^x} \\, dx$.',
+            steps: [
+              {
+                text: 'Identify Substitution.',
+                math: 'Let $u = 1 + e^x$. Then $du = e^x \\, dx$.'
+              },
+              {
+                text: 'Change Limits.',
+                math: 'When $x=0$, $u = 1 + e^0 = 2$. \nWhen $x=1$, $u = 1 + e^1 = 1 + e$.'
+              },
+              {
+                text: 'Substitute and Integrate.',
+                math: '$\\int_0^1 \\frac{e^x}{1+e^x} \\, dx = \\int_2^{1+e} \\frac{1}{u} \\, du = [\\ln|u|]_2^{1+e}$'
+              },
+              {
+                text: 'Evaluate.',
+                math: '$\\ln(1+e) - \\ln(2) = \\ln\\left(\\frac{1+e}{2}\\right)$'
+              }
+            ]
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Integral of $a^x$',
+            problem: 'Evaluate $\\int 2^{3x} \\, dx$.',
+            steps: [
+              {
+                text: 'Method 1: Direct Formula. Let $u=3x$.',
+                math: '$du = 3 \\, dx \\Rightarrow dx = \\frac{1}{3} du$.'
+              },
+              {
+                text: 'Substitute and integrate.',
+                math: '$\\int 2^u \\cdot \\frac{1}{3} du = \\frac{1}{3} \\frac{2^u}{\\ln 2} + C = \\frac{2^{3x}}{3 \\ln 2} + C$'
+              }
+            ]
+          }
+        ]
       },
       {
         id: "inverse-trig-integrals",
         title: "1.7 Integrals Resulting in Inverse Trigonometric Functions",
         practiceType: 'inverse-trig-integrals',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Overview
 
 In this section, we study integrals whose antiderivatives involve inverse trigonometric functions. These integrals are crucial because they appear frequently when solving problems involving areas, volumes, and physical applications, often arising after algebraic manipulation or substitution.
@@ -607,68 +750,80 @@ The three essential integration formulas you must memorize are:
     *(valid for $|u| > a > 0$)*
 
 **Note:** The constants $a$ are assumed to be positive. If $a=1$, these simplify to the standard derivatives of $\\arcsin u$, $\\arctan u$, and $\\text{arcsec } u$.
-
-## Walkthrough: Using Substitution
-
-**Problem:** Evaluate $\\int \\frac{e^x}{1 + e^{2x}} \\, dx$.
-
-**Step 1: Identify the form.**
-Notice the denominator is a sum of squares: $1 + (e^x)^2$. This suggests the arctangent formula $\\int \\frac{du}{a^2 + u^2}$.
-
-**Step 2: Choose the substitution.**
-Let $u = e^x$. Then $du = e^x \\, dx$.
-Also $a = 1$.
-
-**Step 3: Substitute and integrate.**
-$$ \\int \\frac{e^x \\, dx}{1 + (e^x)^2} = \\int \\frac{du}{1 + u^2} $$
-Using the formula:
-$$ = \\arctan(u) + C $$
-
-**Step 4: Back-substitute.**
-Replace $u$ with $e^x$.
-$$ = \\arctan(e^x) + C $$
-
-## Walkthrough: Completing the Square
-
-Often, quadratic expressions in the denominator don't look exactly like $a^2 \\pm u^2$. We use **completing the square** to transform them.
-
-**Problem:** Evaluate $\\int \\frac{dx}{x^2 + 4x + 13}$.
-
-**Step 1: Analyze the denominator.**
-The denominator $x^2 + 4x + 13$ is an irreducible quadratic (discriminant $4^2 - 4(13) < 0$).
-
-**Step 2: Complete the square.**
-Recall that $x^2 + bx = (x + \\frac{b}{2})^2 - (\\frac{b}{2})^2$.
-Here $b=4$, so $\\frac{b}{2}=2$.
-$$ x^2 + 4x + 13 = (x^2 + 4x + 4) - 4 + 13 = (x+2)^2 + 9 $$
-
-**Step 3: Rewrite the integral.**
-$$ \\int \\frac{dx}{(x+2)^2 + 3^2} $$
-
-**Step 4: Integrate using the arctan formula.**
-Let $u = x+2$, so $du = dx$. Here $a = 3$.
-$$ \\int \\frac{du}{u^2 + 3^2} = \\frac{1}{3} \\arctan\\left(\\frac{u}{3}\\right) + C $$
-$$ = \\frac{1}{3} \\arctan\\left(\\frac{x+2}{3}\\right) + C $$
-
-## Walkthrough: Inverse Sine Form
-
-**Problem:** Evaluate $\\int \\frac{dx}{\\sqrt{4 - 9x^2}}$.
-
-**Step 1: Identify the form.**
-The denominator involves $\\sqrt{a^2 - u^2}$.
-$a^2 = 4 \\implies a = 2$.
-$u^2 = 9x^2 \\implies u = 3x$.
-
-**Step 2: Substitution.**
-Let $u = 3x$. Then $du = 3 \\, dx$, which implies $dx = \\frac{du}{3}$.
-
-**Step 3: Integrate.**
-$$ \\int \\frac{1}{\\sqrt{4 - u^2}} \\cdot \\frac{du}{3} = \\frac{1}{3} \\int \\frac{du}{\\sqrt{2^2 - u^2}} $$
-$$ = \\frac{1}{3} \\arcsin\\left(\\frac{u}{2}\\right) + C $$
-
-**Step 4: Back-substitute.**
-$$ = \\frac{1}{3} \\arcsin\\left(\\frac{3x}{2}\\right) + C $$
-
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Using Substitution',
+            problem: 'Evaluate $\\int \\frac{e^x}{1 + e^{2x}} \\, dx$.',
+            steps: [
+              {
+                text: 'Identify the form. Denominator is $1 + (e^x)^2$.',
+                math: 'This suggests arctangent.'
+              },
+              {
+                text: 'Choose substitution.',
+                math: 'Let $u = e^x$. Then $du = e^x \\, dx$. Here $a=1$.'
+              },
+              {
+                text: 'Substitute and integrate.',
+                math: '$\\int \\frac{du}{1 + u^2} = \\arctan(u) + C$'
+              },
+              {
+                text: 'Back-substitute.',
+                math: '$\\arctan(e^x) + C$'
+              }
+            ]
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Completing the Square',
+            problem: 'Evaluate $\\int \\frac{dx}{x^2 + 4x + 13}$.',
+            steps: [
+              {
+                text: 'Analyze denominator.',
+                math: '$x^2 + 4x + 13$. Complete the square.'
+              },
+              {
+                text: 'Complete the square.',
+                math: '$(x^2 + 4x + 4) - 4 + 13 = (x+2)^2 + 9$.'
+              },
+              {
+                text: 'Rewrite integral.',
+                math: '$\\int \\frac{dx}{(x+2)^2 + 3^2}$'
+              },
+              {
+                text: 'Integrate using arctan formula ($u=x+2, a=3$).',
+                math: '$\\frac{1}{3} \\arctan\\left(\\frac{x+2}{3}\\right) + C$'
+              }
+            ]
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Inverse Sine Form',
+            problem: 'Evaluate $\\int \\frac{dx}{\\sqrt{4 - 9x^2}}$.',
+            steps: [
+              {
+                text: 'Identify form $\\sqrt{a^2-u^2}$.',
+                math: '$a^2=4 \\Rightarrow a=2$. $u^2=9x^2 \\Rightarrow u=3x$.'
+              },
+              {
+                text: 'Substitution.',
+                math: 'Let $u=3x, du=3dx$. $dx = du/3$.'
+              },
+              {
+                text: 'Integrate.',
+                math: '$\\int \\frac{1}{\\sqrt{4-u^2}} \\frac{du}{3} = \\frac{1}{3} \\arcsin\\left(\\frac{u}{2}\\right) + C$'
+              },
+              {
+                text: 'Back-substitute.',
+                math: '$\\frac{1}{3} \\arcsin\\left(\\frac{3x}{2}\\right) + C$'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
 ## Common Pitfalls
 
 1.  **Forgetting the $1/a$ factor:**
@@ -684,6 +839,8 @@ $$ = \\frac{1}{3} \\arcsin\\left(\\frac{3x}{2}\\right) + C $$
     If you have $\\int \\frac{dx}{1 + 4x^2}$, remember $u = 2x$, so you divide by the derivative of $u$ (which is 2).
     Result: $\\frac{1}{2} \\arctan(2x) + C$.
 `
+          }
+        ]
       }
     ]
   },
@@ -695,7 +852,10 @@ $$ = \\frac{1}{3} \\arcsin\\left(\\frac{3x}{2}\\right) + C $$
         id: "area-between-curves",
         title: "2.1 Areas between Curves",
         practiceType: 'area-between-curves',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Area Formula
 
 To find the area $A$ of the region bounded by the curves $y=f(x)$, $y=g(x)$, and the lines $x=a$, $x=b$, where $f$ and $g$ are continuous and $f(x) \\ge g(x)$ for all $x$ in $[a, b]$:
@@ -710,12 +870,40 @@ Sometimes it is easier to integrate with respect to $y$.
 $$ A = \\int_c^d [u(y) - v(y)] \\, dy $$
 where $u(y)$ is the right curve and $v(y)$ is the left curve.
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Area Between Two Curves',
+            problem: 'Find the area of the region bounded by the curves $y = x^2$ and $y = x$.',
+            steps: [
+              {
+                text: 'Find the intersection points by setting $f(x) = g(x)$.',
+                math: '$x^2 = x \\implies x^2 - x = 0 \\implies x(x-1) = 0$. Roots are $x=0, x=1$.'
+              },
+              {
+                text: 'Determine which curve is on top in $[0, 1]$.',
+                math: 'Test $x=0.5$. $y = 0.5$ vs $y = 0.25$. So $y=x$ is on top.'
+              },
+              {
+                text: 'Set up the integral.',
+                math: '$A = \\int_0^1 (x - x^2) \\, dx$'
+              },
+              {
+                text: 'Evaluate.',
+                math: '$\\left[ \\frac{x^2}{2} - \\frac{x^3}{3} \\right]_0^1 = \\left( \\frac{1}{2} - \\frac{1}{3} \\right) - 0 = \\frac{1}{6}$'
+              }
+            ]
+          }
+        ]
       },
       {
         id: "volume-slicing",
         title: "2.2 Determining Volumes by Slicing",
         practiceType: 'volume-slicing',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## General Slicing Method
 
 Volume $V = \\int_a^b A(x) \\, dx$, where $A(x)$ is the area of a cross-section at $x$.
@@ -730,12 +918,36 @@ $$ V = \\int_a^b \\pi [f(x)]^2 \\, dx $$
 If the region is bounded by outer radius $R(x)$ and inner radius $r(x)$:
 $$ V = \\int_a^b \\pi ([R(x)]^2 - [r(x)]^2) \\, dx $$
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Volume by Disk Method',
+            problem: 'Find the volume of the solid obtained by rotating the region under $y = \\sqrt{x}$ from $0$ to $1$ about the x-axis.',
+            steps: [
+              {
+                text: 'Identify the radius $R(x)$.',
+                math: '$R(x) = f(x) = \\sqrt{x}$'
+              },
+              {
+                text: 'Set up the integral using the Disk Method formula.',
+                math: '$V = \\int_0^1 \\pi (\\sqrt{x})^2 \\, dx = \\int_0^1 \\pi x \\, dx$'
+              },
+              {
+                text: 'Evaluate.',
+                math: '$\\pi \\left[ \\frac{x^2}{2} \\right]_0^1 = \\frac{\\pi}{2}$'
+              }
+            ]
+          }
+        ]
       },
       {
         id: "volume-shells",
         title: "2.3 Volumes of Revolution: Cylindrical Shells",
         practiceType: 'volume-shells',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Method of Cylindrical Shells
 
 Useful when rotating a region about the y-axis (or vertical line) and integrating with respect to $x$.
@@ -745,12 +957,36 @@ $$ V = \\int_a^b 2\\pi x f(x) \\, dx $$
 Here, $2\\pi x$ is the circumference, $f(x)$ is the height, and $dx$ is the thickness.
 More generally: $V = \\int_a^b 2\\pi (\\text{radius})(\\text{height}) \\, dx$.
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Volume by Shells',
+            problem: 'Use cylindrical shells to find the volume generated by rotating the region bounded by $y = x^2$, $y = 0$, and $x = 1$ about the y-axis.',
+            steps: [
+              {
+                text: 'Identify radius and height for a shell at $x$.',
+                math: 'Radius $= x$. Height $= f(x) = x^2$.'
+              },
+              {
+                text: 'Set up the integral.',
+                math: '$V = \\int_0^1 2\\pi x (x^2) \\, dx = 2\\pi \\int_0^1 x^3 \\, dx$'
+              },
+              {
+                text: 'Evaluate.',
+                math: '$2\\pi \\left[ \\frac{x^4}{4} \\right]_0^1 = 2\\pi \\left( \\frac{1}{4} \\right) = \\frac{\\pi}{2}$'
+              }
+            ]
+          }
+        ]
       },
       {
         id: "arc-length",
         title: "2.4 Arc Length of a Curve and Surface Area",
         practiceType: 'arc-length',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Arc Length
 
 The length of a curve $y=f(x)$ from $a$ to $b$ is:
@@ -761,12 +997,40 @@ $$ L = \\int_a^b \\sqrt{1 + [f'(x)]^2} \\, dx $$
 If $y=f(x)$ is rotated about the x-axis:
 $$ S = \\int_a^b 2\\pi f(x) \\sqrt{1 + [f'(x)]^2} \\, dx $$
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Arc Length Calculation',
+            problem: 'Find the length of the curve $y = \\frac{2}{3}x^{3/2}$ on the interval $[0, 1]$.',
+            steps: [
+              {
+                text: 'Find the derivative $y\'$.',
+                math: '$y\' = \\frac{2}{3} \\cdot \\frac{3}{2} x^{1/2} = x^{1/2} = \\sqrt{x}$'
+              },
+              {
+                text: 'Square the derivative and add 1.',
+                math: '$1 + (y\')^2 = 1 + (\\sqrt{x})^2 = 1 + x$'
+              },
+              {
+                text: 'Set up the integral.',
+                math: '$L = \\int_0^1 \\sqrt{1+x} \\, dx$'
+              },
+              {
+                text: 'Evaluate using substitution ($u=1+x$).',
+                math: '$\\int_1^2 u^{1/2} du = [\\frac{2}{3}u^{3/2}]_1^2 = \\frac{2}{3}(2\\sqrt{2} - 1)$'
+              }
+            ]
+          }
+        ]
       },
       {
         id: "physical-applications",
         title: "2.5 Physical Applications",
         practiceType: 'physical-applications',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Work
 
 Work done by a variable force $F(x)$ moving an object from $a$ to $b$:
@@ -781,12 +1045,40 @@ Common examples:
 Force exerted by a fluid on a submerged surface:
 $$ F = \\int_a^b \\rho g \\cdot \\text{depth}(y) \\cdot \\text{width}(y) \\, dy $$
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Work Done Stretching a Spring',
+            problem: 'A force of 10 N is required to hold a spring that has been stretched from its natural length of 10 cm to a length of 15 cm. How much work is done in stretching the spring from 15 cm to 20 cm?',
+            steps: [
+              {
+                text: 'Find the spring constant $k$ using Hooke\'s Law $F(x) = kx$.',
+                math: 'Extension $x = 15 - 10 = 5$ cm $= 0.05$ m. \n$10 = k(0.05) \\implies k = 200$ N/m.'
+              },
+              {
+                text: 'Set up the work integral limits.',
+                math: 'Start: $15$ cm (0.05 m extension). End: $20$ cm (0.10 m extension).'
+              },
+              {
+                text: 'Integrate.',
+                math: '$W = \\int_{0.05}^{0.10} 200x \\, dx = [100x^2]_{0.05}^{0.10}$'
+              },
+              {
+                text: 'Evaluate.',
+                math: '$100(0.10^2 - 0.05^2) = 100(0.01 - 0.0025) = 100(0.0075) = 0.75$ J'
+              }
+            ]
+          }
+        ]
       },
       {
         id: "moments-mass",
         title: "2.6 Moments and Centers of Mass",
         practiceType: 'moments-mass',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Center of Mass
 
 The center of mass (centroid) $(\\bar{x}, \\bar{y})$ of a region bounded by $y=f(x)$, $x=a$, $x=b$, and the x-axis ($y=0$).
@@ -797,12 +1089,40 @@ The center of mass (centroid) $(\\bar{x}, \\bar{y})$ of a region bounded by $y=f
 
 Then $\\bar{x} = \\frac{M_y}{M}$ and $\\bar{y} = \\frac{M_x}{M}$.
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Finding the Centroid',
+            problem: 'Find the centroid of the region bounded by $y = x$, $y = 0$, and $x = 1$.',
+            steps: [
+              {
+                text: 'Find the Area (Mass).',
+                math: '$M = \\int_0^1 x \\, dx = [\\frac{x^2}{2}]_0^1 = \\frac{1}{2}$'
+              },
+              {
+                text: 'Find the Moment about the y-axis.',
+                math: '$M_y = \\int_0^1 x(x) \\, dx = \\int_0^1 x^2 \\, dx = [\\frac{x^3}{3}]_0^1 = \\frac{1}{3}$'
+              },
+              {
+                text: 'Find the Moment about the x-axis.',
+                math: '$M_x = \\int_0^1 \\frac{1}{2}(x)^2 \\, dx = \\frac{1}{2}[\\frac{x^3}{3}]_0^1 = \\frac{1}{6}$'
+              },
+              {
+                text: 'Calculate $\\bar{x}$ and $\\bar{y}$.',
+                math: '$\\bar{x} = \\frac{1/3}{1/2} = \\frac{2}{3}, \\quad \\bar{y} = \\frac{1/6}{1/2} = \\frac{1}{3}$'
+              }
+            ]
+          }
+        ]
       },
       {
         id: "exp-log-hard",
         title: "2.7 Integrals, Exponential Functions, and Logarithms",
         practiceType: 'exp-log-hard',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Rigorous Definitions
 
 *   $\\ln x = \\int_1^x \\frac{1}{t} \\, dt$ for $x > 0$.
@@ -820,12 +1140,36 @@ Then $\\bar{x} = \\frac{M_y}{M}$ and $\\bar{y} = \\frac{M_x}{M}$.
 *   $\\int a^x \\, dx = \\frac{a^x}{\\ln a} + C$
 *   $\\frac{d}{dx} \\log_a x = \\frac{1}{x \\ln a}$
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Derivative of General Exponential',
+            problem: 'Find the derivative of $y = 5^{x^2}$.',
+            steps: [
+              {
+                text: 'Use the Chain Rule.',
+                math: '$\\frac{d}{dx} a^{g(x)} = a^{g(x)} \\ln a \\cdot g\'(x)$'
+              },
+              {
+                text: 'Identify parts.',
+                math: '$a = 5, g(x) = x^2, g\'(x) = 2x$'
+              },
+              {
+                text: 'Apply formula.',
+                math: '$y\' = 5^{x^2} (\\ln 5) (2x)$'
+              }
+            ]
+          }
+        ]
       },
       {
         id: "growth-decay",
         title: "2.8 Exponential Growth and Decay",
         practiceType: 'growth-decay',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Differential Equation
 
 The rate of change is proportional to the amount present:
@@ -843,12 +1187,40 @@ $$ y(t) = y(0) e^{kt} $$
 *   **Doubling Time:** $T_d = \\frac{\\ln 2}{k}$
 *   **Half-Life:** $T_{1/2} = -\\frac{\\ln 2}{k}$ (where $k < 0$)
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Radioactive Decay',
+            problem: 'A radioactive substance has a half-life of 100 years. If 10 grams are present initially, how much remains after 50 years?',
+            steps: [
+              {
+                text: 'Find the decay constant $k$.',
+                math: '$k = -\\frac{\ln 2}{100} \\approx -0.00693$'
+              },
+              {
+                text: 'Write the decay equation.',
+                math: '$y(t) = 10 e^{-\\frac{\\ln 2}{100}t}$'
+              },
+              {
+                text: 'Substitute $t=50$.',
+                math: '$y(50) = 10 e^{-\\frac{\\ln 2}{100}(50)} = 10 e^{-\\frac{\\ln 2}{2}} = 10 (e^{\\ln 2})^{-1/2}$'
+              },
+              {
+                text: 'Simplify.',
+                math: '$10 (2)^{-1/2} = \\frac{10}{\\sqrt{2}} = 5\\sqrt{2} \\approx 7.07 \\text{ g}$'
+              }
+            ]
+          }
+        ]
       },
       {
         id: "hyperbolic-functions",
         title: "2.9 Calculus of the Hyperbolic Functions",
         practiceType: 'hyperbolic-functions',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Definitions
 
 *   $\\sinh x = \\frac{e^x - e^{-x}}{2}$
@@ -871,6 +1243,27 @@ $$ y(t) = y(0) e^{kt} $$
 *   $\\int \\sinh x \\, dx = \\cosh x + C$
 *   $\\int \\cosh x \\, dx = \\sinh x + C$
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Proving a Hyperbolic Identity',
+            problem: 'Verify that $\\cosh^2 x - \\sinh^2 x = 1$.',
+            steps: [
+              {
+                text: 'Substitute definitions.',
+                math: '$\\left(\\frac{e^x + e^{-x}}{2}\\right)^2 - \\left(\\frac{e^x - e^{-x}}{2}\\right)^2$'
+              },
+              {
+                text: 'Expand squares.',
+                math: '$\\frac{e^{2x} + 2 + e^{-2x}}{4} - \\frac{e^{2x} - 2 + e^{-2x}}{4}$'
+              },
+              {
+                text: 'Combine fractions and simplify.',
+                math: '$\\frac{(e^{2x} + 2 + e^{-2x}) - (e^{2x} - 2 + e^{-2x})}{4} = \\frac{4}{4} = 1$'
+              }
+            ]
+          }
+        ]
       }
     ]
   }
