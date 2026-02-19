@@ -9,7 +9,11 @@ test('questionGenerator', async (t) => {
     assert.ok(
       problem.question.includes('Estimate the area') ||
       problem.question.includes('Given the interval') ||
-      problem.question.includes('For the interval'),
+      problem.question.includes('For the interval') ||
+      problem.question.includes('Evaluate the sum') ||
+      problem.question.includes('Given that $\\sum') ||
+      problem.question.includes('Using the definition of area') ||
+      problem.question.includes('Evaluate the limit'),
       'Question should start with one of the expected phrases'
     );
   });
