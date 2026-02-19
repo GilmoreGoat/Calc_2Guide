@@ -37,31 +37,142 @@ $= 0.5 [0.25 + 1 + 2.25 + 4] = 0.5 [7.5] = 3.75$.
         id: "definite-integral",
         title: "1.2 The Definite Integral",
         practiceType: 'definite-integral-properties',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Definition
 
-The **definite integral** of a function $f(x)$ from $a$ to $b$ represents the net signed area under the curve $y=f(x)$ from $x=a$ to $x=b$. It is denoted by:
-
-$$ \\int_a^b f(x) \\, dx $$
-
-Usually defined as the limit of a Riemann Sum:
+The **definite integral** of a function $f(x)$ from $a$ to $b$ is the limit of Riemann sums as the number of subintervals approaches infinity:
 
 $$ \\int_a^b f(x) \\, dx = \\lim_{n \\to \\infty} \\sum_{i=1}^n f(x_i^*) \\Delta x $$
 
-## Properties
+*   **Integrand:** The function $f(x)$.
+*   **Limits of Integration:** The numbers $a$ (lower limit) and $b$ (upper limit).
 
-1.  $\\int_a^b f(x) \\, dx = -\\int_b^a f(x) \\, dx$
-2.  $\\int_a^a f(x) \\, dx = 0$
-3.  $\\int_a^b c \\, dx = c(b-a)$
-4.  $\\int_a^b [f(x) + g(x)] \\, dx = \\int_a^b f(x) \\, dx + \\int_a^b g(x) \\, dx$
-5.  $\\int_a^c f(x) \\, dx + \\int_c^b f(x) \\, dx = \\int_a^b f(x) \\, dx$
-6.  If $f(x) \\ge 0$ for $a \\le x \\le b$, then $\\int_a^b f(x) \\, dx \\ge 0$.
+## Geometric Interpretation
 
-## Average Value
+The definite integral represents the **net signed area** between the curve $y=f(x)$ and the x-axis on the interval $[a, b]$.
 
-The average value of a function $f(x)$ on $[a, b]$ is given by:
-$$ f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx $$
+*   Area above the x-axis is counted as **positive**.
+*   Area below the x-axis is counted as **negative**.
+
+$$ \\int_a^b f(x) \\, dx = A_{up} - A_{down} $$
+
+## Integrability
+
+**Theorem:** If $f$ is continuous on $[a, b]$, or if $f$ has only a finite number of jump discontinuities, then $f$ is integrable on $[a, b]$; that is, the definite integral $\\int_a^b f(x) \\, dx$ exists.
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Using Geometry to Evaluate an Integral',
+            problem: 'Evaluate $\\int_{-3}^3 \\sqrt{9-x^2} \\, dx$ by interpreting it in terms of areas.',
+            steps: [
+              {
+                text: 'Identify the shape of the graph of the integrand.',
+                math: 'Let $y = \\sqrt{9-x^2}$. Squaring both sides gives $y^2 = 9-x^2$, or $x^2 + y^2 = 9$. This is the equation of a circle with radius $r=3$, centered at the origin.'
+              },
+              {
+                text: 'Since $y = \\sqrt{9-x^2} \\ge 0$, the graph is the upper semicircle.',
+                math: 'The integral represents the area of this semicircle.'
+              },
+              {
+                text: 'Calculate the area using the formula for a semicircle: $A = \\frac{1}{2}\\pi r^2$.',
+                math: 'A = \\frac{1}{2}\\pi (3)^2 = \\frac{9\\pi}{2}'
+              },
+              {
+                text: 'State the final answer.',
+                math: '\\int_{-3}^3 \\sqrt{9-x^2} \\, dx = \\frac{9\\pi}{2}'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
+## Properties of the Definite Integral
+
+Assuming $f$ and $g$ are integrable functions:
+
+1.  **Reversing Limits:** $\\int_b^a f(x) \\, dx = -\\int_a^b f(x) \\, dx$
+2.  **Zero Width:** $\\int_a^a f(x) \\, dx = 0$
+3.  **Constant Multiple:** $\\int_a^b c f(x) \\, dx = c \\int_a^b f(x) \\, dx$
+4.  **Sum/Difference:** $\\int_a^b [f(x) \\pm g(x)] \\, dx = \\int_a^b f(x) \\, dx \\pm \\int_a^b g(x) \\, dx$
+5.  **Additivity:** $\\int_a^c f(x) \\, dx + \\int_c^b f(x) \\, dx = \\int_a^b f(x) \\, dx$
+6.  **Comparison:** If $f(x) \\ge g(x)$ for $a \\le x \\le b$, then $\\int_a^b f(x) \\, dx \\ge \\int_a^b g(x) \\, dx$.
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Using Properties of Integrals',
+            problem: 'Given that $\\int_0^{10} f(x) \\, dx = 17$ and $\\int_0^8 f(x) \\, dx = 12$, find $\\int_8^{10} f(x) \\, dx$.',
+            steps: [
+              {
+                text: 'Use the Additivity Property.',
+                math: '\\int_0^{10} f(x) \\, dx = \\int_0^8 f(x) \\, dx + \\int_8^{10} f(x) \\, dx'
+              },
+              {
+                text: 'Substitute the known values into the equation.',
+                math: '17 = 12 + \\int_8^{10} f(x) \\, dx'
+              },
+              {
+                text: 'Solve for the unknown integral.',
+                math: '\\int_8^{10} f(x) \\, dx = 17 - 12 = 5'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
+## Average Value of a Function
+
+The average value of a function $f(x)$ on the interval $[a, b]$ is defined as:
+
+$$ f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx $$
+
+**Mean Value Theorem for Integrals:**
+If $f$ is continuous on $[a, b]$, then there exists a number $c$ in $[a, b]$ such that:
+$$ f(c) = f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx $$
+or equivalently,
+$$ \\int_a^b f(x) \\, dx = f(c)(b-a) $$
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Calculating Average Value',
+            problem: 'Find the average value of $f(x) = 1 + x^2$ on the interval $[-1, 2]$.',
+            steps: [
+              {
+                text: 'Set up the formula for average value.',
+                math: 'f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx = \\frac{1}{2 - (-1)} \\int_{-1}^2 (1 + x^2) \\, dx'
+              },
+              {
+                text: 'Simplify the coefficient outside the integral.',
+                math: 'f_{ave} = \\frac{1}{3} \\int_{-1}^2 (1 + x^2) \\, dx'
+              },
+              {
+                text: 'Evaluate the definite integral.',
+                math: '\\int_{-1}^2 (1 + x^2) \\, dx = \\left[ x + \\frac{x^3}{3} \\right]_{-1}^2'
+              },
+              {
+                text: 'Calculate the value at the upper limit ($x=2$) and lower limit ($x=-1$).',
+                math: 'F(2) = 2 + \\frac{8}{3} = \\frac{14}{3} \\\\\nF(-1) = -1 + \\frac{-1}{3} = -\\frac{4}{3}'
+              },
+              {
+                text: 'Subtract and multiply by the coefficient.',
+                math: 'f_{ave} = \\frac{1}{3} \\left( \\frac{14}{3} - (-\\frac{4}{3}) \\right) = \\frac{1}{3} \\left( \\frac{18}{3} \\right) = \\frac{1}{3} (6) = 2'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
+## Practice Problems
+
+Test your understanding with the generated problems below.
+`
+          }
+        ]
       },
       {
         id: "fundamental-theorem",
