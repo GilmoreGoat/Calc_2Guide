@@ -71,85 +71,19 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
     // Sort by length descending
     functions.sort((a, b) => b.length - a.length);
 
-    let s = str;
-    const placeholders = [];
+    // Implicit multiplication
+    // 1. Number followed by x, letter, or (
+    s = s.replace(/(\d)([a-z(])/g, '$1*$2');
+    // 2. x or ) followed by Number or x or (
+    // Be careful with functions like sin(x). s followed by i is not multiplication.
+    // We strictly handle implicit mult for 'x' variable.
+    // For other vars/functions, it's safer to require * or handle carefully.
+    // Let's assume variable is 'x'.
+    s = s.replace(/([x)])(\d)/g, '$1*$2');
+    s = s.replace(/([x)])([a-z(])/g, '$1*$2');
 
-    functions.forEach((fn, index) => {
-       const placeholder = `§${index}§`;
-       placeholders.push({ placeholder, original: fn });
-       // Replace all occurrences of fn
-       // We split and join to replace all
-       s = s.split(fn).join(placeholder);
-    });
-
-    // 2. Parse and insert implicit multiplication
-    // Token types: DIGIT, LETTER (var), FUNC (placeholder), LPAREN, RPAREN, OP, OTHER
-    const isDigit = (c) => /[0-9]/.test(c);
-    const isLetter = (c) => /[a-z]/.test(c);
-
-    let result = '';
-    let i = 0;
-    let lastType = 'NONE'; // NONE, DIGIT, LETTER, FUNC, LPAREN, RPAREN, OTHER
-
-    while (i < s.length) {
-      let char = s[i];
-      let currentType = 'OTHER';
-      let token = char;
-
-      if (char === '§') {
-        // Parse placeholder
-        const endIdx = s.indexOf('§', i + 1);
-        if (endIdx !== -1) {
-          token = s.substring(i, endIdx + 1);
-          currentType = 'FUNC';
-          i = endIdx + 1;
-        } else {
-          // Should not happen
-          i++;
-        }
-      } else {
-        if (isDigit(char)) currentType = 'DIGIT';
-        else if (isLetter(char)) currentType = 'LETTER';
-        else if (char === '(') currentType = 'LPAREN';
-        else if (char === ')') currentType = 'RPAREN';
-        else if (/[+\-*/^]/.test(char)) currentType = 'OP';
-        i++;
-      }
-
-      // Check for insertion
-      let insertMult = false;
-
-      if (lastType === 'DIGIT') {
-        if (currentType === 'LETTER' || currentType === 'FUNC' || currentType === 'LPAREN') insertMult = true;
-      } else if (lastType === 'LETTER') {
-        if (currentType === 'DIGIT' || currentType === 'LETTER' || currentType === 'FUNC' || currentType === 'LPAREN') insertMult = true;
-      } else if (lastType === 'FUNC') {
-        // FUNC followed by DIGIT/LETTER/FUNC should multiply?
-        // sin 2 -> sin*2 (valid as expression, though likely user error, but we treat as mult)
-        // sin x -> sin*x
-        // sin cos -> sin*cos
-        if (currentType === 'DIGIT' || currentType === 'LETTER' || currentType === 'FUNC') insertMult = true;
-        // FUNC followed by LPAREN (sin(x)) -> NO MULT
-      } else if (lastType === 'RPAREN') {
-        if (currentType === 'DIGIT' || currentType === 'LETTER' || currentType === 'FUNC' || currentType === 'LPAREN') insertMult = true;
-      }
-
-      if (insertMult) {
-        result += '*';
-      }
-
-      result += token;
-      lastType = currentType;
-    }
-
-    s = result;
-
-    // 3. Restore functions
-    placeholders.forEach(p => {
-       s = s.split(p.placeholder).join(p.original);
-    });
-
-    // 4. Handle Powers (^) -> Math.pow
+    // Convert powers using pow() function (to be defined in context)
+    // We repeatedly find the last ^ to handle right-associativity
     while (s.includes('^')) {
       const idx = s.lastIndexOf('^');
 
@@ -164,8 +98,9 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
           if (depth < 0) break;
         }
 
-        if (depth === 0 && /[+\-*/]/.test(char) && char !== '§') {
-           break;
+        if (depth < 0) break;
+        if (depth === 0 && /[+\-*/]/.test(char)) {
+          break;
         }
         baseStart--;
       }
@@ -183,6 +118,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
           if (depth < 0) break;
         }
 
+        if (depth < 0) break;
         if (depth === 0 && /[+\-*/]/.test(char)) {
           break;
         }
@@ -192,7 +128,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
       const base = s.substring(start, idx);
       const exp = s.substring(idx + 1, expEnd);
 
-      const replacement = `Math.pow(${base},${exp})`;
+      const replacement = `pow(${base},${exp})`;
       s = s.substring(0, start) + replacement + s.substring(expEnd);
     }
 
@@ -204,41 +140,52 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
   // 3. Numerical verification using random sampling
   try {
-    // Construct the function body with injected math functions
-    const functionBody = (expr) => `
+    // We assume the variable is 'x'
+    // We also provide constants e and pi
+    // Define all supported math functions in the scope
+    const context = `
       const e = Math.E;
       const pi = Math.PI;
+
       const sin = Math.sin;
       const cos = Math.cos;
       const tan = Math.tan;
-      const sec = (x) => 1/Math.cos(x);
-      const csc = (x) => 1/Math.sin(x);
-      const cot = (x) => 1/Math.tan(x);
       const asin = Math.asin;
       const acos = Math.acos;
       const atan = Math.atan;
-      const arcsin = Math.asin;
-      const arccos = Math.acos;
-      const arctan = Math.atan;
-      // arcsec(x) = arccos(1/x)
-      const arcsec = (x) => Math.acos(1/x);
-      // arccsc(x) = arcsin(1/x)
-      const arccsc = (x) => Math.asin(1/x);
-      // arccot(x) = pi/2 - arctan(x) or arctan(1/x)
-      const arccot = (x) => Math.atan(1/x);
+      const sinh = Math.sinh;
+      const cosh = Math.cosh;
+      const tanh = Math.tanh;
       const exp = Math.exp;
       const sqrt = Math.sqrt;
       const abs = Math.abs;
       const log = Math.log;
-      const ln = Math.log;
+      const pow = Math.pow;
 
-      return ${expr};
+      // Aliases
+      const ln = Math.log;
+      const arcsin = Math.asin;
+      const arccos = Math.acos;
+      const arctan = Math.atan;
+
+      // Reciprocal Trig Functions
+      const sec = (t) => 1 / Math.cos(t);
+      const csc = (t) => 1 / Math.sin(t);
+      const cot = (t) => 1 / Math.tan(t);
+
+      // Inverse Reciprocal Trig Functions (optional, but good for completeness)
+      const arcsec = (t) => Math.acos(1/t);
+      const arccsc = (t) => Math.asin(1/t);
+      const arccot = (t) => Math.atan(1/t);
     `;
 
-    const fUser = new Function('x', functionBody(jsUser));
-    const fExpected = new Function('x', functionBody(jsExpected));
+    const fUser = new Function('x', `${context} return ${jsUser};`);
+    const fExpected = new Function('x', `${context} return ${jsExpected};`);
 
-    // Test points
+    // Test points: include negatives, decimals, avoid 0 just in case
+    // Avoid range issues for log/sqrt
+    // If expected answer involves log/sqrt, we should test positive numbers.
+    // We can try-catch individual evaluations.
     const testPoints = [-5, -2.5, -1, 0.5, 1, 3, 10];
     // Add some fractions for inverse trig like 0.1, 0.9 (for arcsin domain [-1, 1])
     testPoints.push(0.1, 0.9, -0.9);
