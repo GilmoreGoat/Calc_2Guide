@@ -142,14 +142,76 @@ function generateNetChange() {
   };
 }
 
-function generateSubstitution() {
+function generatePolynomialSubstitution() {
+  const n = getRandomInt(2, 4); // inner power
+  const m = getRandomInt(3, 7); // outer power
+  const b = getRandomInt(1, 9); // constant in u
+  const coeff = getRandomInt(1, 5);
+
+  const denom = n * (m + 1);
+
+  const xPower = n - 1 === 1 ? 'x' : `x^{${n-1}}`;
+  const coeffStr = coeff === 1 ? '' : coeff;
+  const question = `Evaluate $\\int ${coeffStr}${xPower} (x^{${n}} + ${b})^{${m}} \\, dx$.`;
+  const answer = `(${coeff}/${denom}) * (x^${n} + ${b})^${m+1} + C`;
+  const hint = `Let $u = x^{${n}} + ${b}$. Then $du = ${n}${xPower} \\, dx$.`;
+
+  return { question, answer, type: 'text', hint };
+}
+
+function generateTrigSubstitution() {
+  const type = Math.random();
+  const n = getRandomInt(2, 6);
+
+  if (type < 0.33) {
+    // sin^n(x) cos(x)
+    const question = `Evaluate $\\int \\sin^{${n}}(x) \\cos(x) \\, dx$.`;
+    const answer = `(1/${n+1}) * sin(x)^${n+1} + C`;
+    const hint = `Let $u = \\sin(x)$.`;
+    return { question, answer, type: 'text', hint };
+  } else if (type < 0.66) {
+    // cos^n(x) sin(x)
+    const question = `Evaluate $\\int \\cos^{${n}}(x) \\sin(x) \\, dx$.`;
+    const answer = `-(1/${n+1}) * cos(x)^${n+1} + C`;
+    const hint = `Let $u = \\cos(x)$. Don't forget the negative sign from the derivative.`;
+    return { question, answer, type: 'text', hint };
+  } else {
+    // tan^n(x) sec^2(x)
+    const question = `Evaluate $\\int \\tan^{${n}}(x) \\sec^2(x) \\, dx$.`;
+    const answer = `(1/${n+1}) * tan(x)^${n+1} + C`;
+    const hint = `Let $u = \\tan(x)$. Recall $\\frac{d}{dx}\\tan(x) = \\sec^2(x)$.`;
+    return { question, answer, type: 'text', hint };
+  }
+}
+
+function generateExpSubstitution() {
+  const n = getRandomInt(2, 4);
+  const xPower = n - 1 === 1 ? 'x' : `x^{${n-1}}`;
+  const question = `Evaluate $\\int ${xPower} e^{x^{${n}}} \\, dx$.`;
+  const answer = `(1/${n}) * e^(x^${n}) + C`;
+  const hint = `Let $u = x^{${n}}$. Then $du = ${n}${xPower} \\, dx$.`;
+  return { question, answer, type: 'text', hint };
+}
+
+function generateLogSubstitution() {
   const n = getRandomInt(2, 5);
-  return {
-    question: `Evaluate $\\int 2x(x^2+1)^{${n}} \\, dx$.`,
-    answer: `(1/${n+1})*(x^2+1)^(${n+1}) + C`,
-    type: 'text',
-    hint: `Let $u = x^2+1$. Then $du = 2x \\, dx$.`
-  };
+  const question = `Evaluate $\\int \\frac{(\\ln x)^{${n}}}{x} \\, dx$.`;
+  const answer = `(1/${n+1}) * ln(x)^${n+1} + C`;
+  const hint = `Let $u = \\ln(x)$. Recall $\\frac{d}{dx}\\ln(x) = \\frac{1}{x}$.`;
+  return { question, answer, type: 'text', hint };
+}
+
+function generateSubstitution() {
+  const type = Math.random();
+  if (type < 0.4) {
+    return generatePolynomialSubstitution();
+  } else if (type < 0.7) {
+    return generateTrigSubstitution();
+  } else if (type < 0.85) {
+    return generateExpSubstitution();
+  } else {
+    return generateLogSubstitution();
+  }
 }
 
 function generateExpLog() {
