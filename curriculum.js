@@ -7,7 +7,10 @@ export const curriculum = [
         id: "antiderivatives",
         title: "Antiderivatives and Indefinite Integrals",
         practiceType: 'indefinite-integral',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Definition
 
 An **antiderivative** of a function $f$ is a function $F$ such that $F'(x) = f(x)$ for all $x$ in the domain of $f$.
@@ -23,7 +26,11 @@ If $F$ is an antiderivative of $f$, then:
 $$ \\int f(x) \\, dx = F(x) + C $$
 
 where $C$ is an arbitrary constant.
-
+            `
+          },
+          {
+            type: 'text',
+            content: `
 ## Basic Integration Rules
 
 Here are some fundamental integration formulas:
@@ -39,33 +46,63 @@ Here are some fundamental integration formulas:
 9.  **Secant Tangent**: $\\int \\sec(x)\\tan(x) \\, dx = \\sec(x) + C$
 10. **Inverse Tangent**: $\\int \\frac{1}{1+x^2} \\, dx = \\arctan(x) + C$
 11. **Inverse Sine**: $\\int \\frac{1}{\\sqrt{1-x^2}} \\, dx = \\arcsin(x) + C$
-
-## Procedural Pathway: Solving Indefinite Integrals
-
-1.  **Identify the type of function:** Look for power functions $x^n$, exponentials, or trigonometric functions.
-2.  **Separate terms:** Use the Sum/Difference Rule to break the integral into simpler parts: $\\int [f(x) + g(x)] dx = \\int f(x) dx + \\int g(x) dx$.
-3.  **Pull out constants:** Use the Constant Multiple Rule: $\\int c f(x) dx = c \\int f(x) dx$.
-4.  **Apply rules:** Apply the appropriate integration rule (e.g., Power Rule) to each part.
-5.  **Add C:** Don't forget to add the constant of integration $+ C$ at the end.
-6.  **Simplify:** Combine constants and simplify coefficients if needed.
-
-## Example
-
-Evaluate $\\int (3x^2 + 2x - 5) \\, dx$.
-
-**Solution:**
-
-We apply the Power Rule to each term:
-
-$$
-\\begin{aligned}
-\\int (3x^2 + 2x - 5) \\, dx &= 3 \\int x^2 \\, dx + 2 \\int x \\, dx - 5 \\int 1 \\, dx \\\\
-&= 3 \\left(\\frac{x^3}{3}\\right) + 2 \\left(\\frac{x^2}{2}\\right) - 5x + C \\\\
-&= x^3 + x^2 - 5x + C
-\\end{aligned}
-$$
-
-`
+            `
+          },
+          {
+            type: 'stepped-example',
+            title: "Procedural Pathway: Solving Indefinite Integrals",
+            problem: "This pathway guides you through the process of evaluating indefinite integrals.",
+            steps: [
+              {
+                text: "**Identify the type of function:** Look for power functions $x^n$, exponentials, or trigonometric functions.",
+                math: ""
+              },
+              {
+                text: "**Separate terms:** Use the Sum/Difference Rule to break the integral into simpler parts.",
+                math: "$$ \\int [f(x) + g(x)] dx = \\int f(x) dx + \\int g(x) dx $$"
+              },
+              {
+                text: "**Pull out constants:** Use the Constant Multiple Rule to factor out constants.",
+                math: "$$ \\int c f(x) dx = c \\int f(x) dx $$"
+              },
+              {
+                text: "**Apply rules:** Apply the appropriate integration rule (e.g., Power Rule) to each part.",
+                math: "e.g., $$ \\int x^n dx = \\frac{x^{n+1}}{n+1} $$"
+              },
+              {
+                text: "**Add C:** Don't forget to add the constant of integration $+ C$ at the end.",
+                math: "$$ + C $$"
+              },
+              {
+                text: "**Simplify:** Combine constants and simplify coefficients if needed.",
+                math: ""
+              }
+            ]
+          },
+          {
+            type: 'stepped-example',
+            title: "Example Problem",
+            problem: "Evaluate $\\int (3x^2 + 2x - 5) \\, dx$.",
+            steps: [
+              {
+                text: "First, apply the Sum/Difference Rule to break it into three integrals.",
+                math: "$$ \\int 3x^2 \\, dx + \\int 2x \\, dx - \\int 5 \\, dx $$"
+              },
+              {
+                text: "Next, use the Constant Multiple Rule to pull out the constants.",
+                math: "$$ 3 \\int x^2 \\, dx + 2 \\int x \\, dx - 5 \\int 1 \\, dx $$"
+              },
+              {
+                text: "Now, apply the Power Rule to each term.",
+                math: "$$ 3 \\left(\\frac{x^3}{3}\\right) + 2 \\left(\\frac{x^2}{2}\\right) - 5(x) $$"
+              },
+              {
+                text: "Finally, simplify the expression and add the constant of integration $C$.",
+                math: "$$ x^3 + x^2 - 5x + C $$"
+              }
+            ]
+          }
+        ]
       },
       {
         id: "definite-integrals",

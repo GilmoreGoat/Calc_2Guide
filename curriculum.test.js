@@ -36,8 +36,18 @@ describe('Curriculum Data Integrity', () => {
         // URL-friendly ID check (slug)
         assert.match(topic.id, /^[a-z0-9-]+$/, `Topic id ${topic.id} should be URL-friendly (lowercase, numbers, and hyphens only)`);
 
-        // Content should not be empty
-        assert.ok(topic.content.trim().length > 0, `Topic ${topic.id} has empty content`);
+        // Content check: String or Array
+        if (typeof topic.content === 'string') {
+          assert.ok(topic.content.trim().length > 0, `Topic ${topic.id} has empty content string`);
+        } else if (Array.isArray(topic.content)) {
+          assert.ok(topic.content.length > 0, `Topic ${topic.id} has empty content array`);
+          topic.content.forEach((block, i) => {
+             assert.ok(block.type, `Block ${i} in topic ${topic.id} missing type`);
+             // We can be more specific if needed
+          });
+        } else {
+          assert.fail(`Topic ${topic.id} has invalid content type: ${typeof topic.content}`);
+        }
       });
     });
   });

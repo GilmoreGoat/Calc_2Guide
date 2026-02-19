@@ -7,7 +7,8 @@ test('questionGenerator', async (t) => {
     const problem = generateProblem('indefinite-integral');
     assert.strictEqual(problem.type, 'text');
     assert.ok(problem.question.includes('Evaluate'));
-    assert.ok(problem.answer.includes('+C'));
+    // Check for + C or +C
+    assert.ok(problem.answer.includes('+C') || problem.answer.includes('+ C'));
   });
 
   await t.test('should generate definite integral problem', () => {

@@ -4,6 +4,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { RefreshCw, Check, HelpCircle, ChevronRight, AlertCircle } from 'lucide-react';
 import { generateProblem } from '../utils/questionGenerator';
+import { validateMath } from '../utils/mathValidator';
 
 const PracticeSection = ({ type }) => {
   const [problem, setProblem] = useState(null);
@@ -25,37 +26,15 @@ const PracticeSection = ({ type }) => {
     }
   }, [type]);
 
-  const normalize = (str) => {
-    if (!str) return '';
-    // Remove all whitespace
-    let normalized = str.replace(/\s+/g, '');
-    // Convert ^{n} to ^n
-    normalized = normalized.replace(/\^{/g, '^').replace(/}/g, '');
-    return normalized.toLowerCase();
-  };
-
   const handleCheck = () => {
     if (!problem) return;
 
-    if (problem.type === 'number') {
-      const numAnswer = parseFloat(userAnswer);
-      const expectedAnswer = parseFloat(problem.answer);
+    const { isCorrect, message } = validateMath(userAnswer, problem.answer, problem.type);
 
-      if (!isNaN(numAnswer) && Math.abs(numAnswer - expectedAnswer) < 0.001) {
-         setFeedback({ type: 'success', message: 'Correct! Great job.' });
-      } else {
-         setFeedback({ type: 'error', message: 'Incorrect. Try again.' });
-      }
+    if (isCorrect) {
+      setFeedback({ type: 'success', message });
     } else {
-      // Text answer (algebraic)
-      const normalizedUser = normalize(userAnswer);
-      const normalizedExpected = normalize(problem.answer);
-
-      if (normalizedUser === normalizedExpected) {
-        setFeedback({ type: 'success', message: 'Correct! Great job.' });
-      } else {
-        setFeedback({ type: 'error', message: 'Incorrect. Make sure to format exactly as requested.' });
-      }
+      setFeedback({ type: 'error', message });
     }
   };
 

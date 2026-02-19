@@ -40,15 +40,11 @@ function formatTerm(coeff, exp, isFirstTerm) {
     coeffStr = '1';
   }
 
-  // If we have neither coeffStr (was 1) nor varStr (was x^0), we have 1 (covered above)
-
   return `${sign}${coeffStr}${varStr}`;
 }
 
 /**
  * Generates a simple polynomial where the antiderivative has integer coefficients.
- * Returns array of terms for the derivative: { coeff, exp }
- * and array of terms for the antiderivative: { coeff: multiplier, exp: exp+1 }
  */
 function generateSimplePolynomial(numTerms = 2) {
   const terms = [];
@@ -56,10 +52,7 @@ function generateSimplePolynomial(numTerms = 2) {
   const usedExps = new Set();
 
   for (let i = 0; i < numTerms; i++) {
-    // Pick a random exponent for the antiderivative term (1 to 4)
-    // So the derivative exponent will be 0 to 3
     let antiderivExp = getRandomInt(1, 4);
-    // Ensure unique exponents
     let attempts = 0;
     while (usedExps.has(antiderivExp) && attempts < 10) {
       antiderivExp = getRandomInt(1, 4);
@@ -67,13 +60,11 @@ function generateSimplePolynomial(numTerms = 2) {
     }
     usedExps.add(antiderivExp);
 
-    // Pick a random integer coefficient for the antiderivative term (-5 to 5)
     let antiderivCoeff = getRandomInt(-5, 5);
     while (antiderivCoeff === 0) {
       antiderivCoeff = getRandomInt(-5, 5);
     }
 
-    // The derivative term: d/dx (A * x^B) = (A * B) * x^(B-1)
     const derivExp = antiderivExp - 1;
     const derivCoeff = antiderivCoeff * antiderivExp;
 
@@ -81,7 +72,6 @@ function generateSimplePolynomial(numTerms = 2) {
     antiderivTerms.push({ coeff: antiderivCoeff, exp: antiderivExp });
   }
 
-  // Sort by exponent descending
   terms.sort((a, b) => b.exp - a.exp);
   antiderivTerms.sort((a, b) => b.exp - a.exp);
 
@@ -93,51 +83,140 @@ function formatPolynomial(terms) {
   return terms.map((term, index) => formatTerm(term.coeff, term.exp, index === 0)).join('');
 }
 
-function generateIndefiniteIntegral() {
+function generateIndefinitePolynomial() {
   const { terms, antiderivTerms } = generateSimplePolynomial(getRandomInt(1, 2));
   const polyLatex = formatPolynomial(terms);
-
-  // Format the answer string (user input expectation)
-  // We remove curly braces from LaTeX to make the expected answer simpler (e.g. x^2 instead of x^{2})
-  const answerLatex = formatPolynomial(antiderivTerms).replace(/{/g, '').replace(/}/g, '') + '+C';
+  const answerLatex = formatPolynomial(antiderivTerms).replace(/{/g, '').replace(/}/g, '') + ' + C';
 
   return {
     question: `Evaluate $\\int (${polyLatex}) \\, dx$.`,
     answer: answerLatex,
     type: 'text',
-    hint: 'Use the Power Rule: $\\int x^n \\, dx = \\frac{x^{n+1}}{n+1} + C$. Don\'t forget +C.'
+    hint: 'Use the Power Rule: $\\int x^n \\, dx = \\frac{x^{n+1}}{n+1} + C$.'
   };
 }
 
-function generateDefiniteIntegral() {
-  const { terms, antiderivTerms } = generateSimplePolynomial(getRandomInt(1, 2));
-  const polyLatex = formatPolynomial(terms);
+function generateIndefiniteTrig() {
+  // Integ(a * cos(bx)) or sin(bx)
+  // To keep it simple, let b=1 or b=-1 often, or simple integer.
+  // We want nice answers.
+  // Int(cos(kx)) = (1/k)sin(kx)
+  // Let a be a multiple of k.
 
-  const a = getRandomInt(0, 2);
-  const b = getRandomInt(a + 1, a + 3);
+  const k = getRandomInt(1, 3) * (Math.random() > 0.5 ? 1 : -1);
+  const multiplier = getRandomInt(1, 3) * (Math.random() > 0.5 ? 1 : -1);
+  const a = multiplier * k; // So a/k is integer 'multiplier'
 
-  // Calculate definite integral: F(b) - F(a)
-  const evaluate = (t, x) => t.coeff * Math.pow(x, t.exp);
+  const isCos = Math.random() > 0.5;
 
-  const valB = antiderivTerms.reduce((sum, t) => sum + evaluate(t, b), 0);
-  const valA = antiderivTerms.reduce((sum, t) => sum + evaluate(t, a), 0);
-  const result = valB - valA;
+  const func = isCos ? 'cos' : 'sin';
+  const antiFunc = isCos ? 'sin' : '-cos'; // Int(cos)=sin, Int(sin)=-cos
+
+  // Question: Int(a * func(kx))
+  // Answer: (a/k) * antiFunc(kx) -> multiplier * antiFunc(kx)
+
+  // Formatting
+  const kStr = Math.abs(k) === 1 ? (k === -1 ? '-' : '') : k;
+  const kx = `${kStr}x`;
+
+  // Question string
+  // a might be negative.
+  const aStr = a === 1 ? '' : (a === -1 ? '-' : a);
+  const questionLatex = `${aStr}\\${func}(${kx})`;
+
+  // Answer string
+  // multiplier * antiFunc
+  // if antiFunc is -cos, combine signs.
+  let ansCoeff = multiplier;
+  if (antiFunc === '-cos') {
+    ansCoeff = -multiplier;
+  }
+
+  const ansFunc = antiFunc.replace('-', ''); // strip - for now
+
+  let ansStr = '';
+  if (ansCoeff === 0) ansStr = '0';
+  else {
+      if (ansCoeff === -1) ansStr = '-';
+      else if (ansCoeff === 1) ansStr = '';
+      else ansStr = ansCoeff.toString();
+
+      ansStr += `${ansFunc}(${kx})`;
+  }
+
+  if (ansStr === '') ansStr = `${ansFunc}(${kx})`; // fallback if coeff 1
 
   return {
-    question: `Evaluate $\\int_{${a}}^{${b}} (${polyLatex}) \\, dx$.`,
-    answer: result.toString(),
-    type: 'number',
-    hint: `Find the antiderivative $F(x)$, then calculate $F(${b}) - F(${a})$.`
+    question: `Evaluate $\\int ${questionLatex} \\, dx$.`,
+    answer: `${ansStr} + C`,
+    type: 'text',
+    hint: `Remember that $\\int \\cos(kx) dx = \\frac{1}{k}\\sin(kx)$ and $\\int \\sin(kx) dx = -\\frac{1}{k}\\cos(kx)$.`
   };
 }
 
+function generateIndefiniteExp() {
+  // Int(a * e^(kx))
+  const k = getRandomInt(1, 3) * (Math.random() > 0.5 ? 1 : -1);
+  const multiplier = getRandomInt(1, 3) * (Math.random() > 0.5 ? 1 : -1);
+  const a = multiplier * k;
+
+  const kStr = Math.abs(k) === 1 ? (k === -1 ? '-' : '') : k;
+  const kx = `${kStr}x`;
+
+  const aStr = a === 1 ? '' : (a === -1 ? '-' : a);
+
+  const questionLatex = `${aStr}e^{${kx}}`;
+
+  // Answer: multiplier * e^(kx)
+  let ansStr = '';
+  if (multiplier === -1) ansStr = '-';
+  else if (multiplier === 1) ansStr = '';
+  else ansStr = multiplier.toString();
+
+  ansStr += `e^(${kx})`; // Use parens for exponent in answer text to be safe or standard format
+
+  return {
+    question: `Evaluate $\\int ${questionLatex} \\, dx$.`,
+    answer: `${ansStr} + C`,
+    type: 'text',
+    hint: `$\\int e^{kx} dx = \\frac{1}{k}e^{kx} + C$.`
+  };
+}
+
+
 export function generateProblem(type) {
-  switch (type) {
-    case 'indefinite-integral':
-      return generateIndefiniteIntegral();
-    case 'definite-integral':
-      return generateDefiniteIntegral();
-    default:
-      return null;
+  if (type === 'indefinite-integral') {
+    const r = Math.random();
+    if (r < 0.5) return generateIndefinitePolynomial();
+    if (r < 0.75) return generateIndefiniteTrig();
+    return generateIndefiniteExp();
   }
+
+  if (type === 'definite-integral') {
+      // Keep it simple for now, polynomials only
+      // Definite integrals of trig/exp require numerical evaluation which is fine
+      // but exact answers might be messy (e.g. e^2 - e).
+      // The validator compares numbers, so we can return the number.
+      // Let's stick to polynomials for definite integrals for this iteration.
+
+      const { terms, antiderivTerms } = generateSimplePolynomial(getRandomInt(1, 2));
+      const polyLatex = formatPolynomial(terms);
+
+      const a = getRandomInt(0, 2);
+      const b = getRandomInt(a + 1, a + 3);
+
+      const evaluate = (t, x) => t.coeff * Math.pow(x, t.exp);
+      const valB = antiderivTerms.reduce((sum, t) => sum + evaluate(t, b), 0);
+      const valA = antiderivTerms.reduce((sum, t) => sum + evaluate(t, a), 0);
+      const result = valB - valA;
+
+      return {
+        question: `Evaluate $\\int_{${a}}^{${b}} (${polyLatex}) \\, dx$.`,
+        answer: result.toString(),
+        type: 'number',
+        hint: `Find the antiderivative $F(x)$, then calculate $F(${b}) - F(${a})$.`
+      };
+  }
+
+  return null;
 }
