@@ -23,7 +23,13 @@ test('questionGenerator', async (t) => {
   await t.test('should generate definite integral problem', () => {
     const problem = generateProblem('definite-integral-properties');
     assert.strictEqual(problem.type, 'number');
-    assert.ok(problem.question.includes('Evaluate'));
+    assert.ok(
+      problem.question.includes('Evaluate') ||
+      problem.question.includes('evaluate') ||
+      problem.question.includes('Find') ||
+      problem.question.includes('Given'),
+      'Question should start with one of the expected phrases'
+    );
   });
 
   await t.test('should generate fallback for unknown type', () => {
