@@ -8,29 +8,94 @@ export const curriculum = [
         title: "1.1 Approximating Areas",
         practiceType: 'approximating-areas',
         content: `
-## Approximating Areas
+## The Area Problem
 
-The use of sigma (summation) notation of the form $\\sum_{i=1}^{n} a_i$ is useful for expressing long sums of values in compact form. For a continuous function defined over an interval $[a, b]$, the process of dividing the interval into $n$ equal parts, extending a rectangle to the graph of the function, calculating the areas of the series of rectangles, and then summing the areas yields an approximation of the area of that region.
+We begin with the problem of finding the area of the region $S$ that lies under the curve $y=f(x)$ from $a$ to $b$. This means that $S$, illustrated in the figure below, is bounded by the graph of a continuous function $f$ (where $f(x) \\ge 0$), the vertical lines $x=a$ and $x=b$, and the x-axis.
+
+## Sigma Notation
+
+Sigma notation is a convenient way to express large sums.
+$$ \\sum_{i=1}^{n} a_i = a_1 + a_2 + \\dots + a_n $$
+
+**Properties:**
+1. $\\sum_{i=1}^{n} c = nc$
+2. $\\sum_{i=1}^{n} c a_i = c \\sum_{i=1}^{n} a_i$
+3. $\\sum_{i=1}^{n} (a_i + b_i) = \\sum_{i=1}^{n} a_i + \\sum_{i=1}^{n} b_i$
+4. $\\sum_{i=1}^{n} (a_i - b_i) = \\sum_{i=1}^{n} a_i - \\sum_{i=1}^{n} b_i$
+
+**Formulas:**
+*   $\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}$
+*   $\\sum_{i=1}^{n} i^2 = \\frac{n(n+1)(2n+1)}{6}$
+*   $\\sum_{i=1}^{n} i^3 = \\left[\\frac{n(n+1)}{2}\\right]^2$
 
 ## Riemann Sums
 
-The width of each rectangle is $\\Delta x = \\frac{b-a}{n}$.
+To estimate the area under $y=f(x)$ on $[a, b]$, we divide the interval into $n$ subintervals of equal width:
+$$ \\Delta x = \\frac{b-a}{n} $$
 
-Riemann sums are expressions of the form $\\sum_{i=1}^{n} f(x_i^*) \\Delta x$, and can be used to estimate the area under the curve $y=f(x)$.
+The endpoints of the subintervals are:
+$$ x_0 = a, \\quad x_1 = a + \\Delta x, \\quad x_2 = a + 2\\Delta x, \\quad \\dots, \\quad x_n = b $$
+Generally, $x_i = a + i\\Delta x$.
 
-*   **Left-endpoint approximation:** $x_i^*$ are chosen to be the left endpoints of the subintervals.
-*   **Right-endpoint approximation:** $x_i^*$ are chosen to be the right endpoints of the subintervals.
-*   **Midpoint approximation:** $x_i^*$ are chosen to be the midpoints of the subintervals.
+A **Riemann Sum** is an approximation of the area given by:
+$$ A \\approx \\sum_{i=1}^{n} f(x_i^*) \\Delta x $$
+where $x_i^*$ is any sample point in the $i$-th subinterval $[x_{i-1}, x_i]$.
 
-## Example
+### Common Sample Points
 
-Estimate the area under $f(x) = x^2$ on $[0, 2]$ using $n=4$ rectangles and right endpoints.
+1.  **Left-Endpoint Approximation ($L_n$):** Choose $x_i^* = x_{i-1}$ (the left end).
+    $$ L_n = \\sum_{i=1}^{n} f(x_{i-1}) \\Delta x $$
 
-$\\Delta x = \\frac{2-0}{4} = 0.5$.
-Endpoints: $0, 0.5, 1, 1.5, 2$.
-Right endpoints: $0.5, 1, 1.5, 2$.
-Area $\\approx 0.5 [f(0.5) + f(1) + f(1.5) + f(2)]$
-$= 0.5 [0.25 + 1 + 2.25 + 4] = 0.5 [7.5] = 3.75$.
+2.  **Right-Endpoint Approximation ($R_n$):** Choose $x_i^* = x_i$ (the right end).
+    $$ R_n = \\sum_{i=1}^{n} f(x_i) \\Delta x $$
+
+3.  **Midpoint Approximation ($M_n$):** Choose $x_i^* = \\bar{x}_i = \\frac{x_{i-1} + x_i}{2}$.
+    $$ M_n = \\sum_{i=1}^{n} f(\\bar{x}_i) \\Delta x $$
+
+## Walkthrough Example
+
+**Problem:** Estimate the area under $f(x) = x^2$ on the interval $[0, 2]$ using $n=4$ rectangles and the **Right-Endpoint Rule**.
+
+**Step 1: Calculate $\\Delta x$.**
+$$ \\Delta x = \\frac{b-a}{n} = \\frac{2-0}{4} = 0.5 $$
+
+**Step 2: Find the Grid Points ($x_i$).**
+Start at $a=0$ and add $\\Delta x$ repeatedly:
+*   $x_0 = 0$
+*   $x_1 = 0.5$
+*   $x_2 = 1.0$
+*   $x_3 = 1.5$
+*   $x_4 = 2.0$
+
+**Step 3: Choose Sample Points ($x_i^*$).**
+For Right endpoints, we use $x_1, x_2, x_3, x_4$:
+*   $x_1^* = 0.5$
+*   $x_2^* = 1.0$
+*   $x_3^* = 1.5$
+*   $x_4^* = 2.0$
+
+**Step 4: Evaluate the Function.**
+*   $f(0.5) = (0.5)^2 = 0.25$
+*   $f(1.0) = (1.0)^2 = 1.00$
+*   $f(1.5) = (1.5)^2 = 2.25$
+*   $f(2.0) = (2.0)^2 = 4.00$
+
+**Step 5: Sum and Multiply.**
+$$ R_4 = \\Delta x [ f(0.5) + f(1.0) + f(1.5) + f(2.0) ] $$
+$$ R_4 = 0.5 [ 0.25 + 1.00 + 2.25 + 4.00 ] $$
+$$ R_4 = 0.5 [ 7.5 ] = 3.75 $$
+
+So, the estimated area is **3.75**.
+
+## The Distance Problem
+
+The area under a velocity-time curve $v(t)$ represents the distance traveled.
+If velocity is constant, $d = v \\times t$, which is the area of a rectangle.
+If velocity varies, we approximate the distance by summing small rectangles (small time intervals where velocity is roughly constant).
+
+$$ \\text{Distance} \\approx \\sum_{i=1}^{n} v(t_i^*) \\Delta t $$
+
+As $n \\to \\infty$, this sum approaches the exact distance (the definite integral).
 `
       },
       {
