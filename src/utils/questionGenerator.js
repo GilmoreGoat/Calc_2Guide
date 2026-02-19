@@ -165,23 +165,62 @@ function generateRiemannSum() {
 }
 
 function generateDefiniteIntegral() {
-  const { terms, antiderivTerms } = generateSimplePolynomial(getRandomInt(1, 2));
-  const polyLatex = formatPolynomial(terms);
+  const type = Math.random();
 
-  const a = getRandomInt(0, 2);
-  const b = getRandomInt(a + 1, a + 3);
+  if (type < 0.4) {
+    // 1. Polynomial Evaluation (Standard)
+    const { terms, antiderivTerms } = generateSimplePolynomial(getRandomInt(1, 2));
+    const polyLatex = formatPolynomial(terms);
 
-  const evaluate = (t, x) => t.coeff * Math.pow(x, t.exp);
-  const valB = antiderivTerms.reduce((sum, t) => sum + evaluate(t, b), 0);
-  const valA = antiderivTerms.reduce((sum, t) => sum + evaluate(t, a), 0);
-  const result = valB - valA;
+    const a = getRandomInt(0, 2);
+    const b = getRandomInt(a + 1, a + 3);
 
-  return {
-    question: `Evaluate $\\int_{${a}}^{${b}} (${polyLatex}) \\, dx$.`,
-    answer: result.toString(),
-    type: 'number',
-    hint: `Find the antiderivative $F(x)$, then calculate $F(${b}) - F(${a})$.`
-  };
+    const evaluate = (t, x) => t.coeff * Math.pow(x, t.exp);
+    const valB = antiderivTerms.reduce((sum, t) => sum + evaluate(t, b), 0);
+    const valA = antiderivTerms.reduce((sum, t) => sum + evaluate(t, a), 0);
+    const result = valB - valA;
+
+    return {
+      question: `Evaluate $\\int_{${a}}^{${b}} (${polyLatex}) \\, dx$.`,
+      answer: result.toString(),
+      type: 'number',
+      hint: `Find the antiderivative $F(x)$, then calculate $F(${b}) - F(${a})$.`
+    };
+  } else if (type < 0.7) {
+    // 2. Integral Properties (Additivity)
+    const a = getRandomInt(0, 2);
+    const b = getRandomInt(3, 5);
+    const c = getRandomInt(6, 9);
+
+    const val1 = getRandomInt(2, 8); // Int_a^b
+    const val2 = getRandomInt(3, 9); // Int_b^c
+    const result = val1 + val2;      // Int_a^c
+
+    return {
+      question: `Given that $\\int_{${a}}^{${b}} f(x) \\, dx = ${val1}$ and $\\int_{${b}}^{${c}} f(x) \\, dx = ${val2}$, evaluate $\\int_{${a}}^{${c}} f(x) \\, dx$.`,
+      answer: result.toString(),
+      type: 'number',
+      hint: `Use the property: $\\int_a^c f(x) \\, dx = \\int_a^b f(x) \\, dx + \\int_b^c f(x) \\, dx$.`
+    };
+  } else {
+    // 3. Average Value
+    // Use an even slope so the average value is an integer
+    const m = 2 * getRandomInt(1, 3);
+    const k = getRandomInt(0, 5);
+
+    const a = getRandomInt(0, 2);
+    const b = getRandomInt(a + 2, a + 6);
+
+    // Average value of mx + k on [a, b] is m/2 * (b+a) + k
+    const ave = (m / 2) * (b + a) + k;
+
+    return {
+      question: `Find the average value of the function $f(x) = ${m}x + ${k}$ on the interval $[${a}, ${b}]$.`,
+      answer: ave.toString(),
+      type: 'number',
+      hint: `The average value is $f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx$.`
+    };
+  }
 }
 
 function generateNetChange() {
