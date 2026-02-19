@@ -121,6 +121,60 @@ function generateDefiniteIntegral() {
   };
 }
 
+function generateFundamentalTheorem() {
+  const type = Math.random();
+
+  // 40% chance: FTC1 Simple (Upper limit x)
+  // 30% chance: FTC1 Chain Rule (Upper limit u(x))
+  // 30% chance: FTC2 Definite Integral
+
+  if (type < 0.4) {
+    // FTC1 Simple: d/dx Int_a^x f(t) dt = f(x)
+    const { terms } = generateSimplePolynomial(getRandomInt(1, 3));
+    const polyX = formatPolynomial(terms);
+    const polyT = polyX.replace(/x/g, 't');
+    const a = getRandomInt(1, 5);
+
+    return {
+      question: `Find the derivative of $g(x) = \\int_{${a}}^x (${polyT}) \\, dt$.`,
+      answer: polyX,
+      type: 'text',
+      hint: `Use Part 1 of the Fundamental Theorem of Calculus: $\\frac{d}{dx} \\int_a^x f(t) dt = f(x)$.`
+    };
+  } else if (type < 0.7) {
+    // FTC1 Chain Rule: d/dx Int_a^{u(x)} f(t) dt = f(u(x)) * u'(x)
+    // u(x) = x^k
+    const k = getRandomInt(2, 4);
+    // f(t) = t^n or cos(t)
+
+    const isTrig = Math.random() > 0.5;
+
+    if (isTrig) {
+        return {
+            question: `Find $g'(x)$ where $g(x) = \\int_{1}^{x^${k}} \\cos(t) \\, dt$.`,
+            answer: `${k}x^${k-1} * cos(x^${k})`,
+            type: 'text',
+            hint: `Use the Chain Rule: $\\frac{d}{dx} \\int_a^{u(x)} f(t) dt = f(u(x)) \\cdot u'(x)$.`
+        };
+    } else {
+        const n = getRandomInt(1, 3);
+        // Answer = k * x^{kn + k - 1}
+        const finalExp = k * n + k - 1;
+        const finalCoeff = k;
+        return {
+            question: `Find $g'(x)$ where $g(x) = \\int_{0}^{x^${k}} t^${n} \\, dt$.`,
+            answer: `${finalCoeff}x^${finalExp}`,
+            type: 'text',
+            hint: `Use the Chain Rule: $\\frac{d}{dx} \\int_a^{u(x)} f(t) dt = f(u(x)) \\cdot u'(x)$.`
+        };
+    }
+
+  } else {
+    // FTC2: Definite Integral
+    return generateDefiniteIntegral();
+  }
+}
+
 function generateNetChange() {
   // Use simple polynomial velocity
   const { terms, antiderivTerms } = generateSimplePolynomial(1);
@@ -325,7 +379,7 @@ export function generateProblem(type) {
     case 'definite-integral-properties':
       return generateDefiniteIntegral();
     case 'fundamental-theorem':
-      return generateDefiniteIntegral();
+      return generateFundamentalTheorem();
     case 'net-change':
       return generateNetChange();
     case 'substitution-integral':
