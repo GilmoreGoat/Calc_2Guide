@@ -148,20 +148,75 @@ $$ \\int_a^b f(g(x))g'(x) \\, dx = \\int_{g(a)}^{g(b)} f(u) \\, du $$
         content: `
 ## Exponential Functions
 
+The exponential function $f(x) = e^x$ is unique because it is its own derivative.
+$$ \\frac{d}{dx} e^x = e^x $$
+Consequently, its integral is also itself:
 $$ \\int e^x \\, dx = e^x + C $$
+
+### General Exponential Functions
+For a base $a > 0, a \\neq 1$:
+$$ \\frac{d}{dx} a^x = a^x \\ln a $$
 $$ \\int a^x \\, dx = \\frac{a^x}{\\ln a} + C $$
+
+### Chain Rule with Exponentials
+If $u = g(x)$, then $\\int e^{g(x)} g'(x) \\, dx = e^{g(x)} + C$.
+
+**Example:**
+Evaluate $\\int x e^{x^2} \\, dx$.
+Let $u = x^2$, then $du = 2x \\, dx$ or $\\frac{1}{2} du = x \\, dx$.
+$$ \\int x e^{x^2} \\, dx = \\int e^u \\cdot \\frac{1}{2} du = \\frac{1}{2} e^u + C = \\frac{1}{2} e^{x^2} + C $$
 
 ## Logarithmic Functions
 
-The Power Rule $\\int x^n dx$ fails when $n=-1$.
-Instead, we have:
-$$ \\int \\frac{1}{x} \\, dx = \\ln |x| + C $$
+Recall the Power Rule for integration: $\\int x^n \\, dx = \\frac{x^{n+1}}{n+1} + C$, which is valid for all $n \\neq -1$.
+When $n = -1$, we have $\\int x^{-1} \\, dx = \\int \\frac{1}{x} \\, dx$.
+The antiderivative of $1/x$ is $\\ln|x|$.
+$$ \\int \\frac{1}{x} \\, dx = \\ln|x| + C $$
 
-## Example
+### Logarithms and Substitution
+Many integrals result in a natural logarithm. The general form is:
+$$ \\int \\frac{g'(x)}{g(x)} \\, dx = \\ln|g(x)| + C $$
 
-Evaluate $\\int \\frac{2x}{x^2+1} \\, dx$.
-Let $u = x^2+1$, then $du = 2x \\, dx$.
-$\\int \\frac{1}{u} \\, du = \\ln|u| + C = \\ln(x^2+1) + C$.
+**Example:**
+Evaluate $\\int \\tan x \\, dx$.
+$$ \\int \\tan x \\, dx = \\int \\frac{\\sin x}{\\cos x} \\, dx $$
+Let $u = \\cos x$, then $du = -\\sin x \\, dx$.
+$$ \\int \\frac{-du}{u} = -\\ln|u| + C = -\\ln|\\cos x| + C = \\ln|\\sec x| + C $$
+
+## Walkthrough: Definite Integral with Exponentials
+
+**Problem:** Evaluate $\\int_0^1 \\frac{e^x}{1+e^x} \\, dx$.
+
+**Solution:**
+1.  **Identify Substitution:** The numerator $e^x$ is the derivative of the term $e^x$ in the denominator.
+    Let $u = 1 + e^x$.
+    Then $du = e^x \\, dx$.
+
+2.  **Change Limits:**
+    When $x=0$, $u = 1 + e^0 = 1 + 1 = 2$.
+    When $x=1$, $u = 1 + e^1 = 1 + e$.
+
+3.  **Substitute and Integrate:**
+    $$ \\int_0^1 \\frac{e^x}{1+e^x} \\, dx = \\int_2^{1+e} \\frac{1}{u} \\, du $$
+    $$ = [\\ln|u|]_2^{1+e} $$
+
+4.  **Evaluate:**
+    $$ = \\ln(1+e) - \\ln(2) = \\ln\\left(\\frac{1+e}{2}\\right) $$
+
+## Walkthrough: Integral of $a^x$
+
+**Problem:** Evaluate $\\int 2^{3x} \\, dx$.
+
+**Solution:**
+1.  **Method 1: Direct Formula**
+    Recall $\\int a^u \\, du = \\frac{a^u}{\\ln a} + C$.
+    Here, base is $2$, but exponent is $3x$.
+    Let $u = 3x$, $du = 3 \\, dx \\Rightarrow dx = \\frac{1}{3} du$.
+    $$ \\int 2^u \\cdot \\frac{1}{3} du = \\frac{1}{3} \\frac{2^u}{\\ln 2} + C = \\frac{2^{3x}}{3 \\ln 2} + C $$
+
+2.  **Method 2: Convert to Base $e$**
+    $2^{3x} = (e^{\\ln 2})^{3x} = e^{(3 \\ln 2)x}$.
+    $$ \\int e^{(3 \\ln 2)x} \\, dx = \\frac{1}{3 \\ln 2} e^{(3 \\ln 2)x} + C = \\frac{2^{3x}}{3 \\ln 2} + C $$
 `
       },
       {
