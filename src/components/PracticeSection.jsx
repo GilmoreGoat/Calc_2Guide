@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import { RefreshCw, Check, HelpCircle, ChevronRight, AlertCircle } from 'lucide-react';
+import { RefreshCw, Check, HelpCircle, ChevronRight, AlertCircle, Sparkles } from 'lucide-react';
 import { generateProblem } from '../utils/questionGenerator';
 import { validateMath } from '../utils/mathValidator';
 
@@ -41,27 +41,27 @@ const PracticeSection = ({ type }) => {
   if (!type) return null;
 
   return (
-    <div className="mt-12 bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
-      <div className="p-6 border-b border-slate-200 bg-slate-100 flex justify-between items-center">
-        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-          <RefreshCw className="w-5 h-5 text-brand-600" />
+    <div className="mt-12 bg-white rounded-[2rem] shadow-xl shadow-brand-100/50 border border-brand-50 overflow-hidden">
+      <div className="p-8 border-b border-brand-100 bg-brand-300 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <h2 className="text-2xl font-black text-black flex items-center gap-2">
+          <Sparkles className="w-6 h-6 text-white" />
           Practice Problems
         </h2>
         <button
           onClick={loadProblem}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-brand-700 bg-white border border-slate-300 rounded-lg hover:bg-brand-50 hover:text-brand-800 hover:border-brand-300 transition-all shadow-sm"
+          className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-black bg-white rounded-full hover:scale-105 hover:bg-slate-50 transition-all shadow-md"
         >
           <RefreshCw className="w-4 h-4" />
           New Problem
         </button>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-8 space-y-8">
         {problem ? (
           <>
-            <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
-              <div className="text-sm font-medium text-slate-500 mb-2 uppercase tracking-wide">Problem</div>
-              <div className="prose prose-slate max-w-none text-lg">
+            <div className="bg-brand-50/50 p-8 rounded-3xl border border-brand-100">
+              <div className="text-sm font-bold text-brand-500 mb-3 uppercase tracking-wider">Problem</div>
+              <div className="prose prose-lg prose-slate max-w-none text-slate-800 font-medium">
                 <ReactMarkdown
                   children={problem.question}
                   remarkPlugins={[remarkMath]}
@@ -70,28 +70,28 @@ const PracticeSection = ({ type }) => {
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex flex-col gap-2">
-                <label className="block text-sm font-medium text-slate-700">
+            <div className="space-y-6">
+              <div className="flex flex-col gap-3">
+                <label className="block text-sm font-bold text-slate-700 ml-2">
                   Your Answer
                   {problem.type === 'text' && (
-                    <span className="text-slate-500 font-normal ml-2 italic">
-                      (e.g., x^2 + C, format fractions like 1/2)
+                    <span className="text-slate-400 font-normal ml-2 italic">
+                      (e.g., x^2 + C)
                     </span>
                   )}
                 </label>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-4">
                   <input
                     type="text"
                     value={userAnswer}
                     onChange={(e) => setUserAnswer(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleCheck()}
-                    className="flex-1 rounded-lg border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 px-4 py-2 text-lg font-mono"
+                    className="flex-1 rounded-2xl border-2 border-brand-200 shadow-sm focus:border-brand-400 focus:ring-brand-400 px-6 py-3 text-lg font-mono bg-white transition-all placeholder:text-slate-300"
                     placeholder={problem.type === 'text' ? "Enter expression..." : "Enter number..."}
                   />
                   <button
                     onClick={handleCheck}
-                    className="px-6 py-2 bg-brand-600 text-white font-medium rounded-lg hover:bg-brand-700 transition-colors flex items-center gap-2 shadow-sm"
+                    className="px-10 py-3 bg-black text-white font-bold rounded-full hover:bg-slate-800 hover:scale-105 transition-all flex items-center justify-center gap-2 shadow-lg"
                   >
                     <Check className="w-5 h-5" />
                     Check
@@ -100,28 +100,32 @@ const PracticeSection = ({ type }) => {
               </div>
 
               {feedback && (
-                <div className={`p-4 rounded-lg flex items-start gap-3 ${
-                  feedback.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
+                <div className={`p-6 rounded-2xl flex items-start gap-4 animate-in slide-in-from-top-2 duration-300 ${
+                  feedback.type === 'success'
+                    ? 'bg-green-50 text-green-900 border border-green-100'
+                    : 'bg-red-50 text-red-900 border border-red-100'
                 }`}>
-                  {feedback.type === 'success' ? <Check className="w-5 h-5 mt-0.5" /> : <AlertCircle className="w-5 h-5 mt-0.5" />}
-                  <span className="font-medium">{feedback.message}</span>
+                  <div className={`p-2 rounded-full ${feedback.type === 'success' ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
+                    {feedback.type === 'success' ? <Check className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+                  </div>
+                  <span className="font-bold text-lg mt-1">{feedback.message}</span>
                 </div>
               )}
 
-              <div className="pt-2">
+              <div className="pt-4 border-t border-slate-100">
                 <button
                   onClick={() => setShowHint(!showHint)}
-                  className="text-sm text-brand-600 hover:text-brand-800 font-medium flex items-center gap-1 transition-colors"
+                  className="text-sm text-brand-500 hover:text-brand-700 font-bold flex items-center gap-2 transition-colors ml-1"
                 >
-                  <HelpCircle className="w-4 h-4" />
+                  <HelpCircle className="w-5 h-5" />
                   {showHint ? 'Hide Hint' : 'Need a hint?'}
-                  <ChevronRight className={`w-3 h-3 transition-transform ${showHint ? 'rotate-90' : ''}`} />
+                  <ChevronRight className={`w-4 h-4 transition-transform ${showHint ? 'rotate-90' : ''}`} />
                 </button>
 
                 {showHint && (
-                  <div className="mt-3 text-slate-600 bg-slate-50 p-4 rounded-lg border border-slate-200 animate-in fade-in slide-in-from-top-2 duration-200">
-                     <div className="text-sm font-semibold text-slate-500 mb-1 uppercase tracking-wide">Hint</div>
-                     <div className="prose prose-sm max-w-none text-slate-700">
+                  <div className="mt-4 text-slate-600 bg-brand-50 p-6 rounded-2xl border border-brand-100 animate-in fade-in slide-in-from-top-2 duration-200">
+                     <div className="text-xs font-bold text-brand-400 mb-2 uppercase tracking-widest">Hint</div>
+                     <div className="prose prose-slate max-w-none text-slate-800">
                       <ReactMarkdown
                         children={problem.hint}
                         remarkPlugins={[remarkMath]}
@@ -134,8 +138,8 @@ const PracticeSection = ({ type }) => {
             </div>
           </>
         ) : (
-          <div className="text-center py-12 text-slate-500">
-            Select a topic to verify practice problems.
+          <div className="text-center py-16 text-slate-400 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+            Select a topic to generate practice problems.
           </div>
         )}
       </div>
