@@ -8,88 +8,325 @@ export const curriculum = [
         title: "1.1 Approximating Areas",
         practiceType: 'approximating-areas',
         content: `
-## Approximating Areas
+## The Area Problem
 
-The use of sigma (summation) notation of the form $\\sum_{i=1}^{n} a_i$ is useful for expressing long sums of values in compact form. For a continuous function defined over an interval $[a, b]$, the process of dividing the interval into $n$ equal parts, extending a rectangle to the graph of the function, calculating the areas of the series of rectangles, and then summing the areas yields an approximation of the area of that region.
+We begin with the problem of finding the area of the region $S$ that lies under the curve $y=f(x)$ from $a$ to $b$. This means that $S$, illustrated in the figure below, is bounded by the graph of a continuous function $f$ (where $f(x) \\ge 0$), the vertical lines $x=a$ and $x=b$, and the x-axis.
+
+## Sigma Notation
+
+Sigma notation is a convenient way to express large sums.
+$$ \\sum_{i=1}^{n} a_i = a_1 + a_2 + \\dots + a_n $$
+
+**Properties:**
+1. $\\sum_{i=1}^{n} c = nc$
+2. $\\sum_{i=1}^{n} c a_i = c \\sum_{i=1}^{n} a_i$
+3. $\\sum_{i=1}^{n} (a_i + b_i) = \\sum_{i=1}^{n} a_i + \\sum_{i=1}^{n} b_i$
+4. $\\sum_{i=1}^{n} (a_i - b_i) = \\sum_{i=1}^{n} a_i - \\sum_{i=1}^{n} b_i$
+
+**Formulas:**
+*   $\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}$
+*   $\\sum_{i=1}^{n} i^2 = \\frac{n(n+1)(2n+1)}{6}$
+*   $\\sum_{i=1}^{n} i^3 = \\left[\\frac{n(n+1)}{2}\\right]^2$
 
 ## Riemann Sums
 
-The width of each rectangle is $\\Delta x = \\frac{b-a}{n}$.
+To estimate the area under $y=f(x)$ on $[a, b]$, we divide the interval into $n$ subintervals of equal width:
+$$ \\Delta x = \\frac{b-a}{n} $$
 
-Riemann sums are expressions of the form $\\sum_{i=1}^{n} f(x_i^*) \\Delta x$, and can be used to estimate the area under the curve $y=f(x)$.
+The endpoints of the subintervals are:
+$$ x_0 = a, \\quad x_1 = a + \\Delta x, \\quad x_2 = a + 2\\Delta x, \\quad \\dots, \\quad x_n = b $$
+Generally, $x_i = a + i\\Delta x$.
 
-*   **Left-endpoint approximation:** $x_i^*$ are chosen to be the left endpoints of the subintervals.
-*   **Right-endpoint approximation:** $x_i^*$ are chosen to be the right endpoints of the subintervals.
-*   **Midpoint approximation:** $x_i^*$ are chosen to be the midpoints of the subintervals.
+A **Riemann Sum** is an approximation of the area given by:
+$$ A \\approx \\sum_{i=1}^{n} f(x_i^*) \\Delta x $$
+where $x_i^*$ is any sample point in the $i$-th subinterval $[x_{i-1}, x_i]$.
 
-## Example
+### Common Sample Points
 
-Estimate the area under $f(x) = x^2$ on $[0, 2]$ using $n=4$ rectangles and right endpoints.
+1.  **Left-Endpoint Approximation ($L_n$):** Choose $x_i^* = x_{i-1}$ (the left end).
+    $$ L_n = \\sum_{i=1}^{n} f(x_{i-1}) \\Delta x $$
 
-$\\Delta x = \\frac{2-0}{4} = 0.5$.
-Endpoints: $0, 0.5, 1, 1.5, 2$.
-Right endpoints: $0.5, 1, 1.5, 2$.
-Area $\\approx 0.5 [f(0.5) + f(1) + f(1.5) + f(2)]$
-$= 0.5 [0.25 + 1 + 2.25 + 4] = 0.5 [7.5] = 3.75$.
+2.  **Right-Endpoint Approximation ($R_n$):** Choose $x_i^* = x_i$ (the right end).
+    $$ R_n = \\sum_{i=1}^{n} f(x_i) \\Delta x $$
+
+3.  **Midpoint Approximation ($M_n$):** Choose $x_i^* = \\bar{x}_i = \\frac{x_{i-1} + x_i}{2}$.
+    $$ M_n = \\sum_{i=1}^{n} f(\\bar{x}_i) \\Delta x $$
+
+## Walkthrough Example
+
+**Problem:** Estimate the area under $f(x) = x^2$ on the interval $[0, 2]$ using $n=4$ rectangles and the **Right-Endpoint Rule**.
+
+**Step 1: Calculate $\\Delta x$.**
+$$ \\Delta x = \\frac{b-a}{n} = \\frac{2-0}{4} = 0.5 $$
+
+**Step 2: Find the Grid Points ($x_i$).**
+Start at $a=0$ and add $\\Delta x$ repeatedly:
+*   $x_0 = 0$
+*   $x_1 = 0.5$
+*   $x_2 = 1.0$
+*   $x_3 = 1.5$
+*   $x_4 = 2.0$
+
+**Step 3: Choose Sample Points ($x_i^*$).**
+For Right endpoints, we use $x_1, x_2, x_3, x_4$:
+*   $x_1^* = 0.5$
+*   $x_2^* = 1.0$
+*   $x_3^* = 1.5$
+*   $x_4^* = 2.0$
+
+**Step 4: Evaluate the Function.**
+*   $f(0.5) = (0.5)^2 = 0.25$
+*   $f(1.0) = (1.0)^2 = 1.00$
+*   $f(1.5) = (1.5)^2 = 2.25$
+*   $f(2.0) = (2.0)^2 = 4.00$
+
+**Step 5: Sum and Multiply.**
+$$ R_4 = \\Delta x [ f(0.5) + f(1.0) + f(1.5) + f(2.0) ] $$
+$$ R_4 = 0.5 [ 0.25 + 1.00 + 2.25 + 4.00 ] $$
+$$ R_4 = 0.5 [ 7.5 ] = 3.75 $$
+
+So, the estimated area is **3.75**.
+
+## The Distance Problem
+
+The area under a velocity-time curve $v(t)$ represents the distance traveled.
+If velocity is constant, $d = v \\times t$, which is the area of a rectangle.
+If velocity varies, we approximate the distance by summing small rectangles (small time intervals where velocity is roughly constant).
+
+$$ \\text{Distance} \\approx \\sum_{i=1}^{n} v(t_i^*) \\Delta t $$
+
+As $n \\to \\infty$, this sum approaches the exact distance (the definite integral).
 `
       },
       {
         id: "definite-integral",
         title: "1.2 The Definite Integral",
         practiceType: 'definite-integral-properties',
-        content: `
+        content: [
+          {
+            type: 'text',
+            content: `
 ## Definition
 
-The **definite integral** of a function $f(x)$ from $a$ to $b$ represents the net signed area under the curve $y=f(x)$ from $x=a$ to $x=b$. It is denoted by:
-
-$$ \\int_a^b f(x) \\, dx $$
-
-Usually defined as the limit of a Riemann Sum:
+The **definite integral** of a function $f(x)$ from $a$ to $b$ is the limit of Riemann sums as the number of subintervals approaches infinity:
 
 $$ \\int_a^b f(x) \\, dx = \\lim_{n \\to \\infty} \\sum_{i=1}^n f(x_i^*) \\Delta x $$
 
-## Properties
+*   **Integrand:** The function $f(x)$.
+*   **Limits of Integration:** The numbers $a$ (lower limit) and $b$ (upper limit).
 
-1.  $\\int_a^b f(x) \\, dx = -\\int_b^a f(x) \\, dx$
-2.  $\\int_a^a f(x) \\, dx = 0$
-3.  $\\int_a^b c \\, dx = c(b-a)$
-4.  $\\int_a^b [f(x) + g(x)] \\, dx = \\int_a^b f(x) \\, dx + \\int_a^b g(x) \\, dx$
-5.  $\\int_a^c f(x) \\, dx + \\int_c^b f(x) \\, dx = \\int_a^b f(x) \\, dx$
-6.  If $f(x) \\ge 0$ for $a \\le x \\le b$, then $\\int_a^b f(x) \\, dx \\ge 0$.
+## Geometric Interpretation
 
-## Average Value
+The definite integral represents the **net signed area** between the curve $y=f(x)$ and the x-axis on the interval $[a, b]$.
 
-The average value of a function $f(x)$ on $[a, b]$ is given by:
-$$ f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx $$
+*   Area above the x-axis is counted as **positive**.
+*   Area below the x-axis is counted as **negative**.
+
+$$ \\int_a^b f(x) \\, dx = A_{up} - A_{down} $$
+
+## Integrability
+
+**Theorem:** If $f$ is continuous on $[a, b]$, or if $f$ has only a finite number of jump discontinuities, then $f$ is integrable on $[a, b]$; that is, the definite integral $\\int_a^b f(x) \\, dx$ exists.
 `
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Using Geometry to Evaluate an Integral',
+            problem: 'Evaluate $\\int_{-3}^3 \\sqrt{9-x^2} \\, dx$ by interpreting it in terms of areas.',
+            steps: [
+              {
+                text: 'Identify the shape of the graph of the integrand.',
+                math: 'Let $y = \\sqrt{9-x^2}$. Squaring both sides gives $y^2 = 9-x^2$, or $x^2 + y^2 = 9$. This is the equation of a circle with radius $r=3$, centered at the origin.'
+              },
+              {
+                text: 'Since $y = \\sqrt{9-x^2} \\ge 0$, the graph is the upper semicircle.',
+                math: 'The integral represents the area of this semicircle.'
+              },
+              {
+                text: 'Calculate the area using the formula for a semicircle: $A = \\frac{1}{2}\\pi r^2$.',
+                math: 'A = \\frac{1}{2}\\pi (3)^2 = \\frac{9\\pi}{2}'
+              },
+              {
+                text: 'State the final answer.',
+                math: '\\int_{-3}^3 \\sqrt{9-x^2} \\, dx = \\frac{9\\pi}{2}'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
+## Properties of the Definite Integral
+
+Assuming $f$ and $g$ are integrable functions:
+
+1.  **Reversing Limits:** $\\int_b^a f(x) \\, dx = -\\int_a^b f(x) \\, dx$
+2.  **Zero Width:** $\\int_a^a f(x) \\, dx = 0$
+3.  **Constant Multiple:** $\\int_a^b c f(x) \\, dx = c \\int_a^b f(x) \\, dx$
+4.  **Sum/Difference:** $\\int_a^b [f(x) \\pm g(x)] \\, dx = \\int_a^b f(x) \\, dx \\pm \\int_a^b g(x) \\, dx$
+5.  **Additivity:** $\\int_a^c f(x) \\, dx + \\int_c^b f(x) \\, dx = \\int_a^b f(x) \\, dx$
+6.  **Comparison:** If $f(x) \\ge g(x)$ for $a \\le x \\le b$, then $\\int_a^b f(x) \\, dx \\ge \\int_a^b g(x) \\, dx$.
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Using Properties of Integrals',
+            problem: 'Given that $\\int_0^{10} f(x) \\, dx = 17$ and $\\int_0^8 f(x) \\, dx = 12$, find $\\int_8^{10} f(x) \\, dx$.',
+            steps: [
+              {
+                text: 'Use the Additivity Property.',
+                math: '\\int_0^{10} f(x) \\, dx = \\int_0^8 f(x) \\, dx + \\int_8^{10} f(x) \\, dx'
+              },
+              {
+                text: 'Substitute the known values into the equation.',
+                math: '17 = 12 + \\int_8^{10} f(x) \\, dx'
+              },
+              {
+                text: 'Solve for the unknown integral.',
+                math: '\\int_8^{10} f(x) \\, dx = 17 - 12 = 5'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
+## Average Value of a Function
+
+The average value of a function $f(x)$ on the interval $[a, b]$ is defined as:
+
+$$ f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx $$
+
+**Mean Value Theorem for Integrals:**
+If $f$ is continuous on $[a, b]$, then there exists a number $c$ in $[a, b]$ such that:
+$$ f(c) = f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx $$
+or equivalently,
+$$ \\int_a^b f(x) \\, dx = f(c)(b-a) $$
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Calculating Average Value',
+            problem: 'Find the average value of $f(x) = 1 + x^2$ on the interval $[-1, 2]$.',
+            steps: [
+              {
+                text: 'Set up the formula for average value.',
+                math: 'f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx = \\frac{1}{2 - (-1)} \\int_{-1}^2 (1 + x^2) \\, dx'
+              },
+              {
+                text: 'Simplify the coefficient outside the integral.',
+                math: 'f_{ave} = \\frac{1}{3} \\int_{-1}^2 (1 + x^2) \\, dx'
+              },
+              {
+                text: 'Evaluate the definite integral.',
+                math: '\\int_{-1}^2 (1 + x^2) \\, dx = \\left[ x + \\frac{x^3}{3} \\right]_{-1}^2'
+              },
+              {
+                text: 'Calculate the value at the upper limit ($x=2$) and lower limit ($x=-1$).',
+                math: 'F(2) = 2 + \\frac{8}{3} = \\frac{14}{3} \\\\\nF(-1) = -1 + \\frac{-1}{3} = -\\frac{4}{3}'
+              },
+              {
+                text: 'Subtract and multiply by the coefficient.',
+                math: 'f_{ave} = \\frac{1}{3} \\left( \\frac{14}{3} - (-\\frac{4}{3}) \\right) = \\frac{1}{3} \\left( \\frac{18}{3} \\right) = \\frac{1}{3} (6) = 2'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
+## Practice Problems
+
+Test your understanding with the generated problems below.
+`
+          }
+        ]
       },
       {
         id: "fundamental-theorem",
         title: "1.3 The Fundamental Theorem of Calculus",
         practiceType: 'fundamental-theorem',
         content: `
-The FTC connects differential calculus and integral calculus.
+The Fundamental Theorem of Calculus (FTC) is the bridge between differential calculus (rates of change) and integral calculus (accumulation of quantities). It shows that differentiation and integration are inverse processes.
 
-## Part 1 (FTC1)
+## Part 1: The Area Accumulation Function
+
+The first part of the theorem deals with the derivative of an integral. It states that if we define a function $g(x)$ as the definite integral of a continuous function $f$ from a fixed point $a$ to a variable point $x$, then $g(x)$ is an antiderivative of $f(x)$.
+
+### Theorem (FTC 1)
 
 If $f$ is continuous on $[a, b]$, then the function $g$ defined by
-$$ g(x) = \\int_a^x f(t) \\, dt $$
-is continuous on $[a, b]$, differentiable on $(a, b)$, and $g'(x) = f(x)$.
+$$ g(x) = \\int_a^x f(t) \\, dt \\quad \\text{for } a \\le x \\le b $$
+is continuous on $[a, b]$, differentiable on $(a, b)$, and
+$$ g'(x) = f(x) $$
 
-**Example:**
-If $g(x) = \\int_1^x t^2 dt$, then $g'(x) = x^2$.
+### Intuition
 
-## Part 2 (FTC2)
+Imagine $g(x)$ represents the area under the curve $y=f(t)$ from $a$ to $x$. If we increase $x$ by a small amount $h$, the change in area is approximately the area of a rectangle with height $f(x)$ and width $h$.
+$$ g(x+h) - g(x) \\approx f(x) \\cdot h $$
+Dividing by $h$ gives:
+$$ \\frac{g(x+h) - g(x)}{h} \\approx f(x) $$
+Taking the limit as $h \\to 0$ gives the definition of the derivative: $g'(x) = f(x)$.
+
+### Examples
+
+**Example 1:**
+Find $\\frac{d}{dx} \\int_1^x t^3 \\, dt$.
+By FTC1, this is simply $x^3$.
+
+**Example 2 (The Chain Rule):**
+What if the upper limit is a function of $x$? Let $y = \\int_a^{u(x)} f(t) \\, dt$.
+Let $U = u(x)$. Then $y = \\int_a^U f(t) \\, dt$.
+By the Chain Rule:
+$$ \\frac{dy}{dx} = \\frac{dy}{dU} \\cdot \\frac{dU}{dx} $$
+$$ \\frac{dy}{dx} = f(U) \\cdot u'(x) = f(u(x)) \\cdot u'(x) $$
+
+**Problem:** Find $\\frac{d}{dx} \\int_1^{x^4} \\sec t \\, dt$.
+Here $u(x) = x^4$, so $u'(x) = 4x^3$.
+$$ \\frac{d}{dx} = \\sec(x^4) \\cdot 4x^3 $$
+
+## Part 2: Evaluating Definite Integrals
+
+The second part of the theorem gives us a powerful method to evaluate definite integrals without using Riemann sums. It links the definite integral to antiderivatives.
+
+### Theorem (FTC 2)
 
 If $f$ is continuous on $[a, b]$, then
 $$ \\int_a^b f(x) \\, dx = F(b) - F(a) $$
-where $F$ is any antiderivative of $f$, that is, $F'(x) = f(x)$.
+where $F$ is any antiderivative of $f$, that is, a function such that $F'(x) = f(x)$.
 
-## Example
+**Notation:** We often use the bracket notation:
+$$ F(b) - F(a) = \\left[ F(x) \\right]_a^b $$
 
-Evaluate $\\int_1^3 x^2 \\, dx$.
+### Proof Idea
 
-$$ \\left[ \\frac{x^3}{3} \\right]_1^3 = \\frac{27}{3} - \\frac{1}{3} = \\frac{26}{3} $$
+Let $g(x) = \\int_a^x f(t) \\, dt$. By FTC1, $g'(x) = f(x)$.
+Since $F$ is also an antiderivative of $f$, we know that $F(x)$ and $g(x)$ differ by a constant $C$:
+$$ F(x) = g(x) + C $$
+$$ F(x) = \\int_a^x f(t) \\, dt + C $$
+Let's find $C$. Set $x=a$:
+$$ F(a) = \\int_a^a f(t) \\, dt + C = 0 + C \\implies C = F(a) $$
+So $F(x) = \\int_a^x f(t) \\, dt + F(a)$.
+Now let $x=b$:
+$$ F(b) = \\int_a^b f(t) \\, dt + F(a) $$
+Rearranging gives FTC2:
+$$ \\int_a^b f(t) \\, dt = F(b) - F(a) $$
+
+### Examples
+
+**Example 1:**
+Evaluate $\\int_1^3 e^x \\, dx$.
+An antiderivative of $e^x$ is $e^x$.
+$$ \\left[ e^x \\right]_1^3 = e^3 - e^1 = e^3 - e $$
+
+**Example 2:**
+Evaluate $\\int_0^{\\pi} \\cos x \\, dx$.
+An antiderivative of $\\cos x$ is $\\sin x$.
+$$ \\left[ \\sin x \\right]_0^{\\pi} = \\sin \\pi - \\sin 0 = 0 - 0 = 0 $$
+Note: The net signed area is zero because the positive area from $0$ to $\\pi/2$ cancels the negative area from $\\pi/2$ to $\\pi$.
+
+## Summary
+
+*   **Differentiation** and **Integration** are inverse operations.
+*   **FTC1** tells how to differentiate an integral: $\\frac{d}{dx} \\int_a^x f(t) dt = f(x)$.
+*   **FTC2** tells how to evaluate an integral using an antiderivative: $\\int_a^b f(x) dx = F(b) - F(a)$.
 `
       },
       {

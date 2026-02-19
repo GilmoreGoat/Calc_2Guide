@@ -75,50 +75,206 @@ function generateSimplePolynomial(numTerms = 2) {
   return { terms, antiderivTerms };
 }
 
-function generateRiemannSum() {
-  const n = getRandomInt(2, 4);
-  const type = Math.random() > 0.5 ? 'Left' : 'Right';
-
-  const c = getRandomInt(1, 3);
-  const d = getRandomInt(0, 5);
-
-  const a = 0;
-  const b = n * getRandomInt(1, 2);
-  const dx = (b - a) / n;
-
-  let sum = 0;
-  for (let i = 0; i < n; i++) {
-    const x_i = type === 'Left' ? a + i * dx : a + (i + 1) * dx;
-    const val = c * x_i + d;
-    sum += val * dx;
-  }
+function generateDeltaXProblem() {
+  const n = getRandomInt(4, 10);
+  const a = getRandomInt(0, 5);
+  const length = getRandomInt(1, 5) * n; // ensure integer division
+  const b_val = a + length;
+  const dx = length / n;
 
   return {
-    question: `Estimate the area under $f(x) = ${c}x + ${d}$ on $[${a}, ${b}]$ using $n=${n}$ rectangles and **${type}** endpoints.`,
-    answer: sum.toString(),
+    question: `Given the interval $[${a}, ${b_val}]$ and $n=${n}$ subintervals, find the width of each subinterval, $\\Delta x$.`,
+    answer: dx.toString(),
     type: 'number',
-    hint: `Calculate $\\Delta x = ${dx}$, find the sample points, evaluate $f$ at those points, and sum the areas.`
+    hint: `$\\Delta x = \\frac{b-a}{n}$`
   };
 }
 
-function generateDefiniteIntegral() {
-  const { terms, antiderivTerms } = generateSimplePolynomial(getRandomInt(1, 2));
-  const polyLatex = formatPolynomial(terms);
+function generateGridPointProblem() {
+  const n = getRandomInt(4, 8);
+  const a = getRandomInt(0, 3);
+  const dx = getRandomInt(1, 3); // simple integer dx
+  const b_val = a + n * dx;
 
-  const a = getRandomInt(0, 2);
-  const b = getRandomInt(a + 1, a + 3);
-
-  const evaluate = (t, x) => t.coeff * Math.pow(x, t.exp);
-  const valB = antiderivTerms.reduce((sum, t) => sum + evaluate(t, b), 0);
-  const valA = antiderivTerms.reduce((sum, t) => sum + evaluate(t, a), 0);
-  const result = valB - valA;
+  const i = getRandomInt(1, n - 1);
+  const xi = a + i * dx;
 
   return {
-    question: `Evaluate $\\int_{${a}}^{${b}} (${polyLatex}) \\, dx$.`,
-    answer: result.toString(),
+    question: `For the interval $[${a}, ${b_val}]$ with $n=${n}$ subintervals, find the grid point $x_{${i}}$.`,
+    answer: xi.toString(),
     type: 'number',
-    hint: `Find the antiderivative $F(x)$, then calculate $F(${b}) - F(${a})$.`
+    hint: `$x_i = a + i \\Delta x$`
   };
+}
+
+function generateRiemannSumCalculation() {
+  const isQuad = Math.random() > 0.4; // 60% chance of quadratic
+  const n = getRandomInt(3, 5); // keep n small for calculation
+  const a = getRandomInt(0, 2);
+  const dx = isQuad ? 1 : getRandomInt(1, 2); // integer steps usually
+  const b_val = a + n * dx;
+
+  // Function coeffs
+  let funcStr = '';
+  let evaluate = null;
+
+  if (isQuad) {
+    // f(x) = x^2 + c or similar simple one
+    // Let's do a*x^2 + k
+    const A = getRandomInt(1, 2);
+    const K = getRandomInt(0, 5);
+    funcStr = `${A === 1 ? '' : A}x^2 + ${K}`;
+    evaluate = (x) => A * x * x + K;
+  } else {
+    // f(x) = c*x + d
+    const C = getRandomInt(1, 3);
+    const D = getRandomInt(0, 5);
+    funcStr = `${C}x + ${D}`;
+    evaluate = (x) => C * x + D;
+  }
+
+  // Type: Left, Right, Midpoint
+  const r = Math.random();
+  let type = 'Left';
+  if (r > 0.66) type = 'Midpoint';
+  else if (r > 0.33) type = 'Right';
+
+  let sum = 0;
+  for (let i = 0; i < n; i++) {
+    let x_star;
+    if (type === 'Left') x_star = a + i * dx;
+    else if (type === 'Right') x_star = a + (i + 1) * dx;
+    else x_star = a + (i + 0.5) * dx;
+
+    sum += evaluate(x_star) * dx;
+  }
+
+  return {
+    question: `Estimate the area under $f(x) = ${funcStr}$ on $[${a}, ${b_val}]$ using $n=${n}$ rectangles and **${type}** endpoints.`,
+    answer: sum.toString(),
+    type: 'number',
+    hint: `Calculate $\\Delta x = ${dx}$, find sample points for ${type} rule, evaluate $f$, sum and multiply by $\\Delta x$.`
+  };
+}
+
+function generateRiemannSum() {
+  const r = Math.random();
+  if (r < 0.2) return generateDeltaXProblem();
+  if (r < 0.4) return generateGridPointProblem();
+  return generateRiemannSumCalculation();
+}
+
+function generateDefiniteIntegral() {
+  const type = Math.random();
+
+  if (type < 0.4) {
+    // 1. Polynomial Evaluation (Standard)
+    const { terms, antiderivTerms } = generateSimplePolynomial(getRandomInt(1, 2));
+    const polyLatex = formatPolynomial(terms);
+
+    const a = getRandomInt(0, 2);
+    const b = getRandomInt(a + 1, a + 3);
+
+    const evaluate = (t, x) => t.coeff * Math.pow(x, t.exp);
+    const valB = antiderivTerms.reduce((sum, t) => sum + evaluate(t, b), 0);
+    const valA = antiderivTerms.reduce((sum, t) => sum + evaluate(t, a), 0);
+    const result = valB - valA;
+
+    return {
+      question: `Evaluate $\\int_{${a}}^{${b}} (${polyLatex}) \\, dx$.`,
+      answer: result.toString(),
+      type: 'number',
+      hint: `Find the antiderivative $F(x)$, then calculate $F(${b}) - F(${a})$.`
+    };
+  } else if (type < 0.7) {
+    // 2. Integral Properties (Additivity)
+    const a = getRandomInt(0, 2);
+    const b = getRandomInt(3, 5);
+    const c = getRandomInt(6, 9);
+
+    const val1 = getRandomInt(2, 8); // Int_a^b
+    const val2 = getRandomInt(3, 9); // Int_b^c
+    const result = val1 + val2;      // Int_a^c
+
+    return {
+      question: `Given that $\\int_{${a}}^{${b}} f(x) \\, dx = ${val1}$ and $\\int_{${b}}^{${c}} f(x) \\, dx = ${val2}$, evaluate $\\int_{${a}}^{${c}} f(x) \\, dx$.`,
+      answer: result.toString(),
+      type: 'number',
+      hint: `Use the property: $\\int_a^c f(x) \\, dx = \\int_a^b f(x) \\, dx + \\int_b^c f(x) \\, dx$.`
+    };
+  } else {
+    // 3. Average Value
+    // Use an even slope so the average value is an integer
+    const m = 2 * getRandomInt(1, 3);
+    const k = getRandomInt(0, 5);
+
+    const a = getRandomInt(0, 2);
+    const b = getRandomInt(a + 2, a + 6);
+
+    // Average value of mx + k on [a, b] is m/2 * (b+a) + k
+    const ave = (m / 2) * (b + a) + k;
+
+    return {
+      question: `Find the average value of the function $f(x) = ${m}x + ${k}$ on the interval $[${a}, ${b}]$.`,
+      answer: ave.toString(),
+      type: 'number',
+      hint: `The average value is $f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx$.`
+    };
+  }
+}
+
+function generateFundamentalTheorem() {
+  const type = Math.random();
+
+  // 40% chance: FTC1 Simple (Upper limit x)
+  // 30% chance: FTC1 Chain Rule (Upper limit u(x))
+  // 30% chance: FTC2 Definite Integral
+
+  if (type < 0.4) {
+    // FTC1 Simple: d/dx Int_a^x f(t) dt = f(x)
+    const { terms } = generateSimplePolynomial(getRandomInt(1, 3));
+    const polyX = formatPolynomial(terms);
+    const polyT = polyX.replace(/x/g, 't');
+    const a = getRandomInt(1, 5);
+
+    return {
+      question: `Find the derivative of $g(x) = \\int_{${a}}^x (${polyT}) \\, dt$.`,
+      answer: polyX,
+      type: 'text',
+      hint: `Use Part 1 of the Fundamental Theorem of Calculus: $\\frac{d}{dx} \\int_a^x f(t) dt = f(x)$.`
+    };
+  } else if (type < 0.7) {
+    // FTC1 Chain Rule: d/dx Int_a^{u(x)} f(t) dt = f(u(x)) * u'(x)
+    // u(x) = x^k
+    const k = getRandomInt(2, 4);
+    // f(t) = t^n or cos(t)
+
+    const isTrig = Math.random() > 0.5;
+
+    if (isTrig) {
+        return {
+            question: `Find $g'(x)$ where $g(x) = \\int_{1}^{x^${k}} \\cos(t) \\, dt$.`,
+            answer: `${k}x^${k-1} * cos(x^${k})`,
+            type: 'text',
+            hint: `Use the Chain Rule: $\\frac{d}{dx} \\int_a^{u(x)} f(t) dt = f(u(x)) \\cdot u'(x)$.`
+        };
+    } else {
+        const n = getRandomInt(1, 3);
+        // Answer = k * x^{kn + k - 1}
+        const finalExp = k * n + k - 1;
+        const finalCoeff = k;
+        return {
+            question: `Find $g'(x)$ where $g(x) = \\int_{0}^{x^${k}} t^${n} \\, dt$.`,
+            answer: `${finalCoeff}x^${finalExp}`,
+            type: 'text',
+            hint: `Use the Chain Rule: $\\frac{d}{dx} \\int_a^{u(x)} f(t) dt = f(u(x)) \\cdot u'(x)$.`
+        };
+    }
+
+  } else {
+    // FTC2: Definite Integral
+    return generateDefiniteIntegral();
+  }
 }
 
 function generateParticleDisplacement() {
@@ -403,7 +559,7 @@ export function generateProblem(type) {
     case 'definite-integral-properties':
       return generateDefiniteIntegral();
     case 'fundamental-theorem':
-      return generateDefiniteIntegral();
+      return generateFundamentalTheorem();
     case 'net-change':
       return generateNetChange();
     case 'substitution-integral':
