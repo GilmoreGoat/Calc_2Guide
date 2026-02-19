@@ -244,28 +244,89 @@ Test your understanding with the generated problems below.
         title: "1.3 The Fundamental Theorem of Calculus",
         practiceType: 'fundamental-theorem',
         content: `
-The FTC connects differential calculus and integral calculus.
+The Fundamental Theorem of Calculus (FTC) is the bridge between differential calculus (rates of change) and integral calculus (accumulation of quantities). It shows that differentiation and integration are inverse processes.
 
-## Part 1 (FTC1)
+## Part 1: The Area Accumulation Function
+
+The first part of the theorem deals with the derivative of an integral. It states that if we define a function $g(x)$ as the definite integral of a continuous function $f$ from a fixed point $a$ to a variable point $x$, then $g(x)$ is an antiderivative of $f(x)$.
+
+### Theorem (FTC 1)
 
 If $f$ is continuous on $[a, b]$, then the function $g$ defined by
-$$ g(x) = \\int_a^x f(t) \\, dt $$
-is continuous on $[a, b]$, differentiable on $(a, b)$, and $g'(x) = f(x)$.
+$$ g(x) = \\int_a^x f(t) \\, dt \\quad \\text{for } a \\le x \\le b $$
+is continuous on $[a, b]$, differentiable on $(a, b)$, and
+$$ g'(x) = f(x) $$
 
-**Example:**
-If $g(x) = \\int_1^x t^2 dt$, then $g'(x) = x^2$.
+### Intuition
 
-## Part 2 (FTC2)
+Imagine $g(x)$ represents the area under the curve $y=f(t)$ from $a$ to $x$. If we increase $x$ by a small amount $h$, the change in area is approximately the area of a rectangle with height $f(x)$ and width $h$.
+$$ g(x+h) - g(x) \\approx f(x) \\cdot h $$
+Dividing by $h$ gives:
+$$ \\frac{g(x+h) - g(x)}{h} \\approx f(x) $$
+Taking the limit as $h \\to 0$ gives the definition of the derivative: $g'(x) = f(x)$.
+
+### Examples
+
+**Example 1:**
+Find $\\frac{d}{dx} \\int_1^x t^3 \\, dt$.
+By FTC1, this is simply $x^3$.
+
+**Example 2 (The Chain Rule):**
+What if the upper limit is a function of $x$? Let $y = \\int_a^{u(x)} f(t) \\, dt$.
+Let $U = u(x)$. Then $y = \\int_a^U f(t) \\, dt$.
+By the Chain Rule:
+$$ \\frac{dy}{dx} = \\frac{dy}{dU} \\cdot \\frac{dU}{dx} $$
+$$ \\frac{dy}{dx} = f(U) \\cdot u'(x) = f(u(x)) \\cdot u'(x) $$
+
+**Problem:** Find $\\frac{d}{dx} \\int_1^{x^4} \\sec t \\, dt$.
+Here $u(x) = x^4$, so $u'(x) = 4x^3$.
+$$ \\frac{d}{dx} = \\sec(x^4) \\cdot 4x^3 $$
+
+## Part 2: Evaluating Definite Integrals
+
+The second part of the theorem gives us a powerful method to evaluate definite integrals without using Riemann sums. It links the definite integral to antiderivatives.
+
+### Theorem (FTC 2)
 
 If $f$ is continuous on $[a, b]$, then
 $$ \\int_a^b f(x) \\, dx = F(b) - F(a) $$
-where $F$ is any antiderivative of $f$, that is, $F'(x) = f(x)$.
+where $F$ is any antiderivative of $f$, that is, a function such that $F'(x) = f(x)$.
 
-## Example
+**Notation:** We often use the bracket notation:
+$$ F(b) - F(a) = \\left[ F(x) \\right]_a^b $$
 
-Evaluate $\\int_1^3 x^2 \\, dx$.
+### Proof Idea
 
-$$ \\left[ \\frac{x^3}{3} \\right]_1^3 = \\frac{27}{3} - \\frac{1}{3} = \\frac{26}{3} $$
+Let $g(x) = \\int_a^x f(t) \\, dt$. By FTC1, $g'(x) = f(x)$.
+Since $F$ is also an antiderivative of $f$, we know that $F(x)$ and $g(x)$ differ by a constant $C$:
+$$ F(x) = g(x) + C $$
+$$ F(x) = \\int_a^x f(t) \\, dt + C $$
+Let's find $C$. Set $x=a$:
+$$ F(a) = \\int_a^a f(t) \\, dt + C = 0 + C \\implies C = F(a) $$
+So $F(x) = \\int_a^x f(t) \\, dt + F(a)$.
+Now let $x=b$:
+$$ F(b) = \\int_a^b f(t) \\, dt + F(a) $$
+Rearranging gives FTC2:
+$$ \\int_a^b f(t) \\, dt = F(b) - F(a) $$
+
+### Examples
+
+**Example 1:**
+Evaluate $\\int_1^3 e^x \\, dx$.
+An antiderivative of $e^x$ is $e^x$.
+$$ \\left[ e^x \\right]_1^3 = e^3 - e^1 = e^3 - e $$
+
+**Example 2:**
+Evaluate $\\int_0^{\\pi} \\cos x \\, dx$.
+An antiderivative of $\\cos x$ is $\\sin x$.
+$$ \\left[ \\sin x \\right]_0^{\\pi} = \\sin \\pi - \\sin 0 = 0 - 0 = 0 $$
+Note: The net signed area is zero because the positive area from $0$ to $\\pi/2$ cancels the negative area from $\\pi/2$ to $\\pi$.
+
+## Summary
+
+*   **Differentiation** and **Integration** are inverse operations.
+*   **FTC1** tells how to differentiate an integral: $\\frac{d}{dx} \\int_a^x f(t) dt = f(x)$.
+*   **FTC2** tells how to evaluate an integral using an antiderivative: $\\int_a^b f(x) dx = F(b) - F(a)$.
 `
       },
       {
