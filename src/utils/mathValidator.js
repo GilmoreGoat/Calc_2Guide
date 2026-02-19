@@ -73,28 +73,9 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
     // For other vars/functions, it's safer to require * or handle carefully.
     // Let's assume variable is 'x'.
     s = s.replace(/([x)])(\d)/g, '$1*$2');
-    s = s.replace(/([x)])([x(])/g, '$1*$2');
+    s = s.replace(/([x)])([a-z(])/g, '$1*$2');
 
-    // Convert standard math functions to Math.*
-    // We use a regex with word boundaries to avoid replacing substrings
-    // Note: cleanExpr removes spaces, so word boundaries \b might fail if no spaces.
-    // e.g. "sin(x)" -> "sin(x)". \b matches start.
-    // "x+sin(x)" -> "x+sin(x)". \b matches after +.
-    // "cos(x)" -> "cos(x)".
-
-    const functions = ['sin', 'cos', 'tan', 'exp', 'sqrt', 'abs', 'log'];
-    functions.forEach(fn => {
-      // Replace fn( with Math.fn(
-      // We look for the function name followed by (
-      // Because we removed spaces, it should be immediate.
-      const regex = new RegExp(`${fn}\\(`, 'g');
-      s = s.replace(regex, `Math.${fn}(`);
-    });
-
-    // specialized replacement for ln -> Math.log
-    s = s.replace(/ln\(/g, 'Math.log(');
-
-    // Convert powers using Math.pow to avoid JS unary precedence issues (-x**2 is invalid)
+    // Convert powers using pow() function (to be defined in context)
     // We repeatedly find the last ^ to handle right-associativity
     while (s.includes('^')) {
       const idx = s.lastIndexOf('^');
@@ -107,6 +88,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
         if (char === ')') depth++;
         else if (char === '(') depth--;
 
+        if (depth < 0) break;
         if (depth === 0 && /[+\-*/]/.test(char)) {
           break;
         }
@@ -122,6 +104,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
         if (char === '(') depth++;
         else if (char === ')') depth--;
 
+        if (depth < 0) break;
         if (depth === 0 && /[+\-*/]/.test(char)) {
           break;
         }
@@ -131,7 +114,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
       const base = s.substring(start, idx);
       const exp = s.substring(idx + 1, expEnd);
 
-      const replacement = `Math.pow(${base},${exp})`;
+      const replacement = `pow(${base},${exp})`;
       s = s.substring(0, start) + replacement + s.substring(expEnd);
     }
 
@@ -145,8 +128,45 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
   try {
     // We assume the variable is 'x'
     // We also provide constants e and pi
-    const fUser = new Function('x', `const e = Math.E; const pi = Math.PI; return ${jsUser};`);
-    const fExpected = new Function('x', `const e = Math.E; const pi = Math.PI; return ${jsExpected};`);
+    // Define all supported math functions in the scope
+    const context = `
+      const e = Math.E;
+      const pi = Math.PI;
+
+      const sin = Math.sin;
+      const cos = Math.cos;
+      const tan = Math.tan;
+      const asin = Math.asin;
+      const acos = Math.acos;
+      const atan = Math.atan;
+      const sinh = Math.sinh;
+      const cosh = Math.cosh;
+      const tanh = Math.tanh;
+      const exp = Math.exp;
+      const sqrt = Math.sqrt;
+      const abs = Math.abs;
+      const log = Math.log;
+      const pow = Math.pow;
+
+      // Aliases
+      const ln = Math.log;
+      const arcsin = Math.asin;
+      const arccos = Math.acos;
+      const arctan = Math.atan;
+
+      // Reciprocal Trig Functions
+      const sec = (t) => 1 / Math.cos(t);
+      const csc = (t) => 1 / Math.sin(t);
+      const cot = (t) => 1 / Math.tan(t);
+
+      // Inverse Reciprocal Trig Functions (optional, but good for completeness)
+      const arcsec = (t) => Math.acos(1/t);
+      const arccsc = (t) => Math.asin(1/t);
+      const arccot = (t) => Math.atan(1/t);
+    `;
+
+    const fUser = new Function('x', `${context} return ${jsUser};`);
+    const fExpected = new Function('x', `${context} return ${jsExpected};`);
 
     // Test points: include negatives, decimals, avoid 0 just in case
     // Avoid range issues for log/sqrt

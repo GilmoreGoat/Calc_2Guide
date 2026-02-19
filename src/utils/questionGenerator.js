@@ -398,20 +398,70 @@ function generateSubstitution() {
 }
 
 function generateExpLog() {
-  if (Math.random() > 0.5) {
-    const k = getRandomInt(2, 5);
+  const type = getRandomInt(1, 6);
+
+  if (type === 1) {
+    // Basic e^kx
+    const k = getRandomInt(2, 9);
     return {
       question: `Evaluate $\\int e^{${k}x} \\, dx$.`,
       answer: `(1/${k})e^(${k}x) + C`,
       type: 'text',
       hint: `Recall $\\int e^{kx} dx = \\frac{1}{k}e^{kx}$.`
     };
-  } else {
+  } else if (type === 2) {
+    // Basic a^x
+    const bases = [2, 3, 5, 10];
+    const a = bases[getRandomInt(0, bases.length - 1)];
     return {
-      question: `Evaluate $\\int \\frac{1}{x} \\, dx$.`,
-      answer: `ln(abs(x)) + C`,
+      question: `Evaluate $\\int ${a}^x \\, dx$.`,
+      answer: `${a}^x / ln(${a}) + C`,
       type: 'text',
-      hint: `The integral is the natural logarithm.`
+      hint: `Use the formula $\\int a^x dx = \\frac{a^x}{\\ln a}$.`
+    };
+  } else if (type === 3) {
+    // Basic 1/(x+a)
+    const a = getRandomInt(1, 9);
+    const sign = Math.random() > 0.5 ? '+' : '-';
+    return {
+      question: `Evaluate $\\int \\frac{1}{x${sign}${a}} \\, dx$.`,
+      answer: `ln(abs(x${sign}${a})) + C`,
+      type: 'text',
+      hint: `Let $u = x${sign}${a}$.`
+    };
+  } else if (type === 4) {
+    // Substitution x e^{x^2}
+    return {
+      question: `Evaluate $\\int x e^{x^2} \\, dx$.`,
+      answer: `(1/2)e^(x^2) + C`,
+      type: 'text',
+      hint: `Let $u = x^2$, then $du = 2x \\, dx$.`
+    };
+  } else if (type === 5) {
+    // Trig leading to ln
+    if (Math.random() > 0.5) {
+        return {
+            question: `Evaluate $\\int \\tan x \\, dx$.`,
+            answer: `ln(abs(sec(x))) + C`,
+            type: 'text',
+            hint: `Rewrite $\\tan x = \\frac{\\sin x}{\\cos x}$ and use substitution. Answer involves $\\sec(x)$.`
+        };
+    } else {
+        return {
+            question: `Evaluate $\\int \\cot x \\, dx$.`,
+            answer: `ln(abs(sin(x))) + C`,
+            type: 'text',
+            hint: `Rewrite $\\cot x = \\frac{\\cos x}{\\sin x}$ and use substitution.`
+        };
+    }
+  } else {
+    // Definite integral e^x from 0 to ln(a)
+    const a = getRandomInt(2, 5);
+    return {
+        question: `Evaluate $\\int_0^{\\ln ${a}} e^x \\, dx$.`,
+        answer: `${a-1}`,
+        type: 'number',
+        hint: `Find the antiderivative and evaluate at the limits. Recall $e^{\\ln a} = a$.`
     };
   }
 }
