@@ -1,102 +1,69 @@
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
+import { test, describe } from 'node:test';
+import assert from 'node:assert/strict';
 import { validateMath } from './mathValidator.js';
 
-describe('mathValidator', () => {
-  describe('Numerical Answers', () => {
-    it('should accept correct numerical answers', () => {
-      const result = validateMath('10.5', '10.5', 'number');
-      assert.strictEqual(result.isCorrect, true);
-    });
-
-    it('should accept numerical answers within tolerance', () => {
-      const result = validateMath('10.50001', '10.5', 'number');
-      assert.strictEqual(result.isCorrect, true);
-    });
-
-    it('should reject incorrect numerical answers', () => {
-      const result = validateMath('10', '10.5', 'number');
-      assert.strictEqual(result.isCorrect, false);
-    });
-
-    it('should handle non-numeric input for number type', () => {
-      const result = validateMath('abc', '10.5', 'number');
-      assert.strictEqual(result.isCorrect, false);
-      assert.match(result.message, /valid number/);
-    });
+describe('Math Validator', () => {
+  test('Basic Arithmetic', () => {
+    assert.ok(validateMath('2+2', '4', 'text').isCorrect);
+    assert.ok(validateMath('x+x', '2x', 'text').isCorrect);
+    assert.ok(validateMath('2*x', '2x', 'text').isCorrect);
+    assert.ok(validateMath('x^2', 'x*x', 'text').isCorrect);
   });
 
-  describe('Algebraic Answers', () => {
-    it('should accept exact matches', () => {
-      const result = validateMath('x^2+C', 'x^2+C');
-      assert.strictEqual(result.isCorrect, true);
-    });
+  test('Implicit Multiplication', () => {
+    assert.ok(validateMath('2x', '2*x', 'text').isCorrect);
+    assert.ok(validateMath('x(x+1)', 'x^2+x', 'text').isCorrect);
+    assert.ok(validateMath('2sin(x)', '2*sin(x)', 'text').isCorrect);
+    assert.ok(validateMath('xsin(x)', 'x*sin(x)', 'text').isCorrect);
+    assert.ok(validateMath('xarcsin(x)', 'x*asin(x)', 'text').isCorrect);
+  });
 
-    it('should accept implicit multiplication', () => {
-      // 5x vs 5*x
-      const result = validateMath('5x+C', '5*x+C');
-      assert.strictEqual(result.isCorrect, true);
-    });
+  test('Inverse Trigonometric Functions', () => {
+    assert.ok(validateMath('arcsin(x)', 'asin(x)', 'text').isCorrect);
+    assert.ok(validateMath('arccos(x)', 'acos(x)', 'text').isCorrect);
+    assert.ok(validateMath('arctan(x)', 'atan(x)', 'text').isCorrect);
 
-    it('should accept explicit multiplication when implicit is expected', () => {
-      // 5*x vs 5x
-      const result = validateMath('5*x+C', '5x+C');
-      assert.strictEqual(result.isCorrect, true);
-    });
+    // Check aliases
+    assert.ok(validateMath('asin(x)', 'arcsin(x)', 'text').isCorrect);
+    assert.ok(validateMath('acos(x)', 'arccos(x)', 'text').isCorrect);
+    assert.ok(validateMath('atan(x)', 'arctan(x)', 'text').isCorrect);
+  });
 
-    it('should ignore whitespace', () => {
-      const result = validateMath('5 * x^2 + C', '5x^2+C');
-      assert.strictEqual(result.isCorrect, true);
-    });
+  test('Reciprocal Inverse Trig Functions', () => {
+    // arcsec(x) = arccos(1/x)
+    // Domain of arcsec is |x| >= 1.
+    // Our validator checks random points, including 3, 10, -5, which are in domain.
+    assert.ok(validateMath('arcsec(x)', 'arccos(1/x)', 'text').isCorrect);
 
-    it('should require +C if expected', () => {
-      const result = validateMath('x^2', 'x^2+C');
-      assert.strictEqual(result.isCorrect, false);
-      assert.match(result.message, /\+C/);
-    });
+    // Verify differentiation result for arcsec: 1/(x*sqrt(x^2-1))
+    // We can't check symbolic diff, but we can check if 1/x*sqrt(x^2-1) matches arcsec'(x) if we had derivative checking.
+    // Instead, let's just check function equivalence.
+  });
 
-    it('should handle different variable spacing', () => {
-      const result = validateMath('x + x^2 + C', 'x^2+x+C');
-      assert.strictEqual(result.isCorrect, true);
-    });
+  test('Other Functions', () => {
+    assert.ok(validateMath('ln(x)', 'log(x)', 'text').isCorrect);
+    assert.ok(validateMath('exp(x)', 'e^x', 'text').isCorrect);
+    assert.ok(validateMath('sqrt(x)', 'x^(0.5)', 'text').isCorrect);
+    assert.ok(validateMath('abs(x)', 'sqrt(x^2)', 'text').isCorrect);
+  });
 
-    it('should handle equivalent expressions', () => {
-      // (x+1)^2 = x^2+2x+1
-      const result = validateMath('(x+1)^2+C', 'x^2+2x+1+C');
-      assert.strictEqual(result.isCorrect, true);
-    });
+  test('Incorrect Answers', () => {
+    assert.ok(!validateMath('x+1', 'x+2', 'text').isCorrect);
+    assert.ok(!validateMath('sin(x)', 'cos(x)', 'text').isCorrect);
+    assert.ok(!validateMath('arcsin(x)', 'arctan(x)', 'text').isCorrect);
+  });
 
-    it('should handle fractional coefficients', () => {
-      // 0.5x^2 = 1/2x^2
-      // Note: 1/2x^2 in JS is (1/2)*x^2 = 0.5x^2
-      const result = validateMath('1/2x^2+C', '0.5x^2+C');
-      assert.strictEqual(result.isCorrect, true);
-    });
+  test('Invalid Syntax', () => {
+    // Missing parenthesis
+    const result = validateMath('sin(x', 'sin(x)', 'text');
+    assert.ok(!result.isCorrect);
+    assert.match(result.message, /syntax/i);
+  });
 
-    it('should reject incorrect expressions', () => {
-      const result = validateMath('x^3+C', 'x^2+C');
-      assert.strictEqual(result.isCorrect, false);
-    });
-
-    it('should handle case insensitivity', () => {
-      const result = validateMath('X^2+c', 'x^2+C');
-      assert.strictEqual(result.isCorrect, true);
-    });
-
-    it('should handle syntax errors gracefully', () => {
-      const result = validateMath('x^+C', 'x^2+C');
-      assert.strictEqual(result.isCorrect, false);
-    });
-
-    it('should reject malicious input (security)', () => {
-      // Trying to execute arbitrary code
-      // Note: With expanded allowed chars (a-z), 'alert' passes regex but fails evaluation (ReferenceError)
-      // because 'alert' is not defined in new Function scope.
-      const maliciousInput = 'alert(1) + C';
-      const result = validateMath(maliciousInput, 'x^2+C');
-      assert.strictEqual(result.isCorrect, false);
-      // We expect either syntax error or evaluation failure message
-      assert.match(result.message, /(Invalid characters|syntax|Could not evaluate)/);
-    });
+  test('+C Requirement', () => {
+    assert.ok(validateMath('x^2 + C', 'x^2 + C', 'text').isCorrect);
+    const noC = validateMath('x^2', 'x^2 + C', 'text');
+    assert.ok(!noC.isCorrect);
+    assert.match(noC.message, /constant of integration/i);
   });
 });

@@ -52,9 +52,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
   const exprExpected = cleanExpr(expectedAnswer);
 
   // Security check: Ensure only allowed characters are present
-  // Allowed: digits, x, +, -, *, /, ^, (, ), ., and whitespace, and letters for functions
-  // We need to allow letters for sin, cos, etc.
-  // Expanded allow list: a-z (lowercase)
+  // Allowed: digits, a-z, +, -, *, /, ^, (, ), ., and whitespace
   const allowedChars = /^[0-9a-z+\-*/^().\s]*$/;
   if (!allowedChars.test(exprUser)) {
     return { isCorrect: false, message: 'Invalid characters in your answer.' };
@@ -62,40 +60,96 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
   // Convert math syntax to JS syntax
   const toJS = (str) => {
+    // 1. Protect known functions/constants
+    const functions = [
+      'arcsin', 'arccos', 'arctan', 'arcsec', 'arccsc', 'arccot',
+      'asin', 'acos', 'atan',
+      'sin', 'cos', 'tan', 'sec', 'csc', 'cot',
+      'sqrt', 'exp', 'abs', 'log', 'ln',
+      'pi' // treat pi as a function/constant unit
+    ];
+    // Sort by length descending
+    functions.sort((a, b) => b.length - a.length);
+
     let s = str;
+    const placeholders = [];
 
-    // Implicit multiplication
-    // 1. Number followed by x, letter, or (
-    s = s.replace(/(\d)([a-z(])/g, '$1*$2');
-    // 2. x or ) followed by Number or x or (
-    // Be careful with functions like sin(x). s followed by i is not multiplication.
-    // We strictly handle implicit mult for 'x' variable.
-    // For other vars/functions, it's safer to require * or handle carefully.
-    // Let's assume variable is 'x'.
-    s = s.replace(/([x)])(\d)/g, '$1*$2');
-    s = s.replace(/([x)])([x(])/g, '$1*$2');
-
-    // Convert standard math functions to Math.*
-    // We use a regex with word boundaries to avoid replacing substrings
-    // Note: cleanExpr removes spaces, so word boundaries \b might fail if no spaces.
-    // e.g. "sin(x)" -> "sin(x)". \b matches start.
-    // "x+sin(x)" -> "x+sin(x)". \b matches after +.
-    // "cos(x)" -> "cos(x)".
-
-    const functions = ['sin', 'cos', 'tan', 'exp', 'sqrt', 'abs', 'log'];
-    functions.forEach(fn => {
-      // Replace fn( with Math.fn(
-      // We look for the function name followed by (
-      // Because we removed spaces, it should be immediate.
-      const regex = new RegExp(`${fn}\\(`, 'g');
-      s = s.replace(regex, `Math.${fn}(`);
+    functions.forEach((fn, index) => {
+       const placeholder = `§${index}§`;
+       placeholders.push({ placeholder, original: fn });
+       // Replace all occurrences of fn
+       // We split and join to replace all
+       s = s.split(fn).join(placeholder);
     });
 
-    // specialized replacement for ln -> Math.log
-    s = s.replace(/ln\(/g, 'Math.log(');
+    // 2. Parse and insert implicit multiplication
+    // Token types: DIGIT, LETTER (var), FUNC (placeholder), LPAREN, RPAREN, OP, OTHER
+    const isDigit = (c) => /[0-9]/.test(c);
+    const isLetter = (c) => /[a-z]/.test(c);
 
-    // Convert powers using Math.pow to avoid JS unary precedence issues (-x**2 is invalid)
-    // We repeatedly find the last ^ to handle right-associativity
+    let result = '';
+    let i = 0;
+    let lastType = 'NONE'; // NONE, DIGIT, LETTER, FUNC, LPAREN, RPAREN, OTHER
+
+    while (i < s.length) {
+      let char = s[i];
+      let currentType = 'OTHER';
+      let token = char;
+
+      if (char === '§') {
+        // Parse placeholder
+        const endIdx = s.indexOf('§', i + 1);
+        if (endIdx !== -1) {
+          token = s.substring(i, endIdx + 1);
+          currentType = 'FUNC';
+          i = endIdx + 1;
+        } else {
+          // Should not happen
+          i++;
+        }
+      } else {
+        if (isDigit(char)) currentType = 'DIGIT';
+        else if (isLetter(char)) currentType = 'LETTER';
+        else if (char === '(') currentType = 'LPAREN';
+        else if (char === ')') currentType = 'RPAREN';
+        else if (/[+\-*/^]/.test(char)) currentType = 'OP';
+        i++;
+      }
+
+      // Check for insertion
+      let insertMult = false;
+
+      if (lastType === 'DIGIT') {
+        if (currentType === 'LETTER' || currentType === 'FUNC' || currentType === 'LPAREN') insertMult = true;
+      } else if (lastType === 'LETTER') {
+        if (currentType === 'DIGIT' || currentType === 'LETTER' || currentType === 'FUNC' || currentType === 'LPAREN') insertMult = true;
+      } else if (lastType === 'FUNC') {
+        // FUNC followed by DIGIT/LETTER/FUNC should multiply?
+        // sin 2 -> sin*2 (valid as expression, though likely user error, but we treat as mult)
+        // sin x -> sin*x
+        // sin cos -> sin*cos
+        if (currentType === 'DIGIT' || currentType === 'LETTER' || currentType === 'FUNC') insertMult = true;
+        // FUNC followed by LPAREN (sin(x)) -> NO MULT
+      } else if (lastType === 'RPAREN') {
+        if (currentType === 'DIGIT' || currentType === 'LETTER' || currentType === 'FUNC' || currentType === 'LPAREN') insertMult = true;
+      }
+
+      if (insertMult) {
+        result += '*';
+      }
+
+      result += token;
+      lastType = currentType;
+    }
+
+    s = result;
+
+    // 3. Restore functions
+    placeholders.forEach(p => {
+       s = s.split(p.placeholder).join(p.original);
+    });
+
+    // 4. Handle Powers (^) -> Math.pow
     while (s.includes('^')) {
       const idx = s.lastIndexOf('^');
 
@@ -105,13 +159,17 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
       while (baseStart >= 0) {
         const char = s[baseStart];
         if (char === ')') depth++;
-        else if (char === '(') depth--;
+        else if (char === '(') {
+          depth--;
+          if (depth < 0) break;
+        }
 
-        if (depth === 0 && /[+\-*/]/.test(char)) {
-          break;
+        if (depth === 0 && /[+\-*/]/.test(char) && char !== '§') {
+           break;
         }
         baseStart--;
       }
+
       const start = baseStart + 1;
 
       // Find exponent (right of ^)
@@ -120,7 +178,10 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
       while (expEnd < s.length) {
         const char = s[expEnd];
         if (char === '(') depth++;
-        else if (char === ')') depth--;
+        else if (char === ')') {
+          depth--;
+          if (depth < 0) break;
+        }
 
         if (depth === 0 && /[+\-*/]/.test(char)) {
           break;
@@ -143,16 +204,44 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
   // 3. Numerical verification using random sampling
   try {
-    // We assume the variable is 'x'
-    // We also provide constants e and pi
-    const fUser = new Function('x', `const e = Math.E; const pi = Math.PI; return ${jsUser};`);
-    const fExpected = new Function('x', `const e = Math.E; const pi = Math.PI; return ${jsExpected};`);
+    // Construct the function body with injected math functions
+    const functionBody = (expr) => `
+      const e = Math.E;
+      const pi = Math.PI;
+      const sin = Math.sin;
+      const cos = Math.cos;
+      const tan = Math.tan;
+      const sec = (x) => 1/Math.cos(x);
+      const csc = (x) => 1/Math.sin(x);
+      const cot = (x) => 1/Math.tan(x);
+      const asin = Math.asin;
+      const acos = Math.acos;
+      const atan = Math.atan;
+      const arcsin = Math.asin;
+      const arccos = Math.acos;
+      const arctan = Math.atan;
+      // arcsec(x) = arccos(1/x)
+      const arcsec = (x) => Math.acos(1/x);
+      // arccsc(x) = arcsin(1/x)
+      const arccsc = (x) => Math.asin(1/x);
+      // arccot(x) = pi/2 - arctan(x) or arctan(1/x)
+      const arccot = (x) => Math.atan(1/x);
+      const exp = Math.exp;
+      const sqrt = Math.sqrt;
+      const abs = Math.abs;
+      const log = Math.log;
+      const ln = Math.log;
 
-    // Test points: include negatives, decimals, avoid 0 just in case
-    // Avoid range issues for log/sqrt
-    // If expected answer involves log/sqrt, we should test positive numbers.
-    // We can try-catch individual evaluations.
+      return ${expr};
+    `;
+
+    const fUser = new Function('x', functionBody(jsUser));
+    const fExpected = new Function('x', functionBody(jsExpected));
+
+    // Test points
     const testPoints = [-5, -2.5, -1, 0.5, 1, 3, 10];
+    // Add some fractions for inverse trig like 0.1, 0.9 (for arcsin domain [-1, 1])
+    testPoints.push(0.1, 0.9, -0.9);
 
     let allMatch = true;
     let validPoints = 0;
@@ -163,7 +252,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
         valUser = fUser(x);
         valExpected = fExpected(x);
       } catch (e) {
-        // Domain error or similar (e.g. log(-1))
+        // Domain error
         continue;
       }
 
@@ -173,7 +262,6 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
       validPoints++;
 
-      // Use a small epsilon for floating point comparison
       if (Math.abs(valUser - valExpected) > 0.0001) {
         allMatch = false;
         break;
@@ -181,9 +269,6 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
     }
 
     if (validPoints === 0) {
-        // Fallback: If no points were valid (e.g. log(x) with all negative inputs?), try positive only
-        // But our test points include positive numbers.
-        // If still 0, maybe syntax error or everything is NaN.
         return { isCorrect: false, message: 'Could not evaluate your answer. Please check syntax.' };
     }
 
@@ -195,7 +280,6 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
   } catch (error) {
     // console.error('Validation error:', error, 'JS:', jsUser);
-    // Syntax error in user input
     return { isCorrect: false, message: 'Check your syntax (e.g., use * for multiplication).' };
   }
 }
