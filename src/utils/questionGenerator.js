@@ -75,30 +75,93 @@ function generateSimplePolynomial(numTerms = 2) {
   return { terms, antiderivTerms };
 }
 
-function generateRiemannSum() {
-  const n = getRandomInt(2, 4);
-  const type = Math.random() > 0.5 ? 'Left' : 'Right';
+function generateDeltaXProblem() {
+  const n = getRandomInt(4, 10);
+  const a = getRandomInt(0, 5);
+  const length = getRandomInt(1, 5) * n; // ensure integer division
+  const b_val = a + length;
+  const dx = length / n;
 
-  const c = getRandomInt(1, 3);
-  const d = getRandomInt(0, 5);
+  return {
+    question: `Given the interval $[${a}, ${b_val}]$ and $n=${n}$ subintervals, find the width of each subinterval, $\\Delta x$.`,
+    answer: dx.toString(),
+    type: 'number',
+    hint: `$\\Delta x = \\frac{b-a}{n}$`
+  };
+}
 
-  const a = 0;
-  const b = n * getRandomInt(1, 2);
-  const dx = (b - a) / n;
+function generateGridPointProblem() {
+  const n = getRandomInt(4, 8);
+  const a = getRandomInt(0, 3);
+  const dx = getRandomInt(1, 3); // simple integer dx
+  const b_val = a + n * dx;
+
+  const i = getRandomInt(1, n - 1);
+  const xi = a + i * dx;
+
+  return {
+    question: `For the interval $[${a}, ${b_val}]$ with $n=${n}$ subintervals, find the grid point $x_{${i}}$.`,
+    answer: xi.toString(),
+    type: 'number',
+    hint: `$x_i = a + i \\Delta x$`
+  };
+}
+
+function generateRiemannSumCalculation() {
+  const isQuad = Math.random() > 0.4; // 60% chance of quadratic
+  const n = getRandomInt(3, 5); // keep n small for calculation
+  const a = getRandomInt(0, 2);
+  const dx = isQuad ? 1 : getRandomInt(1, 2); // integer steps usually
+  const b_val = a + n * dx;
+
+  // Function coeffs
+  let funcStr = '';
+  let evaluate = null;
+
+  if (isQuad) {
+    // f(x) = x^2 + c or similar simple one
+    // Let's do a*x^2 + k
+    const A = getRandomInt(1, 2);
+    const K = getRandomInt(0, 5);
+    funcStr = `${A === 1 ? '' : A}x^2 + ${K}`;
+    evaluate = (x) => A * x * x + K;
+  } else {
+    // f(x) = c*x + d
+    const C = getRandomInt(1, 3);
+    const D = getRandomInt(0, 5);
+    funcStr = `${C}x + ${D}`;
+    evaluate = (x) => C * x + D;
+  }
+
+  // Type: Left, Right, Midpoint
+  const r = Math.random();
+  let type = 'Left';
+  if (r > 0.66) type = 'Midpoint';
+  else if (r > 0.33) type = 'Right';
 
   let sum = 0;
   for (let i = 0; i < n; i++) {
-    const x_i = type === 'Left' ? a + i * dx : a + (i + 1) * dx;
-    const val = c * x_i + d;
-    sum += val * dx;
+    let x_star;
+    if (type === 'Left') x_star = a + i * dx;
+    else if (type === 'Right') x_star = a + (i + 1) * dx;
+    else x_star = a + (i + 0.5) * dx;
+
+    sum += evaluate(x_star) * dx;
   }
 
   return {
-    question: `Estimate the area under $f(x) = ${c}x + ${d}$ on $[${a}, ${b}]$ using $n=${n}$ rectangles and **${type}** endpoints.`,
+    question: `Estimate the area under $f(x) = ${funcStr}$ on $[${a}, ${b_val}]$ using $n=${n}$ rectangles and **${type}** endpoints.`,
     answer: sum.toString(),
     type: 'number',
-    hint: `Calculate $\\Delta x = ${dx}$, find the sample points, evaluate $f$ at those points, and sum the areas.`
+    hint: `Calculate $\\Delta x = ${dx}$, find sample points for ${type} rule, evaluate $f$, sum and multiply by $\\Delta x$.`
   };
+}
+
+function generateRiemannSum() {
+  const r = Math.random();
+  if (r < 0.2) return generateDeltaXProblem();
+  if (r < 0.4) return generateGridPointProblem();
+  return generateRiemannSumCalculation();
 }
 
 function generateDefiniteIntegral() {
