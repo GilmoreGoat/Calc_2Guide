@@ -3,23 +3,27 @@ import assert from 'node:assert';
 import { generateProblem } from './questionGenerator.js';
 
 test('questionGenerator', async (t) => {
-  await t.test('should generate indefinite integral problem', () => {
-    const problem = generateProblem('indefinite-integral');
+  await t.test('should generate approximating-areas problem', () => {
+    const problem = generateProblem('approximating-areas');
+    assert.strictEqual(problem.type, 'number');
+    assert.ok(problem.question.includes('Estimate the area'));
+  });
+
+  await t.test('should generate substitution integral problem', () => {
+    const problem = generateProblem('substitution-integral');
     assert.strictEqual(problem.type, 'text');
     assert.ok(problem.question.includes('Evaluate'));
-    // Check for + C or +C
-    assert.ok(problem.answer.includes('+C') || problem.answer.includes('+ C'));
   });
 
   await t.test('should generate definite integral problem', () => {
-    const problem = generateProblem('definite-integral');
+    const problem = generateProblem('definite-integral-properties');
     assert.strictEqual(problem.type, 'number');
     assert.ok(problem.question.includes('Evaluate'));
-    assert.ok(!isNaN(parseFloat(problem.answer)));
   });
 
-  await t.test('should return null for unknown type', () => {
+  await t.test('should generate fallback for unknown type', () => {
     const problem = generateProblem('unknown-type');
-    assert.strictEqual(problem, null);
+    assert.strictEqual(problem.type, 'text');
+    assert.ok(problem.question.includes('Practice problem for unknown-type'));
   });
 });

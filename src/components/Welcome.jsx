@@ -16,7 +16,7 @@ const Welcome = () => {
       
       <div className="flex justify-center gap-4">
         <NavLink
-          to="/module/module-1/antiderivatives"
+          to="/module/module-1/approximating-areas"
           className="inline-flex items-center px-8 py-3 bg-brand-600 text-white rounded-lg font-semibold hover:bg-brand-700 transition-colors shadow-lg shadow-brand-200"
         >
           Start Learning <ArrowRight className="ml-2 w-5 h-5" />

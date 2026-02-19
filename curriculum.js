@@ -1,117 +1,46 @@
 export const curriculum = [
   {
     id: "module-1",
-    title: "Module 1: Fundamentals of Integration",
+    title: "Module 1: Integrals",
     topics: [
       {
-        id: "antiderivatives",
-        title: "Antiderivatives and Indefinite Integrals",
-        practiceType: 'indefinite-integral',
-        content: [
-          {
-            type: 'text',
-            content: `
-## Definition
+        id: "approximating-areas",
+        title: "1.1 Approximating Areas",
+        practiceType: 'approximating-areas',
+        content: `
+## Approximating Areas
 
-An **antiderivative** of a function $f$ is a function $F$ such that $F'(x) = f(x)$ for all $x$ in the domain of $f$.
+The use of sigma (summation) notation of the form $\\sum_{i=1}^{n} a_i$ is useful for expressing long sums of values in compact form. For a continuous function defined over an interval $[a, b]$, the process of dividing the interval into $n$ equal parts, extending a rectangle to the graph of the function, calculating the areas of the series of rectangles, and then summing the areas yields an approximation of the area of that region.
 
-The set of all antiderivatives of $f$ is the **indefinite integral** of $f$ with respect to $x$, denoted by:
+## Riemann Sums
 
-$$ \\int f(x) \\, dx $$
+The width of each rectangle is $\\Delta x = \\frac{b-a}{n}$.
 
-The symbol $\\int$ is an integral sign. The function $f(x)$ is called the integrand, and $x$ is the variable of integration.
+Riemann sums are expressions of the form $\\sum_{i=1}^{n} f(x_i^*) \\Delta x$, and can be used to estimate the area under the curve $y=f(x)$.
 
-If $F$ is an antiderivative of $f$, then:
+*   **Left-endpoint approximation:** $x_i^*$ are chosen to be the left endpoints of the subintervals.
+*   **Right-endpoint approximation:** $x_i^*$ are chosen to be the right endpoints of the subintervals.
+*   **Midpoint approximation:** $x_i^*$ are chosen to be the midpoints of the subintervals.
 
-$$ \\int f(x) \\, dx = F(x) + C $$
+## Example
 
-where $C$ is an arbitrary constant.
-            `
-          },
-          {
-            type: 'text',
-            content: `
-## Basic Integration Rules
+Estimate the area under $f(x) = x^2$ on $[0, 2]$ using $n=4$ rectangles and right endpoints.
 
-Here are some fundamental integration formulas:
-
-1.  **Power Rule**: $\\int x^n \\, dx = \\frac{x^{n+1}}{n+1} + C$ (for $n \\neq -1$)
-2.  **Constant Multiple**: $\\int cf(x) \\, dx = c \\int f(x) \\, dx$
-3.  **Sum/Difference**: $\\int [f(x) \\pm g(x)] \\, dx = \\int f(x) \\, dx \\pm \\int g(x) \\, dx$
-4.  **Exponential**: $\\int e^x \\, dx = e^x + C$
-5.  **Logarithmic**: $\\int \\frac{1}{x} \\, dx = \\ln|x| + C$
-6.  **Sine**: $\\int \\sin(x) \\, dx = -\\cos(x) + C$
-7.  **Cosine**: $\\int \\cos(x) \\, dx = \\sin(x) + C$
-8.  **Secant Squared**: $\\int \\sec^2(x) \\, dx = \\tan(x) + C$
-9.  **Secant Tangent**: $\\int \\sec(x)\\tan(x) \\, dx = \\sec(x) + C$
-10. **Inverse Tangent**: $\\int \\frac{1}{1+x^2} \\, dx = \\arctan(x) + C$
-11. **Inverse Sine**: $\\int \\frac{1}{\\sqrt{1-x^2}} \\, dx = \\arcsin(x) + C$
-            `
-          },
-          {
-            type: 'stepped-example',
-            title: "Procedural Pathway: Solving Indefinite Integrals",
-            problem: "This pathway guides you through the process of evaluating indefinite integrals.",
-            steps: [
-              {
-                text: "**Identify the type of function:** Look for power functions $x^n$, exponentials, or trigonometric functions.",
-                math: ""
-              },
-              {
-                text: "**Separate terms:** Use the Sum/Difference Rule to break the integral into simpler parts.",
-                math: "$$ \\int [f(x) + g(x)] dx = \\int f(x) dx + \\int g(x) dx $$"
-              },
-              {
-                text: "**Pull out constants:** Use the Constant Multiple Rule to factor out constants.",
-                math: "$$ \\int c f(x) dx = c \\int f(x) dx $$"
-              },
-              {
-                text: "**Apply rules:** Apply the appropriate integration rule (e.g., Power Rule) to each part.",
-                math: "e.g., $$ \\int x^n dx = \\frac{x^{n+1}}{n+1} $$"
-              },
-              {
-                text: "**Add C:** Don't forget to add the constant of integration $+ C$ at the end.",
-                math: "$$ + C $$"
-              },
-              {
-                text: "**Simplify:** Combine constants and simplify coefficients if needed.",
-                math: ""
-              }
-            ]
-          },
-          {
-            type: 'stepped-example',
-            title: "Example Problem",
-            problem: "Evaluate $\\int (3x^2 + 2x - 5) \\, dx$.",
-            steps: [
-              {
-                text: "First, apply the Sum/Difference Rule to break it into three integrals.",
-                math: "$$ \\int 3x^2 \\, dx + \\int 2x \\, dx - \\int 5 \\, dx $$"
-              },
-              {
-                text: "Next, use the Constant Multiple Rule to pull out the constants.",
-                math: "$$ 3 \\int x^2 \\, dx + 2 \\int x \\, dx - 5 \\int 1 \\, dx $$"
-              },
-              {
-                text: "Now, apply the Power Rule to each term.",
-                math: "$$ 3 \\left(\\frac{x^3}{3}\\right) + 2 \\left(\\frac{x^2}{2}\\right) - 5(x) $$"
-              },
-              {
-                text: "Finally, simplify the expression and add the constant of integration $C$.",
-                math: "$$ x^3 + x^2 - 5x + C $$"
-              }
-            ]
-          }
-        ]
+$\\Delta x = \\frac{2-0}{4} = 0.5$.
+Endpoints: $0, 0.5, 1, 1.5, 2$.
+Right endpoints: $0.5, 1, 1.5, 2$.
+Area $\\approx 0.5 [f(0.5) + f(1) + f(1.5) + f(2)]$
+$= 0.5 [0.25 + 1 + 2.25 + 4] = 0.5 [7.5] = 3.75$.
+`
       },
       {
-        id: "definite-integrals",
-        title: "The Definite Integral",
-        practiceType: 'definite-integral',
+        id: "definite-integral",
+        title: "1.2 The Definite Integral",
+        practiceType: 'definite-integral-properties',
         content: `
 ## Definition
 
-The **definite integral** of a function $f(x)$ from $a$ to $b$ represents the signed area under the curve $y=f(x)$ from $x=a$ to $x=b$. It is denoted by:
+The **definite integral** of a function $f(x)$ from $a$ to $b$ represents the net signed area under the curve $y=f(x)$ from $x=a$ to $x=b$. It is denoted by:
 
 $$ \\int_a^b f(x) \\, dx $$
 
@@ -119,9 +48,7 @@ Usually defined as the limit of a Riemann Sum:
 
 $$ \\int_a^b f(x) \\, dx = \\lim_{n \\to \\infty} \\sum_{i=1}^n f(x_i^*) \\Delta x $$
 
-where $\\Delta x = \\frac{b-a}{n}$ and $x_i^*$ is a sample point in the $i$-th subinterval.
-
-## Properties of Definite Integrals
+## Properties
 
 1.  $\\int_a^b f(x) \\, dx = -\\int_b^a f(x) \\, dx$
 2.  $\\int_a^a f(x) \\, dx = 0$
@@ -130,85 +57,71 @@ where $\\Delta x = \\frac{b-a}{n}$ and $x_i^*$ is a sample point in the $i$-th s
 5.  $\\int_a^c f(x) \\, dx + \\int_c^b f(x) \\, dx = \\int_a^b f(x) \\, dx$
 6.  If $f(x) \\ge 0$ for $a \\le x \\le b$, then $\\int_a^b f(x) \\, dx \\ge 0$.
 
-## Procedural Pathway: Evaluating Definite Integrals
+## Average Value
 
-1.  **Find the Antiderivative:** Determine the indefinite integral $F(x) = \\int f(x) dx$. You can omit the $+C$.
-2.  **Apply the Fundamental Theorem of Calculus (Part 2):** Evaluate $F(x)$ at the upper limit $b$ and the lower limit $a$.
-3.  **Calculate difference:** Compute $F(b) - F(a)$.
-4.  **Simplify:** Perform the arithmetic to get the final numerical answer.
-
-## Example
-
-Evaluate $\\int_1^2 (2x + 1) \\, dx$.
-
-**Solution:**
-1.  **Antiderivative:** $\\int (2x + 1) dx = x^2 + x$.
-2.  **Evaluate limits:**
-    *   Upper limit ($x=2$): $2^2 + 2 = 6$.
-    *   Lower limit ($x=1$): $1^2 + 1 = 2$.
-3.  **Difference:** $6 - 2 = 4$.
-
-So, $\\int_1^2 (2x + 1) \\, dx = 4$.
-
+The average value of a function $f(x)$ on $[a, b]$ is given by:
+$$ f_{ave} = \\frac{1}{b-a} \\int_a^b f(x) \\, dx $$
 `
       },
       {
-        id: "ftc",
-        title: "The Fundamental Theorem of Calculus",
+        id: "fundamental-theorem",
+        title: "1.3 The Fundamental Theorem of Calculus",
+        practiceType: 'fundamental-theorem',
         content: `
-The FTC connects differential calculus and integral calculus. It has two parts.
+The FTC connects differential calculus and integral calculus.
 
 ## Part 1 (FTC1)
 
 If $f$ is continuous on $[a, b]$, then the function $g$ defined by
-
 $$ g(x) = \\int_a^x f(t) \\, dt $$
-
 is continuous on $[a, b]$, differentiable on $(a, b)$, and $g'(x) = f(x)$.
 
-**Meaning:** Differentiation and integration are inverse processes.
+**Example:**
+If $g(x) = \\int_1^x t^2 dt$, then $g'(x) = x^2$.
 
 ## Part 2 (FTC2)
 
 If $f$ is continuous on $[a, b]$, then
-
 $$ \\int_a^b f(x) \\, dx = F(b) - F(a) $$
-
 where $F$ is any antiderivative of $f$, that is, $F'(x) = f(x)$.
-
-**Meaning:** We can evaluate a definite integral by finding an antiderivative and evaluating it at the endpoints.
 
 ## Example
 
 Evaluate $\\int_1^3 x^2 \\, dx$.
 
-**Solution:**
-An antiderivative of $x^2$ is $\\frac{x^3}{3}$.
-
-$$
-\\begin{aligned}
-\\int_1^3 x^2 \\, dx &= \\left[ \\frac{x^3}{3} \\right]_1^3 \\\\
-&= \\frac{3^3}{3} - \\frac{1^3}{3} \\\\
-&= \\frac{27}{3} - \\frac{1}{3} \\\\
-&= 9 - \\frac{1}{3} \\\\
-&= \\frac{26}{3}
-\\end{aligned}
-$$
+$$ \\left[ \\frac{x^3}{3} \\right]_1^3 = \\frac{27}{3} - \\frac{1}{3} = \\frac{26}{3} $$
 `
-      }
-    ]
-  },
-  {
-    id: "module-2",
-    title: "Module 2: Integration Techniques",
-    topics: [
+      },
+      {
+        id: "net-change",
+        title: "1.4 Integration Formulas and the Net Change Theorem",
+        practiceType: 'net-change',
+        content: `
+## Net Change Theorem
+
+The Net Change Theorem states that the integral of a rate of change is the net change:
+
+$$ \\int_a^b F'(x) \\, dx = F(b) - F(a) $$
+
+## Applications
+
+*   **Displacement:** If $v(t)$ is velocity, then displacement is $\\int_{t_1}^{t_2} v(t) \\, dt$.
+*   **Distance:** The total distance traveled is $\\int_{t_1}^{t_2} |v(t)| \\, dt$.
+
+## Basic Integration Formulas
+
+Recall the power rule: $\\int x^n \\, dx = \\frac{x^{n+1}}{n+1} + C$ ($n \\neq -1$).
+And trigonometric integrals like $\\int \\sin x \\, dx = -\\cos x + C$.
+`
+      },
       {
         id: "substitution",
-        title: "The Substitution Rule",
+        title: "1.5 Substitution",
+        practiceType: 'substitution-integral',
         content: `
-The Substitution Rule (u-substitution) is the reverse of the Chain Rule.
+## The Substitution Rule
 
-## Theorem
+Also known as u-substitution, this method reverses the Chain Rule.
 
 If $u = g(x)$ is a differentiable function whose range is an interval $I$ and $f$ is continuous on $I$, then:
 
@@ -216,241 +129,246 @@ $$ \\int f(g(x))g'(x) \\, dx = \\int f(u) \\, du $$
 
 ## Steps
 
-1.  Choose a substitution $u = g(x)$.
+1.  Choose $u = g(x)$.
 2.  Find $du = g'(x) \\, dx$.
-3.  Express the entire integral in terms of $u$.
-4.  Evaluate the new integral with respect to $u$.
-5.  Replace $u$ with $g(x)$ to get the final answer in terms of $x$.
+3.  Substitute $u$ and $du$ into the integral.
+4.  Integrate with respect to $u$.
+5.  Replace $u$ with $g(x)$ (for indefinite integrals).
 
-## Example
+## Definite Integrals
 
-Evaluate $\\int 2x e^{x^2} \\, dx$.
-
-**Solution:**
-Let $u = x^2$. Then $du = 2x \\, dx$.
-
-$$
-\\begin{aligned}
-\\int 2x e^{x^2} \\, dx &= \\int e^u \\, du \\\\
-&= e^u + C \\\\
-&= e^{x^2} + C
-\\end{aligned}
-$$
+For definite integrals, you must also change the limits of integration:
+$$ \\int_a^b f(g(x))g'(x) \\, dx = \\int_{g(a)}^{g(b)} f(u) \\, du $$
 `
       },
       {
-        id: "by-parts",
-        title: "Integration by Parts",
+        id: "exp-log-integrals",
+        title: "1.6 Integrals Involving Exponential and Logarithmic Functions",
+        practiceType: 'exp-log-integrals',
         content: `
-Integration by Parts is the reverse of the Product Rule.
+## Exponential Functions
 
-## Formula
+$$ \\int e^x \\, dx = e^x + C $$
+$$ \\int a^x \\, dx = \\frac{a^x}{\\ln a} + C $$
 
-$$ \\int u \\, dv = uv - \\int v \\, du $$
+## Logarithmic Functions
 
-## Strategy for Choosing $u$ and $dv$
-
-A common mnemonic is **LIATE**: choose $u$ to be the function that comes first in this list:
-1.  **L**ogarithmic functions (e.g., $\\ln x$)
-2.  **I**nverse trigonometric functions (e.g., $\\arctan x$)
-3.  **A**lgebraic functions (e.g., $x^2$, $3x$)
-4.  **T**rigonometric functions (e.g., $\\sin x$)
-5.  **E**xponential functions (e.g., $e^x$)
-
-Then $dv$ is the remaining part of the integrand (including $dx$).
+The Power Rule $\\int x^n dx$ fails when $n=-1$.
+Instead, we have:
+$$ \\int \\frac{1}{x} \\, dx = \\ln |x| + C $$
 
 ## Example
 
-Evaluate $\\int x \\cos x \\, dx$.
-
-**Solution:**
-Using LIATE, we choose $u = x$ (Algebraic) and $dv = \\cos x \\, dx$ (Trigonometric).
-Then $du = dx$ and $v = \\int \\cos x \\, dx = \\sin x$.
-
-$$
-\\begin{aligned}
-\\int x \\cos x \\, dx &= uv - \\int v \\, du \\\\
-&= x \\sin x - \\int \\sin x \\, dx \\\\
-&= x \\sin x - (-\\cos x) + C \\\\
-&= x \\sin x + \\cos x + C
-\\end{aligned}
-$$
+Evaluate $\\int \\frac{2x}{x^2+1} \\, dx$.
+Let $u = x^2+1$, then $du = 2x \\, dx$.
+$\\int \\frac{1}{u} \\, du = \\ln|u| + C = \\ln(x^2+1) + C$.
 `
       },
       {
-        id: "partial-fractions",
-        title: "Partial Fractions",
+        id: "inverse-trig-integrals",
+        title: "1.7 Integrals Resulting in Inverse Trigonometric Functions",
+        practiceType: 'inverse-trig-integrals',
         content: `
-This technique is used to integrate rational functions $\\frac{P(x)}{Q(x)}$.
+## Formulas
 
-## Steps
+1.  $$ \\int \\frac{du}{\\sqrt{a^2 - u^2}} = \\arcsin\\left(\\frac{u}{a}\\right) + C $$
+2.  $$ \\int \\frac{du}{a^2 + u^2} = \\frac{1}{a} \\arctan\\left(\\frac{u}{a}\\right) + C $$
+3.  $$ \\int \\frac{du}{u\\sqrt{u^2 - a^2}} = \\frac{1}{a} \\text{arcsec}\\left(\\frac{|u|}{a}\\right) + C $$
 
-1.  **Divide if Improper:** If degree($P$) $\\ge$ degree($Q$), perform polynomial long division.
-2.  **Factor Denominator:** Factor $Q(x)$ completely into linear and irreducible quadratic factors.
-3.  **Decompose:** Express $\\frac{P(x)}{Q(x)}$ as a sum of partial fractions.
-    *   For each linear factor $(ax+b)^n$, include terms: $\\frac{A_1}{ax+b} + \\dots + \\frac{A_n}{(ax+b)^n}$.
-    *   For each quadratic factor $(ax^2+bx+c)^m$, include terms: $\\frac{B_1 x + C_1}{ax^2+bx+c} + \\dots + \\frac{B_m x + C_m}{(ax^2+bx+c)^m}$.
-4.  **Solve for Constants:** Multiply by the denominator and solve for the unknown coefficients.
-5.  **Integrate:** Integrate each term separately.
+## Completing the Square
+
+Sometimes you need to complete the square in the denominator to make the integral fit one of these forms.
 
 ## Example
 
-Evaluate $\\int \\frac{1}{x^2 - 1} \\, dx$.
-
-**Solution:**
-Factor the denominator: $x^2 - 1 = (x-1)(x+1)$.
-Decompose:
-$$ \\frac{1}{(x-1)(x+1)} = \\frac{A}{x-1} + \\frac{B}{x+1} $$
-$$ 1 = A(x+1) + B(x-1) $$
-
-Let $x=1$: $1 = A(2) \\implies A = 1/2$.
-Let $x=-1$: $1 = B(-2) \\implies B = -1/2$.
-
-$$
-\\begin{aligned}
-\\int \\frac{1}{x^2 - 1} \\, dx &= \\int \\left( \\frac{1/2}{x-1} - \\frac{1/2}{x+1} \\right) \\, dx \\\\
-&= \\frac{1}{2} \\ln|x-1| - \\frac{1}{2} \\ln|x+1| + C \\\\
-&= \\frac{1}{2} \\ln\\left| \\frac{x-1}{x+1} \\right| + C
-\\end{aligned}
-$$
+Evaluate $\\int \\frac{1}{1+x^2} \\, dx = \\arctan x + C$.
 `
       }
     ]
   },
   {
-    id: "module-3",
-    title: "Module 3: Applications of Integration",
+    id: "module-2",
+    title: "Module 2: Applications of Integration",
     topics: [
       {
-        id: "area",
-        title: "Area Between Curves",
+        id: "area-between-curves",
+        title: "2.1 Areas between Curves",
+        practiceType: 'area-between-curves',
         content: `
+## Area Formula
+
 To find the area $A$ of the region bounded by the curves $y=f(x)$, $y=g(x)$, and the lines $x=a$, $x=b$, where $f$ and $g$ are continuous and $f(x) \\ge g(x)$ for all $x$ in $[a, b]$:
 
 $$ A = \\int_a^b [f(x) - g(x)] \\, dx $$
 
-If the curves intersect, you must split the integral at the intersection points and integrate $|f(x) - g(x)|$.
+If the curves intersect, split the integral at intersection points and integrate $|f(x) - g(x)|$.
 
-## Example
+## Horizontal Slicing
 
-Find the area enclosed by $y=x^2$ and $y=x$.
-
-**Solution:**
-Intersection points: $x^2 = x \\implies x^2 - x = 0 \\implies x(x-1) = 0$.
-So $x=0$ and $x=1$.
-On $[0, 1]$, $x \\ge x^2$.
-
-$$
-\\begin{aligned}
-A &= \\int_0^1 (x - x^2) \\, dx \\\\
-&= \\left[ \\frac{x^2}{2} - \\frac{x^3}{3} \\right]_0^1 \\\\
-&= \\left( \\frac{1}{2} - \\frac{1}{3} \\right) - 0 \\\\
-&= \\frac{1}{6}
-\\end{aligned}
-$$
+Sometimes it is easier to integrate with respect to $y$.
+$$ A = \\int_c^d [u(y) - v(y)] \\, dy $$
+where $u(y)$ is the right curve and $v(y)$ is the left curve.
 `
       },
       {
-        id: "volume",
-        title: "Volumes of Revolution",
+        id: "volume-slicing",
+        title: "2.2 Determining Volumes by Slicing",
+        practiceType: 'volume-slicing',
         content: `
+## General Slicing Method
+
+Volume $V = \\int_a^b A(x) \\, dx$, where $A(x)$ is the area of a cross-section at $x$.
+
 ## Disk Method
 
-If a region under $y=f(x)$ from $a$ to $b$ is rotated about the x-axis, the volume $V$ is:
-
+If a region under $y=f(x)$ is rotated about the x-axis:
 $$ V = \\int_a^b \\pi [f(x)]^2 \\, dx $$
 
 ## Washer Method
 
-If the region is bounded by an outer radius $R(x)$ and an inner radius $r(x)$, the volume is:
-
+If the region is bounded by outer radius $R(x)$ and inner radius $r(x)$:
 $$ V = \\int_a^b \\pi ([R(x)]^2 - [r(x)]^2) \\, dx $$
-
-## Example
-
-Find the volume of the solid obtained by rotating the region under $y=\\sqrt{x}$ from 0 to 1 about the x-axis.
-
-**Solution:**
-Using the Disk Method:
-
-$$
-\\begin{aligned}
-V &= \\int_0^1 \\pi (\\sqrt{x})^2 \\, dx \\\\
-&= \\pi \\int_0^1 x \\, dx \\\\
-&= \\pi \\left[ \\frac{x^2}{2} \\right]_0^1 \\\\
-&= \\frac{\\pi}{2}
-\\end{aligned}
-$$
-`
-      }
-    ]
-  },
-  {
-    id: "module-4",
-    title: "Module 4: Differential Equations",
-    topics: [
-      {
-        id: "separable",
-        title: "Separable Differential Equations",
-        content: `
-A **separable equation** is a first-order differential equation that can be written in the form:
-
-$$ \\frac{dy}{dx} = g(x)h(y) $$
-
-## Method of Solution
-
-1.  Separate the variables: Divide by $h(y)$ and multiply by $dx$ (conceptually) to get all $y$'s on one side and $x$'s on the other.
-    $$ \\frac{1}{h(y)} \\, dy = g(x) \\, dx $$
-2.  Integrate both sides:
-    $$ \\int \\frac{1}{h(y)} \\, dy = \\int g(x) \\, dx $$
-3.  Solve for $y$ explicitly if possible.
-
-## Example
-
-Solve $\\frac{dy}{dx} = xy^2$.
-
-**Solution:**
-
-$$
-\\begin{aligned}
-\\frac{dy}{y^2} &= x \\, dx \\\\
-\\int y^{-2} \\, dy &= \\int x \\, dx \\\\
--\\frac{1}{y} &= \\frac{x^2}{2} + C \\\\
-y &= -\\frac{1}{\\frac{x^2}{2} + C}
-\\end{aligned}
-$$
 `
       },
       {
-        id: "modeling",
-        title: "Modeling with Differential Equations",
+        id: "volume-shells",
+        title: "2.3 Volumes of Revolution: Cylindrical Shells",
+        practiceType: 'volume-shells',
         content: `
-Differential equations are used to model real-world phenomena where the rate of change of a quantity depends on the quantity itself or other variables.
+## Method of Cylindrical Shells
 
-## Exponential Growth and Decay
+Useful when rotating a region about the y-axis (or vertical line) and integrating with respect to $x$.
 
-The Law of Natural Growth/Decay assumes that the rate of change of a population $P$ is proportional to the size of the population:
+$$ V = \\int_a^b 2\\pi x f(x) \\, dx $$
 
-$$ \\frac{dP}{dt} = kP $$
+Here, $2\\pi x$ is the circumference, $f(x)$ is the height, and $dx$ is the thickness.
+More generally: $V = \\int_a^b 2\\pi (\\text{radius})(\\text{height}) \\, dx$.
+`
+      },
+      {
+        id: "arc-length",
+        title: "2.4 Arc Length of a Curve and Surface Area",
+        practiceType: 'arc-length',
+        content: `
+## Arc Length
 
-The solution to this separable equation is:
+The length of a curve $y=f(x)$ from $a$ to $b$ is:
+$$ L = \\int_a^b \\sqrt{1 + [f'(x)]^2} \\, dx $$
 
-$$ P(t) = P(0) e^{kt} $$
+## Surface Area of Revolution
 
-*   If $k > 0$, it is exponential growth.
-*   If $k < 0$, it is exponential decay (e.g., radioactive decay).
+If $y=f(x)$ is rotated about the x-axis:
+$$ S = \\int_a^b 2\\pi f(x) \\sqrt{1 + [f'(x)]^2} \\, dx $$
+`
+      },
+      {
+        id: "physical-applications",
+        title: "2.5 Physical Applications",
+        practiceType: 'physical-applications',
+        content: `
+## Work
 
-## Example: Bacteria Growth
+Work done by a variable force $F(x)$ moving an object from $a$ to $b$:
+$$ W = \\int_a^b F(x) \\, dx $$
 
-A bacteria culture starts with 1000 bacteria and the growth rate is proportional to the number of bacteria. After 2 hours, the population is 3000. Find the number of bacteria after 5 hours.
+Common examples:
+*   **Hooke's Law (Springs):** $F(x) = kx$.
+*   **Lifting cables/buckets:** Force depends on weight of cable/water remaining.
 
-**Solution:**
-Model: $P(t) = 1000 e^{kt}$.
-Given $P(2) = 3000$:
-$$ 3000 = 1000 e^{2k} \\implies 3 = e^{2k} \\implies 2k = \\ln 3 \\implies k = \\frac{\\ln 3}{2} $$
-So $P(t) = 1000 e^{\\frac{t \\ln 3}{2}} = 1000 (e^{\\ln 3})^{t/2} = 1000 \\cdot 3^{t/2}$.
-At $t=5$:
-$$ P(5) = 1000 \\cdot 3^{5/2} = 1000 \\cdot \\sqrt{243} \\approx 15588 $$
+## Hydrostatic Force
+
+Force exerted by a fluid on a submerged surface:
+$$ F = \\int_a^b \\rho g \\cdot \\text{depth}(y) \\cdot \\text{width}(y) \\, dy $$
+`
+      },
+      {
+        id: "moments-mass",
+        title: "2.6 Moments and Centers of Mass",
+        practiceType: 'moments-mass',
+        content: `
+## Center of Mass
+
+The center of mass (centroid) $(\\bar{x}, \\bar{y})$ of a region bounded by $y=f(x)$, $x=a$, $x=b$, and the x-axis ($y=0$).
+
+1.  **Mass (Area if density=1):** $M = \\int_a^b f(x) \\, dx$
+2.  **Moment about y-axis:** $M_y = \\int_a^b x f(x) \\, dx$
+3.  **Moment about x-axis:** $M_x = \\int_a^b \\frac{1}{2} [f(x)]^2 \\, dx$
+
+Then $\\bar{x} = \\frac{M_y}{M}$ and $\\bar{y} = \\frac{M_x}{M}$.
+`
+      },
+      {
+        id: "exp-log-hard",
+        title: "2.7 Integrals, Exponential Functions, and Logarithms",
+        practiceType: 'exp-log-hard',
+        content: `
+## Rigorous Definitions
+
+*   $\\ln x = \\int_1^x \\frac{1}{t} \\, dt$ for $x > 0$.
+*   $e$ is the number such that $\\ln e = 1$.
+*   $e^x$ is the inverse function of $\\ln x$.
+
+## General Bases
+
+*   $a^x = e^{x \\ln a}$
+*   $\\log_a x = \\frac{\\ln x}{\\ln a}$
+
+## Derivatives and Integrals
+
+*   $\\frac{d}{dx} a^x = a^x \\ln a$
+*   $\\int a^x \\, dx = \\frac{a^x}{\\ln a} + C$
+*   $\\frac{d}{dx} \\log_a x = \\frac{1}{x \\ln a}$
+`
+      },
+      {
+        id: "growth-decay",
+        title: "2.8 Exponential Growth and Decay",
+        practiceType: 'growth-decay',
+        content: `
+## Differential Equation
+
+The rate of change is proportional to the amount present:
+$$ \\frac{dy}{dt} = ky $$
+
+## Solution
+
+$$ y(t) = y(0) e^{kt} $$
+
+*   $k > 0$: Growth (Population, Compound Interest)
+*   $k < 0$: Decay (Radioactive Decay, Newton's Law of Cooling)
+
+## Half-Life and Doubling Time
+
+*   **Doubling Time:** $T_d = \\frac{\\ln 2}{k}$
+*   **Half-Life:** $T_{1/2} = -\\frac{\\ln 2}{k}$ (where $k < 0$)
+`
+      },
+      {
+        id: "hyperbolic-functions",
+        title: "2.9 Calculus of the Hyperbolic Functions",
+        practiceType: 'hyperbolic-functions',
+        content: `
+## Definitions
+
+*   $\\sinh x = \\frac{e^x - e^{-x}}{2}$
+*   $\\cosh x = \\frac{e^x + e^{-x}}{2}$
+*   $\\tanh x = \\frac{\\sinh x}{\\cosh x}$
+
+## Identities
+
+*   $\\cosh^2 x - \\sinh^2 x = 1$
+*   $1 - \\tanh^2 x = \\text{sech}^2 x$
+
+## Derivatives
+
+*   $\\frac{d}{dx} \\sinh x = \\cosh x$
+*   $\\frac{d}{dx} \\cosh x = \\sinh x$
+*   $\\frac{d}{dx} \\tanh x = \\text{sech}^2 x$
+
+## Integrals
+
+*   $\\int \\sinh x \\, dx = \\cosh x + C$
+*   $\\int \\cosh x \\, dx = \\sinh x + C$
 `
       }
     ]
