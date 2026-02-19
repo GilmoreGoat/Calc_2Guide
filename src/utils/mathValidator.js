@@ -60,6 +60,7 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
   // Convert math syntax to JS syntax
   const toJS = (str) => {
+    let s = str;
     // 1. Protect known functions/constants
     const functions = [
       'arcsin', 'arccos', 'arctan', 'arcsec', 'arccsc', 'arccot',
@@ -71,6 +72,16 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
     // Sort by length descending
     functions.sort((a, b) => b.length - a.length);
 
+    const map = [];
+    functions.forEach((fn, i) => {
+      // Use a placeholder that starts with a letter to allow implicit mult
+      // and does not contain 'x' to avoid splitting.
+      // Use underscores to avoid substring collisions (e.g. mathfunc1 vs mathfunc10)
+      const ph = `mathfunc_${i}_`;
+      map.push({ ph, fn });
+      s = s.split(fn).join(ph);
+    });
+
     // Implicit multiplication
     // 1. Number followed by x, letter, or (
     s = s.replace(/(\d)([a-z(])/g, '$1*$2');
@@ -81,6 +92,11 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
     // Let's assume variable is 'x'.
     s = s.replace(/([x)])(\d)/g, '$1*$2');
     s = s.replace(/([x)])([a-z(])/g, '$1*$2');
+
+    // Restore functions
+    map.forEach(({ ph, fn }) => {
+       s = s.split(ph).join(fn);
+    });
 
     // Convert powers using pow() function (to be defined in context)
     // We repeatedly find the last ^ to handle right-associativity

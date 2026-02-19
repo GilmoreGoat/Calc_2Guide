@@ -376,7 +376,89 @@ function generateNetChange() {
   }
 }
 
-function generateSubstitution() {
+function generatePolynomialSubstitution() {
+  const k = getRandomInt(2, 3); // degree of inside function (keep small for simplicity)
+  const n = getRandomInt(3, 8); // power
+  const a = getRandomInt(1, 9); // constant
+  const sign = Math.random() > 0.5 ? '+' : '-';
+
+  const inside = `x^${k} ${sign} ${a}`;
+  const insideVal = `(x^${k}${sign}${a})`;
+
+  const derivPower = k - 1;
+  const derivTerm = derivPower === 0 ? '' : (derivPower === 1 ? 'x' : `x^${derivPower}`);
+
+  // Question: Int derivTerm * (inside)^n dx
+  // Answer: (1 / (k * (n+1))) * (inside)^(n+1)
+
+  const coeff = k * (n + 1);
+
+  return {
+    question: `Evaluate $\\int ${derivTerm} (${inside})^{${n}} \\, dx$.`,
+    answer: `(1/${coeff}) * ${insideVal}^${n+1} + C`,
+    type: 'text',
+    hint: `Let $u = ${inside}$. Then $du = ${k}x^{${k-1}} \\, dx$.`
+  };
+}
+
+function generateTrigSubstitution() {
+  const type = Math.random();
+  const n = getRandomInt(2, 6);
+
+  if (type < 0.33) {
+    // u = sin x
+    // Int sin^n x cos x dx = sin^(n+1) / (n+1)
+    return {
+      question: `Evaluate $\\int \\sin^{${n}}(x) \\cos(x) \\, dx$.`,
+      answer: `(1/${n+1}) * sin(x)^${n+1} + C`,
+      type: 'text',
+      hint: `Let $u = \\sin(x)$.`
+    };
+  } else if (type < 0.66) {
+    // u = cos x
+    // Int cos^n x sin x dx = -cos^(n+1) / (n+1)
+    return {
+      question: `Evaluate $\\int \\cos^{${n}}(x) \\sin(x) \\, dx$.`,
+      answer: `(-1/${n+1}) * cos(x)^${n+1} + C`,
+      type: 'text',
+      hint: `Let $u = \\cos(x)$. Recall derivative of cos is -sin.`
+    };
+  } else {
+    // u = tan x
+    // Int tan^n x sec^2 x dx = tan^(n+1) / (n+1)
+    return {
+      question: `Evaluate $\\int \\tan^{${n}}(x) \\sec^2(x) \\, dx$.`,
+      answer: `(1/${n+1}) * tan(x)^${n+1} + C`,
+      type: 'text',
+      hint: `Let $u = \\tan(x)$.`
+    };
+  }
+}
+
+function generateExpSubstitution() {
+  const k = getRandomInt(1, 2); // power of x outside
+  // Exponent is x^{k+1}.
+  // Integral x^k e^{x^{k+1}}
+
+  const expPower = k + 1;
+  const expTerm = `x^${expPower}`;
+
+  const derivCoeff = expPower;
+  const derivTerm = k === 1 ? 'x' : `x^${k}`;
+
+  // Int derivTerm * e^(expTerm) dx
+  // u = expTerm. du = derivCoeff * derivTerm dx.
+  // Int (1/derivCoeff) e^u du = (1/derivCoeff) e^u
+
+  return {
+    question: `Evaluate $\\int ${derivTerm} e^{${expTerm}} \\, dx$.`,
+    answer: `(1/${derivCoeff}) * e^(${expTerm}) + C`,
+    type: 'text',
+    hint: `Let $u = ${expTerm}$. Then $du = ${derivCoeff}${derivTerm} \\, dx$.`
+  };
+}
+
+function generateLogSubstitution() {
   const n = getRandomInt(2, 5);
   const question = `Evaluate $\\int \\frac{(\\ln x)^{${n}}}{x} \\, dx$.`;
   const answer = `(1/${n+1}) * ln(x)^${n+1} + C`;
