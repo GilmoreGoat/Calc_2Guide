@@ -75,6 +75,112 @@ function generateSimplePolynomial(numTerms = 2) {
   return { terms, antiderivTerms };
 }
 
+function generateSigmaNotation() {
+  const type = Math.random();
+
+  if (type < 0.5) {
+    // 1. Evaluate Sum: Sum_{i=1}^n (ai + b) or (ai^2 + b)
+    const n = getRandomInt(4, 10);
+    const a = getRandomInt(1, 4);
+    const b = getRandomInt(1, 5);
+    const isQuad = Math.random() > 0.5;
+
+    // Formulas:
+    // Sum i = n(n+1)/2
+    // Sum i^2 = n(n+1)(2n+1)/6
+    // Sum c = nc
+
+    let question, answer, hint;
+
+    if (isQuad) {
+      // Sum (a i^2 + b)
+      const sumI2 = (n * (n + 1) * (2 * n + 1)) / 6;
+      const sumC = n * b;
+      const total = a * sumI2 + sumC;
+      question = `Evaluate the sum $\\sum_{i=1}^{${n}} (${a === 1 ? '' : a}i^2 + ${b})$.`;
+      answer = total.toString();
+      hint = `Use the formulas $\\sum_{i=1}^n i^2 = \\frac{n(n+1)(2n+1)}{6}$ and $\\sum_{i=1}^n c = nc$.`;
+    } else {
+      // Sum (a i + b)
+      const sumI = (n * (n + 1)) / 2;
+      const sumC = n * b;
+      const total = a * sumI + sumC;
+      question = `Evaluate the sum $\\sum_{i=1}^{${n}} (${a === 1 ? '' : a}i + ${b})$.`;
+      answer = total.toString();
+      hint = `Use the formulas $\\sum_{i=1}^n i = \\frac{n(n+1)}{2}$ and $\\sum_{i=1}^n c = nc$.`;
+    }
+
+    return { question, answer, type: 'number', hint };
+
+  } else {
+    // 2. Properties: Given Sum a_i = A, Sum b_i = B, find Sum (c a_i + d b_i + k)
+    const n = getRandomInt(10, 50); // n doesn't matter for the value
+    const valA = getRandomInt(5, 20);
+    const valB = getRandomInt(5, 20);
+    const c = getRandomInt(2, 5);
+    const d = getRandomInt(2, 5);
+    const k = getRandomInt(1, 5);
+    const sign = Math.random() > 0.5 ? 1 : -1; // + or - d b_i
+
+    // Result = c*A + sign*d*B + n*k
+    const total = c * valA + sign * d * valB + n * k;
+
+    const op = sign === 1 ? '+' : '-';
+
+    return {
+      question: `Given that $\\sum_{i=1}^{${n}} a_i = ${valA}$ and $\\sum_{i=1}^{${n}} b_i = ${valB}$, evaluate $\\sum_{i=1}^{${n}} (${c}a_i ${op} ${d}b_i + ${k})$.`,
+      answer: total.toString(),
+      type: 'number',
+      hint: `Use the linearity properties: $\\sum (c a_i \\pm d b_i + k) = c \\sum a_i \\pm d \\sum b_i + \\sum k$. Don't forget $\\sum_{i=1}^n k = nk$.`
+    };
+  }
+}
+
+function generateLimitDefProblem() {
+  const type = Math.random();
+
+  if (type < 0.6) {
+    // 1. Find exact area using limit (linear or simple quadratic)
+    // f(x) = mx + k
+    const m = getRandomInt(2, 5);
+    const k = getRandomInt(0, 5);
+    const a = 0; // Simple lower limit to make limit calc easier for user
+    const b = getRandomInt(2, 5);
+
+    // Area = Integral_0^b (mx+k) dx = [m/2 x^2 + kx]_0^b = m/2 b^2 + kb
+    const area = (m / 2) * b * b + k * b;
+
+    return {
+      question: `Using the definition of area as a limit of Riemann sums, find the exact area under the curve $f(x) = ${m}x + ${k}$ on the interval $[${a}, ${b}]$.`,
+      answer: area.toString(),
+      type: 'number',
+      hint: `Set up the Riemann sum $R_n = \\sum_{i=1}^n f(x_i) \\Delta x$, simplify using summation formulas, and take the limit as $n \\to \\infty$.`
+    };
+  } else {
+    // 2. Evaluate a limit of a sum structure
+    // e.g. lim n->inf Sum (3(2i/n) + 1) * (2/n)
+    // This is Integral_0^2 (3x+1) dx.
+    // Let's generate it from an integral.
+    const m = getRandomInt(2, 4);
+    const b = getRandomInt(2, 4);
+    // f(x) = mx. Interval [0, b].
+    // dx = b/n. xi = i*b/n.
+    // Sum = Sum (m * i*b/n) * (b/n) = Sum (m*b^2/n^2 * i)
+    // = m*b^2/n^2 * n(n+1)/2 = m*b^2/2 * (1 + 1/n)
+    // Limit = m*b^2 / 2.
+
+    const area = (m * b * b) / 2;
+    const expr = `\\sum_{i=1}^n \\left( ${m} \\left( \\frac{${b}i}{n} \\right) \\right) \\frac{${b}}{n}`;
+
+    return {
+      question: `Evaluate the limit: $\\lim_{n \\to \\infty} ${expr}$.`,
+      answer: area.toString(),
+      type: 'number',
+      hint: `Recognize this as the area under $f(x) = ${m}x$ on $[0, ${b}]$, or evaluate the sum first and then take the limit.`
+    };
+  }
+}
+
 function generateDeltaXProblem() {
   const n = getRandomInt(4, 10);
   const a = getRandomInt(0, 5);
@@ -117,50 +223,84 @@ function generateRiemannSumCalculation() {
   // Function coeffs
   let funcStr = '';
   let evaluate = null;
+  // Determine monotonicity for Upper/Lower sums.
+  // With positive coeffs and x >= 0, these are always increasing.
+  const isIncreasing = true;
 
   if (isQuad) {
-    // f(x) = x^2 + c or similar simple one
-    // Let's do a*x^2 + k
+    // f(x) = A*x^2 + K
     const A = getRandomInt(1, 2);
     const K = getRandomInt(0, 5);
     funcStr = `${A === 1 ? '' : A}x^2 + ${K}`;
     evaluate = (x) => A * x * x + K;
   } else {
-    // f(x) = c*x + d
+    // f(x) = C*x + D
     const C = getRandomInt(1, 3);
     const D = getRandomInt(0, 5);
     funcStr = `${C}x + ${D}`;
     evaluate = (x) => C * x + D;
   }
 
-  // Type: Left, Right, Midpoint
+  // Type: Left, Right, Midpoint, Upper, Lower
   const r = Math.random();
   let type = 'Left';
-  if (r > 0.66) type = 'Midpoint';
-  else if (r > 0.33) type = 'Right';
+  let endpointType = 'Left'; // The actual calculation method
+
+  if (r < 0.2) {
+      type = 'Left';
+      endpointType = 'Left';
+  } else if (r < 0.4) {
+      type = 'Right';
+      endpointType = 'Right';
+  } else if (r < 0.7) {
+      type = 'Midpoint';
+      endpointType = 'Midpoint';
+  } else if (r < 0.85) {
+      // Upper Sum (Increasing function -> Right endpoint)
+      type = 'Upper';
+      endpointType = isIncreasing ? 'Right' : 'Left';
+  } else {
+      // Lower Sum (Increasing function -> Left endpoint)
+      type = 'Lower';
+      endpointType = isIncreasing ? 'Left' : 'Right';
+  }
 
   let sum = 0;
   for (let i = 0; i < n; i++) {
     let x_star;
-    if (type === 'Left') x_star = a + i * dx;
-    else if (type === 'Right') x_star = a + (i + 1) * dx;
+    if (endpointType === 'Left') x_star = a + i * dx;
+    else if (endpointType === 'Right') x_star = a + (i + 1) * dx;
     else x_star = a + (i + 0.5) * dx;
 
     sum += evaluate(x_star) * dx;
   }
 
+  let questionText = `Estimate the area under $f(x) = ${funcStr}$ on $[${a}, ${b_val}]$ using $n=${n}$ rectangles and **${type}** sums.`;
+  if (type === 'Midpoint') {
+       questionText = `Estimate the area under $f(x) = ${funcStr}$ on $[${a}, ${b_val}]$ using $n=${n}$ rectangles and the **Midpoint Rule**.`;
+  } else if (type === 'Left' || type === 'Right') {
+       questionText = `Estimate the area under $f(x) = ${funcStr}$ on $[${a}, ${b_val}]$ using $n=${n}$ rectangles and **${type}** endpoints.`;
+  }
+
+  let hintText = `Calculate $\\Delta x = ${dx}$, find sample points for ${endpointType} rule, evaluate $f$, sum and multiply by $\\Delta x$.`;
+  if (type === 'Upper' || type === 'Lower') {
+      hintText = `Since $f(x)$ is increasing on this interval, the ${type} sum corresponds to the ${endpointType}-endpoint approximation.`;
+  }
+
   return {
-    question: `Estimate the area under $f(x) = ${funcStr}$ on $[${a}, ${b_val}]$ using $n=${n}$ rectangles and **${type}** endpoints.`,
+    question: questionText,
     answer: sum.toString(),
     type: 'number',
-    hint: `Calculate $\\Delta x = ${dx}$, find sample points for ${type} rule, evaluate $f$, sum and multiply by $\\Delta x$.`
+    hint: hintText
   };
 }
 
 function generateRiemannSum() {
   const r = Math.random();
-  if (r < 0.2) return generateDeltaXProblem();
-  if (r < 0.4) return generateGridPointProblem();
+  if (r < 0.20) return generateSigmaNotation();
+  if (r < 0.35) return generateLimitDefProblem(); // New type
+  if (r < 0.50) return generateDeltaXProblem();
+  if (r < 0.65) return generateGridPointProblem();
   return generateRiemannSumCalculation();
 }
 

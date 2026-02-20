@@ -30,7 +30,30 @@ $$ \\sum_{i=1}^{n} a_i = a_1 + a_2 + \\dots + a_n $$
 *   $\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}$
 *   $\\sum_{i=1}^{n} i^2 = \\frac{n(n+1)(2n+1)}{6}$
 *   $\\sum_{i=1}^{n} i^3 = \\left[\\frac{n(n+1)}{2}\\right]^2$
-
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Evaluating a Sum',
+            problem: 'Evaluate the sum $\\sum_{i=1}^{10} (i^2 - 4i + 3)$.',
+            steps: [
+              {
+                text: 'Use the linearity properties to split the sum.',
+                math: '$\\sum_{i=1}^{10} i^2 - 4\\sum_{i=1}^{10} i + \\sum_{i=1}^{10} 3$'
+              },
+              {
+                text: 'Apply the summation formulas with $n=10$.',
+                math: '$\\sum i^2 = \\frac{10(11)(21)}{6} = 385$ \\\\ $\\sum i = \\frac{10(11)}{2} = 55$ \\\\ $\\sum 3 = 10(3) = 30$'
+              },
+              {
+                text: 'Substitute and calculate.',
+                math: '$385 - 4(55) + 30 = 385 - 220 + 30 = 195$'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
 ## Riemann Sums
 
 To estimate the area under $y=f(x)$ on $[a, b]$, we divide the interval into $n$ subintervals of equal width:
@@ -54,6 +77,15 @@ where $x_i^*$ is any sample point in the $i$-th subinterval $[x_{i-1}, x_i]$.
 
 3.  **Midpoint Approximation ($M_n$):** Choose $x_i^* = \\bar{x}_i = \\frac{x_{i-1} + x_i}{2}$.
     $$ M_n = \\sum_{i=1}^{n} f(\\bar{x}_i) \\Delta x $$
+
+### Upper and Lower Sums
+
+For a continuous function on $[a, b]$:
+*   The **Upper Sum ($U_n$)** uses the maximum value of $f(x)$ in each subinterval.
+*   The **Lower Sum ($L_n$)** uses the minimum value of $f(x)$ in each subinterval.
+
+If $f(x)$ is **increasing**, $L_n$ (Left sum) is the Lower Sum and $R_n$ (Right sum) is the Upper Sum.
+If $f(x)$ is **decreasing**, $R_n$ is the Lower Sum and $L_n$ is the Upper Sum.
 `
           },
           {
@@ -80,6 +112,73 @@ where $x_i^*$ is any sample point in the $i$-th subinterval $[x_{i-1}, x_i]$.
               {
                 text: 'Sum and Multiply to find $R_4$.',
                 math: '$R_4 = 0.5 [ 0.25 + 1.00 + 2.25 + 4.00 ] = 0.5 [ 7.5 ] = 3.75$'
+              }
+            ]
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Approximating Area with Midpoint Rule',
+            problem: 'Estimate the area under $f(x) = x^2 + 1$ on the interval $[0, 2]$ using $n=2$ rectangles and the **Midpoint Rule**.',
+            steps: [
+              {
+                text: 'Calculate $\\Delta x$.',
+                math: '$\\Delta x = \\frac{2-0}{2} = 1$'
+              },
+              {
+                text: 'Find the Grid Points.',
+                math: '$x_0 = 0, x_1 = 1, x_2 = 2$'
+              },
+              {
+                text: 'Find the Midpoints ($x_i^*$).',
+                math: 'Midpoint of $[0, 1]$ is $0.5$. Midpoint of $[1, 2]$ is $1.5$.'
+              },
+              {
+                text: 'Evaluate the Function at midpoints.',
+                math: '$f(0.5) = (0.5)^2 + 1 = 1.25$ \\\\ $f(1.5) = (1.5)^2 + 1 = 3.25$'
+              },
+              {
+                text: 'Sum and Multiply to find $M_2$.',
+                math: '$M_2 = 1 [ 1.25 + 3.25 ] = 4.5$'
+              }
+            ]
+          },
+          {
+            type: 'text',
+            content: `
+## The Limit of Riemann Sums
+
+As we increase the number of subintervals $n$ (so $\\Delta x \\to 0$), the approximation becomes more accurate. The exact area $A$ is defined as the limit of the Riemann sums:
+
+$$ A = \\lim_{n \\to \\infty} R_n = \\lim_{n \\to \\infty} \\sum_{i=1}^{n} f(x_i) \\Delta x $$
+(This limit is the same for Left, Right, or Midpoint sums).
+
+This limit definition allows us to calculate areas exactly, even for curved regions.
+`
+          },
+          {
+            type: 'stepped-example',
+            title: 'Walkthrough: Finding Exact Area using Limits',
+            problem: 'Find the exact area under the curve $f(x) = 3x$ on the interval $[0, 2]$ using the limit of Right-Endpoint sums.',
+            steps: [
+              {
+                text: 'Set up $\\Delta x$ and $x_i$ for general $n$.',
+                math: '$\\Delta x = \\frac{2-0}{n} = \\frac{2}{n}$. \\\\ $x_i = 0 + i\\Delta x = \\frac{2i}{n}$.'
+              },
+              {
+                text: 'Evaluate $f(x_i)$.',
+                math: '$f(x_i) = 3\\left(\\frac{2i}{n}\\right) = \\frac{6i}{n}$.'
+              },
+              {
+                text: 'Form the Riemann Sum $R_n = \\sum_{i=1}^n f(x_i) \\Delta x$.',
+                math: '$R_n = \\sum_{i=1}^n \\left(\\frac{6i}{n}\\right) \\left(\\frac{2}{n}\\right) = \\sum_{i=1}^n \\frac{12i}{n^2}$.'
+              },
+              {
+                text: 'Pull out constants and use the sum formula for $i$.',
+                math: '$R_n = \\frac{12}{n^2} \\sum_{i=1}^n i = \\frac{12}{n^2} \\cdot \\frac{n(n+1)}{2} = \\frac{6(n^2+n)}{n^2} = 6\\left(1 + \\frac{1}{n}\\right)$.'
+              },
+              {
+                text: 'Take the limit as $n \\to \\infty$.',
+                math: '$A = \\lim_{n \\to \\infty} 6\\left(1 + \\frac{1}{n}\\right) = 6(1 + 0) = 6$.'
               }
             ]
           },
