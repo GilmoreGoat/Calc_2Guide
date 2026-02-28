@@ -51,11 +51,27 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
   const exprUser = cleanExpr(userAnswer);
   const exprExpected = cleanExpr(expectedAnswer);
 
-  // Security check: Ensure only allowed characters are present
+  // Security check: Ensure only allowed characters and functions are present
   // Allowed: digits, a-z, +, -, *, /, ^, (, ), ., and whitespace
+  // Letters are only allowed if they form a known function or the variable 'x'
   const allowedChars = /^[0-9a-z+\-*/^().\s]*$/;
   if (!allowedChars.test(exprUser)) {
     return { isCorrect: false, message: 'Invalid characters in your answer.' };
+  }
+
+  // Prevent property access via dot operator (e.g., x.constructor)
+  // Dots must only be used in numeric decimals (preceded or followed by a digit)
+  if (exprUser.includes('.')) {
+    const parts = exprUser.split('.');
+    for (let i = 0; i < parts.length - 1; i++) {
+      const left = parts[i];
+      const right = parts[i + 1];
+      const hasDigitLeft = /\d$/.test(left);
+      const hasDigitRight = /^\d/.test(right);
+      if (!hasDigitLeft && !hasDigitRight) {
+        return { isCorrect: false, message: 'Invalid use of decimal point.' };
+      }
+    }
   }
 
   // Convert math syntax to JS syntax
@@ -153,6 +169,22 @@ export function validateMath(userAnswer, expectedAnswer, type = 'text') {
 
   const jsUser = toJS(exprUser);
   const jsExpected = toJS(exprExpected);
+
+  // Final security check on the generated JS: only allowed functions and variables
+  const allowedWords = new Set([
+    'x', 'e', 'pi', 'pow',
+    'sin', 'cos', 'tan', 'asin', 'acos', 'atan',
+    'sinh', 'cosh', 'tanh', 'exp', 'sqrt', 'abs', 'log', 'ln',
+    'sec', 'csc', 'cot', 'arcsin', 'arccos', 'arctan',
+    'arcsec', 'arccsc', 'arccot'
+  ]);
+
+  const words = jsUser.match(/[a-z]+/g) || [];
+  for (const word of words) {
+    if (!allowedWords.has(word)) {
+      return { isCorrect: false, message: `Invalid function or variable: "${word}"` };
+    }
+  }
 
   // 3. Numerical verification using random sampling
   try {

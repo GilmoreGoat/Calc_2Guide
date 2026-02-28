@@ -66,4 +66,63 @@ describe('Math Validator', () => {
     assert.ok(!noC.isCorrect);
     assert.match(noC.message, /constant of integration/i);
   });
+
+  test('Security: Unauthorized function calls', () => {
+    const payloads = [
+      'alert(1)',
+      'console.log(1)',
+      'eval(x)',
+      'atob(x)',
+      'fetch(x)',
+      'setTimeout(x, 1)',
+      'require(x)'
+    ];
+
+    for (const payload of payloads) {
+      const result = validateMath(payload, 'x');
+      assert.ok(!result.isCorrect, `Payload should be blocked: ${payload}`);
+      // Payload should be blocked either by word allowlist or dot operator restriction
+      assert.ok(
+        /Invalid function or variable/i.test(result.message) ||
+        /Invalid use of decimal point/i.test(result.message) ||
+        /Invalid characters/i.test(result.message),
+        `Unexpected error message for ${payload}: ${result.message}`
+      );
+    }
+  });
+
+  test('Security: Property access', () => {
+    const payloads = [
+      'x.constructor',
+      'sin.constructor',
+      '(1).toString()',
+      'pi.__proto__',
+      'e["constructor"]' // [ ] blocked by allowedChars
+    ];
+
+    for (const payload of payloads) {
+      const result = validateMath(payload, 'x');
+      assert.ok(!result.isCorrect, `Property access should be blocked: ${payload}`);
+      // Some might be blocked by characters, some by words, some by dots
+    }
+  });
+
+  test('Security: Dot operator restriction', () => {
+    assert.ok(validateMath('3.14', '3.14', 'text').isCorrect);
+    assert.ok(validateMath('.5', '0.5', 'text').isCorrect);
+    assert.ok(validateMath('5.', '5', 'text').isCorrect);
+
+    const badDots = [
+      '3.1.4',
+      'x.sin(x)',
+      '..',
+      ' . ',
+      '1. e'
+    ];
+
+    for (const dot of badDots) {
+      const result = validateMath(dot, 'x');
+      assert.ok(!result.isCorrect, `Bad dot should be blocked: ${dot}`);
+    }
+  });
 });
