@@ -7,6 +7,9 @@ import { curriculum } from '../../curriculum';
 import PracticeSection from './PracticeSection';
 import SteppedExample from './SteppedExample';
 
+const remarkPlugins = [remarkMath];
+const rehypePlugins = [rehypeKatex];
+
 const TopicPage = () => {
   const { moduleId, topicId } = useParams();
 
@@ -24,8 +27,8 @@ const TopicPage = () => {
             <ReactMarkdown
               key={index}
               children={block.content}
-              remarkPlugins={[remarkMath]}
-              rehypePlugins={[rehypeKatex]}
+              remarkPlugins={remarkPlugins}
+              rehypePlugins={rehypePlugins}
             />
           );
         }
@@ -46,8 +49,8 @@ const TopicPage = () => {
     return (
       <ReactMarkdown
         children={topic.content}
-        remarkPlugins={[remarkMath]}
-        rehypePlugins={[rehypeKatex]}
+        remarkPlugins={remarkPlugins}
+        rehypePlugins={rehypePlugins}
       />
     );
   };
