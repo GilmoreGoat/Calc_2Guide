@@ -47,4 +47,10 @@ test('questionGenerator', async (t) => {
     assert.strictEqual(problem.type, 'text');
     assert.ok(problem.question.includes('Evaluate'));
   });
+
+  await t.test('should generate exp-log integral problem', () => {
+    const problem = generateProblem('exp-log-integrals');
+    assert.ok(problem.type === 'text' || problem.type === 'number');
+    assert.ok(problem.question.includes('Evaluate'));
+  });
 });
