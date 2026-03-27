@@ -4,6 +4,9 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { ChevronDown, ChevronRight, Lightbulb } from 'lucide-react';
 
+const remarkPlugins = [remarkMath];
+const rehypePlugins = [rehypeKatex];
+
 const SteppedExample = ({ title, problem, steps }) => {
   const [activeStep, setActiveStep] = useState(0);
 
@@ -18,8 +21,8 @@ const SteppedExample = ({ title, problem, steps }) => {
           <div className="prose prose-slate max-w-none prose-p:text-slate-700">
             <ReactMarkdown
               children={problem}
-              remarkPlugins={[remarkMath]}
-              rehypePlugins={[rehypeKatex]}
+              remarkPlugins={remarkPlugins}
+              rehypePlugins={rehypePlugins}
             />
           </div>
         </div>
@@ -45,15 +48,15 @@ const SteppedExample = ({ title, problem, steps }) => {
                    <div className="prose prose-slate max-w-none prose-p:text-slate-800">
                      <ReactMarkdown
                        children={step.text}
-                       remarkPlugins={[remarkMath]}
-                       rehypePlugins={[rehypeKatex]}
+                       remarkPlugins={remarkPlugins}
+                       rehypePlugins={rehypePlugins}
                      />
                      {step.math && (
                        <div className="mt-4 p-4 bg-brand-50/50 rounded-2xl border border-brand-100 overflow-x-auto">
                          <ReactMarkdown
                            children={step.math}
-                           remarkPlugins={[remarkMath]}
-                           rehypePlugins={[rehypeKatex]}
+                           remarkPlugins={remarkPlugins}
+                           rehypePlugins={rehypePlugins}
                          />
                        </div>
                      )}

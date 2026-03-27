@@ -6,6 +6,9 @@ import { RefreshCw, Check, HelpCircle, ChevronRight, AlertCircle, Sparkles } fro
 import { generateProblem } from '../utils/questionGenerator';
 import { validateMath } from '../utils/mathValidator';
 
+const remarkPlugins = [remarkMath];
+const rehypePlugins = [rehypeKatex];
+
 const PracticeSection = ({ type }) => {
   const [problem, setProblem] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
@@ -64,8 +67,8 @@ const PracticeSection = ({ type }) => {
               <div className="prose prose-xl prose-slate max-w-none text-black font-bold">
                 <ReactMarkdown
                   children={problem.question}
-                  remarkPlugins={[remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
+                  remarkPlugins={remarkPlugins}
+                  rehypePlugins={rehypePlugins}
                 />
               </div>
             </div>
@@ -135,8 +138,8 @@ const PracticeSection = ({ type }) => {
                      <div className="prose prose-lg prose-slate max-w-none font-medium">
                       <ReactMarkdown
                         children={problem.hint}
-                        remarkPlugins={[remarkMath]}
-                        rehypePlugins={[rehypeKatex]}
+                        remarkPlugins={remarkPlugins}
+                        rehypePlugins={rehypePlugins}
                       />
                     </div>
                   </div>
